@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User info</title>
+</head>
+<body>
+<div class="container">
+    <div class="tab-label">
+        <table>
+            <thead>
+            <tr>
+                <th> login</th>
+                <th> company</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:object="${user}">
+                <td th:text="${user.getLogin()}" /></td>
+                <td th:text="${user.isConfirmed()}"/></td>
+                <th:form>
+                    <td>
+                        <a th:href="@{/admin/delete/{id}(id=${user.id})}"/>
+                            <div  th:text="delete"> </div>
+                    </td>
+                </th:form>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
