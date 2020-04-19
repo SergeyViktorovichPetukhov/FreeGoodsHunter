@@ -192,9 +192,12 @@ public class UserFacadeImpl implements UserFacade {
     public Response registerCompany(final String login, final String address, final String phone, String internetShop, Long userId , int code) {
         //    int code = ThreadLocalRandom.current().nextInt(CODE_LOWER_LIMIT, CODE_UPPER_LIMIT);
         if(code == 1234) {
-            registrationService.save(new Registration(login, address, phone, userId,true));
-            Company company = new Company(login, address, phone, code, internetShop);
-            companyService.save(company);
+            User user = userService.findByLogin(login);
+                registrationService.save(new Registration(login, address, phone, userId,true));
+                    Company company = new Company(login, address, phone, code, internetShop);
+                    user.setCompany(company);
+                companyService.save(company);
+            userService.save(user);
             return new Response(true, 0);
         }
         //    emailService.sendSimpleMessage(login, "Registration code", "Your registration code: " + code);

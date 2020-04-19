@@ -42,13 +42,13 @@ public class MockController {
         IOUtils.copy(in, response.getOutputStream());
     }
 
-    @GetMapping("/shares")
-    public SharesResponse getShares(@RequestParam(value = "login", required = false) String login,
-                                    @RequestParam(value = "country", required = false) String country,
-                                    @RequestParam(value = "region", required = false) String region,
-                                    @RequestParam(value = "city", required = false) String city) {
-        return shareFacade.getShares(login, country, region, city);
-    }
+//    @GetMapping("/shares")
+//    public SharesResponse getShares(@RequestParam(value = "login", required = false) String login,
+//                                    @RequestParam(value = "country", required = false) String country,
+//                                    @RequestParam(value = "region", required = false) String region,
+//                                    @RequestParam(value = "city", required = false) String city) {
+//        return shareFacade.getShares(login, country, region, city);
+//    }
 
     @GetMapping("/profile")
     public UserProfileResponse getUserProfile(@RequestParam(value = "login", required = false) String login) {

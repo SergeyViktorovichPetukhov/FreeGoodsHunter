@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository("itemRepository")
+@Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findAllByShare_Id(Long id);
 }

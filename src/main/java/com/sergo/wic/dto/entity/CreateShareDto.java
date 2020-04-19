@@ -1,6 +1,7 @@
 package com.sergo.wic.dto.entity;
 
-import com.sergo.wic.dto.AddressDto;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.http.converter.HttpMessageConverter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -11,18 +12,24 @@ import java.util.List;
 
 public class CreateShareDto {
 
-    @NotBlank(message = "description must not be blank")
-    private String description;
+    @NotBlank(message = "login must not be blank")
+    private String login;
 
-    @Positive(message = "countOfProduct must be greater than 0")
-    private Integer countOfProduct;
+  //  @NotNull(message = "no image")
+    private byte[] photoProduct;
 
     @NotBlank(message = "productName must not be blank")
     private String productName;
 
+    @NotBlank(message = "description must not be blank")
+    private String description;
+
     private String linkOnProductUrl;
 
     private Double productPrice;
+
+    @Positive(message = "productCount must be greater than 0")
+    private Integer productCount;;
 
     @Positive(message = "announcementDuration must be greater than 0")
     private Integer announcementDuration;
@@ -36,13 +43,25 @@ public class CreateShareDto {
     @NotBlank(message = "color must not be blank")
     private String color;
 
-    @Valid
-    @NotNull
-    private AddressDto placeAddress;
+    @NotBlank(message = "country must not be blank")
+    private String placeCountry;
+
+    @NotBlank(message = "region must not be blank")
+    private String placeRegion;
+
+    @NotBlank(message = "city must not be blank")
+    private String placeCity;
+
+
+//    @Valid
+//    @NotNull
+//    private AddressDto placeAddress;
 
     @Valid
     @NotEmpty(message = "items must not be empty")
+ //   @JsonProperty
     private List<CreateItemDto> items;
+
 
     public CreateShareDto() {
     }
@@ -55,12 +74,12 @@ public class CreateShareDto {
         this.description = description;
     }
 
-    public Integer getCountOfProduct() {
-        return countOfProduct;
+    public Integer getProductCount() {
+        return productCount;
     }
 
-    public void setCountOfProduct(Integer countOfProduct) {
-        this.countOfProduct = countOfProduct;
+    public void setProductCount(Integer productCount) {
+        this.productCount = productCount;
     }
 
     public String getProductName() {
@@ -119,12 +138,53 @@ public class CreateShareDto {
         this.color = color;
     }
 
-    public AddressDto getPlaceAddress() {
-        return placeAddress;
+//    public AddressDto getPlaceAddress() {
+//        return placeAddress;
+//    }
+//
+//    public void setPlaceAddress(AddressDto placeAddress) {
+//        this.placeAddress = placeAddress;
+//    }
+
+
+    public String getLogin() {
+        return login;
     }
 
-    public void setPlaceAddress(AddressDto placeAddress) {
-        this.placeAddress = placeAddress;
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public byte[] getProductPhoto() {
+        return photoProduct;
+    }
+
+    public void setProductPhoto(byte[] photoProduct) {
+        this.photoProduct = photoProduct;
+    }
+
+    public String getPlaceCountry() {
+        return placeCountry;
+    }
+
+    public void setPlaceCountry(String placeCountry) {
+        this.placeCountry = placeCountry;
+    }
+
+    public String getPlaceRegion() {
+        return placeRegion;
+    }
+
+    public void setPlaceRegion(String placeRegion) {
+        this.placeRegion = placeRegion;
+    }
+
+    public String getPlaceCity() {
+        return placeCity;
+    }
+
+    public void setPlaceCity(String placeCity) {
+        this.placeCity = placeCity;
     }
 
     public List<CreateItemDto> getItems() {

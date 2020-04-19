@@ -1,0 +1,16 @@
+table {
+    padding: 10px;
+    border: 5px solid black;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 3px solid black;
+    border-collapse: collapse;
+}
+
+table.tab2 {
+    border: 3px solid black;
+    text-align: center;
+    vertical-align: bottom;
+}

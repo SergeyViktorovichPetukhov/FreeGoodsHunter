@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>User info</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="/static/css/styles.css" th:href="@{/css/styles.css}" />
 </head>
 <body>
-<div class="container">
+<div>
     <div class="tab-label">
         <table>
             <thead>
@@ -27,6 +29,65 @@
             </tr>
             </tbody>
         </table>
+
+        <div >
+            <table th:if="${shares != null}">
+                <thead>
+                <tr>
+                    <th> login</th>
+                    <th> product name</th>
+                    <th> description</th>
+                    <th> linkOnProductUrl</th>
+                    <th> price</th>
+                    <th> count</th>
+                    <th> announcementDuration</th>
+                    <th> shareDuration</th>
+                    <th> afterShareDuration</th>
+                    <th> placeCountry</th>
+                    <th> placeRegion</th>
+                    <th> placeCity</th>
+                    <th> color</th>
+                    <th>      </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="share : ${shares}"
+                    th:if="${share.createStatus == T(com.sergo.wic.entities.CreateShareState).CREATED }">
+                    <td th:text="${share.getLogin()}" /></td>
+                    <td th:text="${share.getProductName()}"/></td>
+                    <td th:text="${share.getDescription()}" /></td>
+                    <td th:text="${share.getLinkOnProductUrl()}"/></td>
+                    <td th:text="${share.getProductPrice()}" /></td>
+                    <td th:text="${share.getCountOfProduct()}"/></td>
+                    <td th:text="${share.getAnnouncementDuration()}" /></td>
+                    <td th:text="${share.getShareDuration()}"/></td>
+                    <td th:text="${share.getAfterShareDuration()}" /></td>
+                    <td th:text="${share.getPlaceCountry()}"/></td>
+                    <td th:text="${share.getPlaceRegion()}" /></td>
+                    <td th:text="${share.getPlaceCity()}"/></td>
+                    <td th:text="${share.getColor()}"/></td>
+
+                    <td/>
+                        <div>
+                            <div>
+                                <form th:action="@{'/admin/show/'+ ${user.id} + '/confirm'}" method="post">
+                                    <input type="hidden" name="share_id" th:value="${share.id}">
+                                    <input type="submit" value="confirm" />
+                                </form>
+                            </div>
+                            <div>
+                                <form th:action="@{'/admin/show/' + ${user.id} + '/cancel'}" method="post">
+                                    <input type="text" th:placeholder="'enter reason'" name="reason" />
+                                    <input type="hidden" name="share_id" th:value="${share.id}">
+                                    <input type="submit" value="cancel" />
+                                </form>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 </body>

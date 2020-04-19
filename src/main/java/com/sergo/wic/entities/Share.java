@@ -9,10 +9,30 @@ import java.util.Objects;
 @Table(name = "shares")
 public class Share {
 
+    public Share(){
+        this.creationStatus = CreateShareState.CREATED;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @Column(name = "share_id")
+    private String shareId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", referencedColumnName = "id" )
+    private Company company;
+
+    @Column(name = "login")
+    private String login;
+
+    @Column(name = "product_photo")
+    private String productPhoto;
+
+    @Column(name = "product_name")
+    private String productName;
 
     @Column(name = "description")
     private String description;
@@ -22,9 +42,6 @@ public class Share {
 
     @Column(name = "product_image_id")
     private Long productImageId;
-
-    @Column(name = "product_name")
-    private String productName;
 
     @Column(name = "link_on_product_url")
     private String linkOnProductUrl;
@@ -56,23 +73,97 @@ public class Share {
     @Column(name = "date")
     private Timestamp date;
 
-    @Column(name = "status_id")
+
+    @Column(name = "status")
     @Enumerated(EnumType.ORDINAL)
     private ShareState status;
 
-    @Column(name = "company_id")
-    private Integer companyId;
+    @Column(name = "creation_status")
+    @Enumerated(EnumType.STRING)
+    private CreateShareState creationStatus;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @Column(name = "message_for_user")
+    private String messageForUser;
 
     @OneToMany(mappedBy = "share")
     private List<Item> items;
 
-    @ManyToOne
-    @JoinColumn(name = "place_address_id", referencedColumnName = "id")
-    private Address placeAddress;
+    @Column(name = "place_country")
+    private String placeCountry;
+
+    @Column(name = "place_region")
+    private String placeRegion;
+
+    @Column (name = "place_city")
+    private String placeCity;
+
+//    @ManyToOne
+//    @JoinColumn(name = "place_address_id", referencedColumnName = "id")
+//    private Address placeAddress;
+
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getProductPhoto() {
+        return productPhoto;
+    }
+
+    public void setProductPhoto(String productPhoto) {
+        this.productPhoto = productPhoto;
+    }
+
+    public String getPlaceCountry() {
+        return placeCountry;
+    }
+
+    public void setPlaceCountry(String placeCountry) {
+        this.placeCountry = placeCountry;
+    }
+
+    public String getPlaceRegion() {
+        return placeRegion;
+    }
+
+    public void setPlaceRegion(String placeRegion) {
+        this.placeRegion = placeRegion;
+    }
+
+    public String getPlaceCity() {
+        return placeCity;
+    }
+
+    public CreateShareState getCreateStatus() {
+        return creationStatus;
+    }
+
+    public void setCreateStatus(CreateShareState createStatus) {
+        this.creationStatus = createStatus;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public void setPlaceCity(String placeCity) {
+        this.placeCity = placeCity;
+    }
 
     public Long getId() {
         return id;
@@ -82,12 +173,28 @@ public class Share {
         this.id = id;
     }
 
-    public User getUserId() {
-        return user;
+    public CreateShareState getCreationStatus() {
+        return creationStatus;
     }
 
-    public void setUserId(User user) {
-        this.user = user;
+    public void setCreationStatus(CreateShareState creationStatus) {
+        this.creationStatus = creationStatus;
+    }
+
+    public String getMessageForUser() {
+        return messageForUser;
+    }
+
+    public void setMessageForUser(String messageForUser) {
+        this.messageForUser = messageForUser;
+    }
+
+    public String getShareId() {
+        return shareId;
+    }
+
+    public void setShareId(String shareId) {
+        this.shareId = shareId;
     }
 
     public String getDescription() {
@@ -210,13 +317,13 @@ public class Share {
         this.status = status;
     }
 
-    public Integer getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
+//    public Integer getCompanyId() {
+//        return companyId;
+//    }
+//
+//    public void setCompanyId(Integer companyId) {
+//        this.companyId = companyId;
+//    }
 
     public List<Item> getItems() {
         return items;
@@ -226,13 +333,13 @@ public class Share {
         this.items = items;
     }
 
-    public Address getPlaceAddress() {
-        return placeAddress;
-    }
-
-    public void setPlaceAddress(Address placeAddress) {
-        this.placeAddress = placeAddress;
-    }
+//    public Address getPlaceAddress() {
+//        return placeAddress;
+//    }
+//
+//    public void setPlaceAddress(Address placeAddress) {
+//        this.placeAddress = placeAddress;
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -254,13 +361,14 @@ public class Share {
                 Objects.equals(color, that.color) &&
                 Objects.equals(codeForWinner, that.codeForWinner) &&
                 Objects.equals(date, that.date) &&
-                Objects.equals(status, that.status) &&
-                Objects.equals(companyId, that.companyId);
+                Objects.equals(status, that.status);
+//                &&
+//                Objects.equals(companyId, that.companyId);
     }
 
     @Override public int hashCode() {
         return Objects.hash(id, description, countOfProduct, productImageId, productName, linkOnProductUrl,
                 productPrice, announcementDuration, shareDuration, afterShareDuration, color, pickedItemsCount,
-                allItemsCount, codeForWinner, date, status, companyId);
+                allItemsCount, codeForWinner, date, status);
     }
 }

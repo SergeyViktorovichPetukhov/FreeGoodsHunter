@@ -4,28 +4,28 @@ import javax.validation.constraints.NotNull;
 
 public class CreateItemDto {
 
-    @NotNull(message = "longitude must not be null")
-    private Double longitude;
+    @NotNull(message = "lon must not be null")
+    private Double lon;
 
-    @NotNull(message = "latitude must not be null")
-    private Double latitude;
+    @NotNull(message = "lat must not be null")
+    private Double lat;
 
     public CreateItemDto() {
     }
 
-    public Double getLongitude() {
-        return longitude;
+    public Double getLon() {
+        return lon;
     }
 
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+    public void setLon(Double lon) {
+        this.lon = lon;
     }
 
-    public Double getLatitude() {
-        return latitude;
+    public Double getLat() {
+        return lat;
     }
 
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
+    public void setLat(Double lat) {
+        this.lat = lat;
     }
 }

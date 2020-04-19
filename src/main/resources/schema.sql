@@ -3,13 +3,33 @@ commit;
 CREATE SCHEMA public;
 commit;
 
+CREATE TABLE users
+(
+    id                    BIGSERIAL     NOT NULL,
+    login                 VARCHAR(30)   NOT NULL      UNIQUE,
+    win_count             INTEGER,
+    email                 VARCHAR(30),
+    phone                 VARCHAR(9),
+    name                  VARCHAR(30),
+    is_confirmed          BOOLEAN       DEFAULT FALSE,
+    company_id            INTEGER
+);
+
+ALTER TABLE users
+    ADD CONSTRAINT users_PK PRIMARY KEY (id);
+
+
 CREATE TABLE shares
 (
     id                    BIGSERIAL     NOT NULL,
-    description           VARCHAR(300),
-    count_of_product      INTEGER       NOT NULL,
-    product_image_id      INTEGER,
+    share_id              VARCHAR(50),
+    company_id            INTEGER,
+    login                 VARCHAR(30)   NOT NULL,
+    product_photo         VARCHAR(40)   NOT NULL,
     product_name          VARCHAR(100),
+    description           VARCHAR(300),
+    count_of_product      INTEGER,
+    product_image_id      INTEGER,
     link_on_product_url   VARCHAR(100),
     product_price         FLOAT         NOT NULL,
     announcement_duration INTEGER,
@@ -20,30 +40,18 @@ CREATE TABLE shares
     all_items_count       INTEGER       NOT NULL,
     code_for_winner       VARCHAR(100),
     date                  TIMESTAMP     NOT NULL,
-    status_id             INTEGER,
-    place_address_id      INTEGER,
-    company_id            INTEGER,
-    user_id               INTEGER
+    status                VARCHAR(10),
+    creation_status       VARCHAR(10),
+    message_for_user      VARCHAR(100),
+    place_country         VARCHAR(40),
+    place_region          VARCHAR(40),
+    place_city            VARCHAR(40)
 );
+
 
 ALTER TABLE shares
-  ADD CONSTRAINT shares_PK PRIMARY KEY (id);
+    ADD CONSTRAINT shares_PK PRIMARY KEY (id);
 
-
-CREATE TABLE users
-(
-    id                    BIGSERIAL     NOT NULL,
-    login                 VARCHAR(30)   NOT NULL      UNIQUE,
-    win_count             INTEGER,
-    email                 VARCHAR(30),
-    phone                 VARCHAR(9),
-    name                  VARCHAR(30),
-    is_confirmed          BOOLEAN       DEFAULT FALSE,
-    company_id            INT
-);
-
-ALTER TABLE users
-    ADD CONSTRAINT users_PK PRIMARY KEY (id);
 
 CREATE TABLE registrations
 (
@@ -61,8 +69,6 @@ CREATE TABLE registrations
 ALTER TABLE registrations
     ADD CONSTRAINT registrations_PK PRIMARY KEY (id);
 
-ALTER TABLE registrations
-    ADD CONSTRAINT registrations_FK FOREIGN KEY (user_id) REFERENCES users(id);
 
 CREATE TABLE images
 (
@@ -89,8 +95,8 @@ ALTER TABLE share_statuses
 CREATE TABLE items
 (
     id         BIGSERIAL  NOT NULL,
-    longitude  FLOAT      NOT NULL,
-    latitude   FLOAT      NOT NULL,
+    lon  FLOAT      NOT NULL,
+    lat   FLOAT      NOT NULL,
     share_id   INTEGER    NOT NULL,
     user_id    INTEGER
 );
@@ -110,20 +116,32 @@ CREATE TABLE address
 ALTER TABLE address
   ADD CONSTRAINT address_PK PRIMARY KEY (id);
 
+CREATE TABLE companies
+(
+    id            BIGSERIAL    NOT NULL,
+    login         VARCHAR(50)  NOT NULL,
+    address       VARCHAR(50)  NOT NULL,
+    phone         VARCHAR(50)  NOT NULL,
+    internet_shop VARCHAR(100),
+    code          INTEGER,
+    label_path    VARCHAR(50),
+    user_id       INTEGER
+);
+
+ALTER TABLE companies
+    ADD CONSTRAINT companies_PK PRIMARY KEY (id);
+
 -----------------------------------------------------------------------------------
 -------------------------------Foreign keys----------------------------------------
 -----------------------------------------------------------------------------------
+-- ALTER TABLE users
+--     ADD CONSTRAINT user_company_FK FOREIGN KEY  (company_id)
+--         REFERENCES companies(id);
+-- --
 
 ALTER TABLE shares
-  ADD CONSTRAINT shares_address_FK FOREIGN KEY
-  (
-    place_address_id
-  )
-REFERENCES address
-  (
-    id
-  );
-
+    ADD CONSTRAINT company_share_FK FOREIGN KEY (company_id)
+        REFERENCES companies(id);
 
 ALTER TABLE shares
   ADD CONSTRAINT shares_image_FK FOREIGN KEY
@@ -144,5 +162,8 @@ REFERENCES shares
   (
     id
   ) ON DELETE CASCADE;
+
+ALTER TABLE registrations
+    ADD CONSTRAINT registrations_FK FOREIGN KEY (user_id) REFERENCES users(id);
 
 COMMIT;

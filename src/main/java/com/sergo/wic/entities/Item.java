@@ -12,11 +12,11 @@ public class Item {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "longitude")
-    private double longitude;
+    @Column(name = "lon")
+    private double lon;
 
-    @Column(name = "latitude")
-    private double latitude;
+    @Column(name = "lat")
+    private double lat;
 
     @ManyToOne
     @JoinColumn(name = "share_id", referencedColumnName = "id", nullable = false)
@@ -31,20 +31,20 @@ public class Item {
         this.id = id;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public double getLon() {
+        return lon;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public double getLat() {
+        return lat;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setLat(double lat) {
+        this.lat = lat;
     }
 
     public Share getShare() {
@@ -61,12 +61,12 @@ public class Item {
         if (o == null || getClass() != o.getClass()) return false;
         Item that = (Item) o;
         return id == that.id &&
-                Double.compare(that.longitude, longitude) == 0 &&
-                Double.compare(that.latitude, latitude) == 0;
+                Double.compare(that.lon, lon) == 0 &&
+                Double.compare(that.lat, lat) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, longitude, latitude);
+        return Objects.hash(id, lon, lat);
     }
 }

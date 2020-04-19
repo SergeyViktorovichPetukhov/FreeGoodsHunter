@@ -1,8 +1,13 @@
 package com.sergo.wic.entities;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Objects;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Entity
 @Table(name = "users")
@@ -27,12 +32,20 @@ public class User {
     @Column(name = "isConfirmed")
     private boolean isConfirmed;     // if user is a company manager
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name="company_id", referencedColumnName = "id")
     private Company company;
 
-    @OneToMany(mappedBy = "user")
-    private List<Share> shares;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Notification> notifications;
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
 
     public Company getCompany() { return company; }
 
@@ -88,6 +101,17 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+
+
+    public long getSharesCount(final Share currentShare){
+        return this.company
+           .getShares()
+              .stream()
+                 .filter(share -> (LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)
+                                          .isEqual(share.getDate().toLocalDateTime().truncatedTo(ChronoUnit.DAYS))))
+                     .count();
     }
 
     @Override

@@ -13,6 +13,8 @@ public class SharesResponse extends Response {
         setErrorCode(0);
     }
 
+
+
     public SharesResponse(final List<ShortShareInfoDto> shares) {
         this.shares = shares;
     }

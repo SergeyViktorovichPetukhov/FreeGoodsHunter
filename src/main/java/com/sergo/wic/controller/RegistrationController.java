@@ -33,19 +33,14 @@ public class RegistrationController {
     public Response generateCode(@RequestParam ("login") String login,
                                  @RequestParam ("address") String address,
                                  @RequestParam ("phone") String phone,
-                                 @RequestParam ("code") String code,
-                                 @RequestParam (value = "internet_address",required = false) String internet_shop) {
+                                 @RequestParam ("code") String code) {
         User user;
         try{
             user = userService.findByLogin(login);
         }catch (RuntimeException e){
             return new Response(false,0,"no such user");
         }
-
-        if (internet_shop != null)
-            return userFacade.registerCompany(login, address, phone, internet_shop, user.getId(), Integer.valueOf(code));
-        else
-            return userFacade.registerCompany(login, address, phone,null, user.getId(),Integer.valueOf(code));
+        return userFacade.registerCompany(login, address, phone,null, user.getId(),Integer.valueOf(code));
     }
 
     @PostMapping("/verifyCode")

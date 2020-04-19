@@ -38,7 +38,7 @@ public class CompanyFacadeImpl implements CompanyFacade {
         CompanyResponse userProfileResponse = new CompanyResponse();
         if (valid) {
             ShareForCompanyDto cocaColaShare = new ShareForCompanyDto("cocacola_0_1", new Date(),"/images/cocacola-logo.png",  23,
-                    0, ShareState.SOON.ordinal());
+                    0, ShareState.ACTIVE.ordinal());
             ShareForCompanyDto cocaColaShare2 = new ShareForCompanyDto("cocacola_0_2", new Date(),"/images/cocacola-logo.png",  44,
                     0, ShareState.COMPLETED.ordinal());
 
@@ -66,7 +66,7 @@ public class CompanyFacadeImpl implements CompanyFacade {
     public Response addLabel(@NotNull String login, @NotNull byte[] byteArray) {
         // have to add check
         Company company = companyRepository.findByLogin(login);
-        company.setLabel(byteArray);
+    //    company.setLabel(byteArray);
         companyRepository.save(company);
         return new Response(true,0);
     }

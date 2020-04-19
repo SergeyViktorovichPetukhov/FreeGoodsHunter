@@ -27,11 +27,11 @@ public class WicRestController {
     @Autowired
     private ImageFacade imageFacade;
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/shares")
-    public ShareResponse publicShare(@Valid @RequestBody final CreateShareDto createShareDto) {
-        return new ShareResponse(shareFacade.saveShare(createShareDto).getId());
-    }
+//    @ResponseStatus(HttpStatus.CREATED)
+////    @PostMapping("/shares")
+////    public ShareResponse publicShare(@Valid @RequestBody final CreateShareDto createShareDto) {
+////        return new ShareResponse(shareFacade.saveShare(createShareDto).getId());
+////    }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/shares/productPhoto/{shareId}")

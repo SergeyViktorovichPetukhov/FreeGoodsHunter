@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Component
@@ -29,8 +30,9 @@ public class ShareConverter {
     }
 
     public Share convertToModel(final CreateShareDto source) {
-        final Share share = new Share();
+        Share share = new Share();
         modelMapper.map(source, share);
+        share.setDate(new Timestamp(System.currentTimeMillis()));
         return share;
     }
 

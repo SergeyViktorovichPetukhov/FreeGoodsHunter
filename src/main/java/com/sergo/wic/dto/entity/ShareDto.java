@@ -16,6 +16,9 @@ public class ShareDto {
     private Long id;
 
     @NotBlank
+    private String shareId;
+
+    @NotBlank
     private String description;
 
     @Positive
@@ -126,6 +129,14 @@ public class ShareDto {
 
     public void setAnnouncementDuration(Integer announcementDuration) {
         this.announcementDuration = announcementDuration;
+    }
+
+    public String getShareId() {
+        return shareId;
+    }
+
+    public void setShareId(String shareId) {
+        this.shareId = shareId;
     }
 
     public Integer getShareDuration() {

@@ -1,6 +1,7 @@
 package com.sergo.wic.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "companies")
@@ -36,11 +37,33 @@ public class Company {
     private String internetShop;
     @Column(name = "code")
     private Integer code;
-    @Column(name = "label")
-    private byte[] label;
+
+ //   private byte[] label;
+
+    @Column(name = "label_path")
+    private String label_path;
 
     @OneToOne(mappedBy = "company")
     private User user;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    private List<Share> shares;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<Share> getShares() {
+        return shares;
+    }
+
+    public void setShares(List<Share> shares) {
+        this.shares = shares;
+    }
 
     public String getAddress() {
         return address;
@@ -70,6 +93,14 @@ public class Company {
         return code;
     }
 
+    public String getLabel_path() {
+        return label_path;
+    }
+
+    public void setLabel_path(String label_path) {
+        this.label_path = label_path;
+    }
+
     public void setCode(Integer code) {
         this.code = code;
     }
@@ -90,11 +121,11 @@ public class Company {
         this.login = login;
     }
 
-    public byte[] getLabel() {
-        return label;
-    }
-
-    public void setLabel(byte[] label) {
-        this.label = label;
-    }
+//    public byte[] getLabel() {
+//        return label;
+//    }
+//
+//    public void setLabel(byte[] label) {
+//        this.label = label;
+//    }
 }

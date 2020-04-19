@@ -3,9 +3,10 @@ package com.sergo.wic.service;
 import com.sergo.wic.entities.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
-    User findById(long id);
+    Optional<User> findById(long id);
     User findByLogin(String login);
     User findByPhone(String phone);
     void save(User user);

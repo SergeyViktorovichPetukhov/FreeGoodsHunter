@@ -36,7 +36,7 @@
                         <form th:action="@{/admin/refuse}" th:object="${registration}" th:method="POST">
                             <input type="text" th:placeholder="'enter reason'" name="reason" />
                             <input type="hidden" name="id" th:value="${registration.userId}">
-                            <input type="submit" value="refuse" />
+                            <input type="submit" value="cancel" />
                         </form>
                         </td>
                     </tr>
@@ -45,29 +45,50 @@
             </div>
         </div>
 
-        <div class="tab-label">
+        <div class="color-palette-region">
             <h3>Users list</h3>
-            <table style="background-color: bisque ; border: 3px ; ">
-                <thead>
-                <tr>
-                    <th>User id</th>
-                    <th>email</th>
-                </tr>
+            <table th:each="user : *{users}">
+
+                <thead th:if="${!user.isConfirmed()}">
+                    <tr width="500px">
+                        <th>User #</th>
+                        <th>email</th>
+                    </tr>
                 </thead>
-                <tbody>
-                <tr th:each="user : *{users}">
-                    <td th:id="userId">
-                        <a th:href="@{/admin/show/{id}(id=${user.id})}"/>
-                        <div th:text="${user.getId()}"></div>
-                    </td>
-                    <td>
-                        <a th:href="@{/admin/show/{id}(id=${user.id})}"/>
-                        <div th:text="${user.getEmail()}"></div>
-                    </td>
-
-                <!--    ${String.valueOf(${user.getId()})}    -->
+                <tbody th:if="${!user.isConfirmed()}">
+                    <tr>
+                        <td width="150" th:id="userId">
+                            <a th:href="@{/admin/show/{id}(id=${user.id})}"/>
+                            <div th:text="${user.getId()}"></div>
+                        </td>
+                        <td width="350">
+                            <a th:href="@{/admin/show/{id}(id=${user.id})}"/>
+                            <div th:text="${user.getEmail()}"></div>
+                        </td>
 
                 </tr>
+                </tbody>
+
+                <thead th:if="${user.isConfirmed()}">
+                    <tr width="500px">
+                        <th>Shareholder #</th>
+                        <th>email</th>
+                    </tr>
+                </thead>
+                <tbody th:if="${user.isConfirmed()}">
+
+                    <tr>
+                        <td width="150px" th:id="userId">
+                            <a th:href="@{/admin/show/{id}(id=${user.id})}"/>
+                            <div th:text="${user.getId()}"></div>
+                        </td>
+                        <td width="350px">
+                            <a th:href="@{/admin/show/{id}(id=${user.id})}"/>
+                            <div th:text="${user.getEmail()}"></div>
+                        </td>
+
+                    </tr>
+
                 </tbody>
             </table>
         </div>

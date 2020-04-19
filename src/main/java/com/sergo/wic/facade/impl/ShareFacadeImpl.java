@@ -1,16 +1,21 @@
 package com.sergo.wic.facade.impl;
 
 import com.sergo.wic.converter.ShareConverter;
+import com.sergo.wic.dto.Response;
 import com.sergo.wic.dto.SharesResponse;
 import com.sergo.wic.dto.ShortShareInfoDto;
 import com.sergo.wic.dto.entity.CreateShareDto;
 import com.sergo.wic.dto.entity.ShareDto;
+import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.entities.ShareState;
+import com.sergo.wic.entities.User;
 import com.sergo.wic.facade.ShareFacade;
-import com.sergo.wic.repository.AddressRepository;
+//import com.sergo.wic.repository.AddressRepository;
 import com.sergo.wic.repository.ItemRepository;
+import com.sergo.wic.service.CompanyService;
 import com.sergo.wic.service.ShareService;
+import com.sergo.wic.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +25,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 @Component
 public class ShareFacadeImpl implements ShareFacade {
@@ -40,23 +49,47 @@ public class ShareFacadeImpl implements ShareFacade {
     private ItemRepository itemRepository;
 
     @Autowired
-    private AddressRepository addressRepository;
+    private UserService userService;
+
+    @Autowired
+    private CompanyService companyService;
+
+//    @Autowired
+//    private AddressRepository addressRepository;
 
     @Autowired
     private Environment env;
 
     @Override
     public ShareDto saveShare(final CreateShareDto createShareDto) {
-        Share share = shareConverter.convertToModel(createShareDto);
-        share.setDate(new Timestamp(System.currentTimeMillis()));
-        addressRepository.save(share.getPlaceAddress());
-        shareService.saveShare(share);
-        share.getItems().forEach(itemModel -> {
-            itemModel.setShare(share);
-            itemRepository.save(itemModel);
-        });
 
+        final Share share = shareConverter.convertToModel(createShareDto);
+        final User user = userService.findByLogin(createShareDto.getLogin());
+
+        Company company = user.getCompany();
+        for(Share share1 : company.getShares()){
+            System.out.println(share1.getDate() + " share get date");
+        }
+        share.setShareId(user.getEmail() + " "
+                       + LocalDate.now().toString() + " #"
+                       + user.getSharesCount(share));
+
+        company.getShares().add(share);
+        share.setCompany(company);
+        shareService.saveShare(share);
+        share.getItems().forEach(item -> {
+            item.setShare(share);
+            itemRepository.save(item);
+        });
         return shareConverter.convertToDto(share);
+    }
+
+    @Override
+    public Response deleteShare(String shareId) {
+        if (shareService.deleteShare(shareId)){
+            return new Response(true,0);
+        }
+        else return new Response(false,1,"no such share");
     }
 
     @Override
@@ -95,4 +128,5 @@ public class ShareFacadeImpl implements ShareFacade {
         }
         return sharesResponse;
     }
+
 }
