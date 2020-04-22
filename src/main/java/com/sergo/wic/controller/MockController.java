@@ -1,6 +1,6 @@
 package com.sergo.wic.controller;
 
-import com.sergo.wic.dto.*;
+import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.facade.CompanyFacade;
 import com.sergo.wic.facade.ShareFacade;
 import com.sergo.wic.facade.UserFacade;

@@ -1,6 +1,6 @@
-package com.sergo.wic.dto;
+package com.sergo.wic.dto.Response;
 
-import com.sergo.wic.dto.entity.ShareDto;
+import com.sergo.wic.dto.ShareDto;
 
 public class FullShareResponse extends Response {
 

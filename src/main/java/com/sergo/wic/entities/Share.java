@@ -6,7 +6,12 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "shares")
+@Table(name = "shares",
+       indexes = {
+       @Index(name = "SHARE_ID_INDEX",
+              columnList = "share_id")
+          }
+)
 public class Share {
 
     public Share(){
@@ -21,7 +26,7 @@ public class Share {
     @Column(name = "share_id")
     private String shareId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id", referencedColumnName = "id" )
     private Company company;
 
@@ -34,17 +39,17 @@ public class Share {
     @Column(name = "product_name")
     private String productName;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "productDescription")
+    private String productDescription;
+
+    @Column(name = "link_on_product")
+    private String linkOnProduct;
 
     @Column(name = "count_of_product")
-    private int countOfProduct;
+    private Integer countOfProduct;
 
     @Column(name = "product_image_id")
     private Long productImageId;
-
-    @Column(name = "link_on_product_url")
-    private String linkOnProductUrl;
 
     @Column(name = "product_price")
     private double productPrice;
@@ -59,23 +64,23 @@ public class Share {
     private Integer afterShareDuration;
 
     @Column(name = "color")
-    private String color;
+    private Integer color;
 
     @Column(name = "picked_items_count")
-    private int pickedItemsCount;
+    private Integer pickedItemsCount;
 
     @Column(name = "all_items_count")
-    private int allItemsCount;
+    private Integer allItemsCount;
 
-    @Column(name = "code_for_winner")
-    private String codeForWinner;
+    @Column(name = "code")
+    private String code;
 
     @Column(name = "date")
     private Timestamp date;
 
 
     @Column(name = "status")
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private ShareState status;
 
     @Column(name = "creation_status")
@@ -85,8 +90,11 @@ public class Share {
     @Column(name = "message_for_user")
     private String messageForUser;
 
-    @OneToMany(mappedBy = "share")
+    @OneToMany(mappedBy = "share",fetch = FetchType.EAGER)
     private List<Item> items;
+
+//    @OneToMany(mappedBy = "sharesId",fetch = FetchType.EAGER)
+//    private List<Item> items;
 
     @Column(name = "place_country")
     private String placeCountry;
@@ -96,6 +104,14 @@ public class Share {
 
     @Column (name = "place_city")
     private String placeCity;
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "users_shares",
+            joinColumns = { @JoinColumn(name = "share_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id") }
+    )
+    private List<User> users;
 
 //    @ManyToOne
 //    @JoinColumn(name = "place_address_id", referencedColumnName = "id")
@@ -108,6 +124,27 @@ public class Share {
 //    public void setUser(User user) {
 //        this.user = user;
 //    }
+
+
+    public void setCountOfProduct(Integer countOfProduct) {
+        this.countOfProduct = countOfProduct;
+    }
+
+    public void setPickedItemsCount(Integer pickedItemsCount) {
+        this.pickedItemsCount = pickedItemsCount;
+    }
+
+    public void setAllItemsCount(Integer allItemsCount) {
+        this.allItemsCount = allItemsCount;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
 
     public String getLogin() {
         return login;
@@ -197,12 +234,12 @@ public class Share {
         this.shareId = shareId;
     }
 
-    public String getDescription() {
-        return description;
+    public String getProductDescription() {
+        return productDescription;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
     }
 
     public int getCountOfProduct() {
@@ -229,12 +266,12 @@ public class Share {
         this.productName = productName;
     }
 
-    public String getLinkOnProductUrl() {
-        return linkOnProductUrl;
+    public String getLinkOnProduct() {
+        return linkOnProduct;
     }
 
-    public void setLinkOnProductUrl(String linkOnProductUrl) {
-        this.linkOnProductUrl = linkOnProductUrl;
+    public void setLinkOnProduct(String linkOnProduct) {
+        this.linkOnProduct = linkOnProduct;
     }
 
     public double getProductPrice() {
@@ -269,11 +306,11 @@ public class Share {
         this.afterShareDuration = afterShareDuration;
     }
 
-    public String getColor() {
+    public Integer getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(Integer color) {
         this.color = color;
     }
 
@@ -293,12 +330,12 @@ public class Share {
         this.allItemsCount = allItemsCount;
     }
 
-    public String getCodeForWinner() {
-        return codeForWinner;
+    public String getCode() {
+        return code;
     }
 
-    public void setCodeForWinner(String codeForWinner) {
-        this.codeForWinner = codeForWinner;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Timestamp getDate() {
@@ -347,28 +384,12 @@ public class Share {
         if (o == null || getClass() != o.getClass()) return false;
         Share that = (Share) o;
         return id == that.id &&
-                countOfProduct == that.countOfProduct &&
-                Double.compare(that.productPrice, productPrice) == 0 &&
-                pickedItemsCount == that.pickedItemsCount &&
-                allItemsCount == that.allItemsCount &&
-                Objects.equals(description, that.description) &&
-                Objects.equals(productImageId, that.productImageId) &&
-                Objects.equals(productName, that.productName) &&
-                Objects.equals(linkOnProductUrl, that.linkOnProductUrl) &&
-                Objects.equals(announcementDuration, that.announcementDuration) &&
-                Objects.equals(shareDuration, that.shareDuration) &&
-                Objects.equals(afterShareDuration, that.afterShareDuration) &&
-                Objects.equals(color, that.color) &&
-                Objects.equals(codeForWinner, that.codeForWinner) &&
-                Objects.equals(date, that.date) &&
-                Objects.equals(status, that.status);
-//                &&
-//                Objects.equals(companyId, that.companyId);
+                shareId.equals(that.getShareId());
     }
 
     @Override public int hashCode() {
-        return Objects.hash(id, description, countOfProduct, productImageId, productName, linkOnProductUrl,
-                productPrice, announcementDuration, shareDuration, afterShareDuration, color, pickedItemsCount,
-                allItemsCount, codeForWinner, date, status);
+        return Objects.hash( countOfProduct, productPrice, announcementDuration, shareDuration,
+                            afterShareDuration, pickedItemsCount, allItemsCount);
+
     }
 }

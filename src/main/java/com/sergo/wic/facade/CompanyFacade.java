@@ -1,7 +1,7 @@
 package com.sergo.wic.facade;
 
-import com.sergo.wic.dto.CompanyResponse;
-import com.sergo.wic.dto.Response;
+import com.sergo.wic.dto.Response.CompanyResponse;
+import com.sergo.wic.dto.Response.Response;
 
 public interface CompanyFacade {
     CompanyResponse getShares(String login);

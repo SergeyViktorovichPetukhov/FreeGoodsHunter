@@ -1,4 +1,6 @@
-package com.sergo.wic.dto;
+package com.sergo.wic.dto.Response;
+
+import com.sergo.wic.dto.AllItemsDto;
 
 import java.util.ArrayList;
 import java.util.List;

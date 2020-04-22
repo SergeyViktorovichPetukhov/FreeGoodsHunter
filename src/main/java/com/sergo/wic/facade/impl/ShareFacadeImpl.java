@@ -1,11 +1,11 @@
 package com.sergo.wic.facade.impl;
 
 import com.sergo.wic.converter.ShareConverter;
-import com.sergo.wic.dto.Response;
-import com.sergo.wic.dto.SharesResponse;
+import com.sergo.wic.dto.Response.Response;
+import com.sergo.wic.dto.Response.SharesResponse;
 import com.sergo.wic.dto.ShortShareInfoDto;
-import com.sergo.wic.dto.entity.CreateShareDto;
-import com.sergo.wic.dto.entity.ShareDto;
+import com.sergo.wic.dto.CreateShareDto;
+import com.sergo.wic.dto.ShareDto;
 import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.entities.ShareState;
@@ -24,12 +24,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
 
 @Component
 public class ShareFacadeImpl implements ShareFacade {
@@ -64,7 +60,7 @@ public class ShareFacadeImpl implements ShareFacade {
     public ShareDto saveShare(final CreateShareDto createShareDto) {
 
         final Share share = shareConverter.convertToModel(createShareDto);
-        final User user = userService.findByLogin(createShareDto.getLogin());
+        final User user = userService.findByLogin(createShareDto.getLogin()).get();
 
         Company company = user.getCompany();
         for(Share share1 : company.getShares()){

@@ -1,6 +1,5 @@
-package com.sergo.wic.dto.entity;
+package com.sergo.wic.dto;
 
-import com.sergo.wic.dto.AddressDto;
 import com.sergo.wic.entities.ShareState;
 
 import javax.validation.Valid;

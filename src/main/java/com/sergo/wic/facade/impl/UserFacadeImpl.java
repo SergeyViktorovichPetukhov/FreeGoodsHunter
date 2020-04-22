@@ -1,6 +1,7 @@
 package com.sergo.wic.facade.impl;
 
 import com.sergo.wic.dto.*;
+import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.Registration;
 import com.sergo.wic.entities.User;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -58,12 +60,18 @@ public class UserFacadeImpl implements UserFacade {
     private RegistrationService registrationService;
 
     {
+       byte[] photo = null;
+       try {
+           photo = Files.readAllBytes(Paths.get("images/cocacola-logo.png"));
+       }catch (IOException e){
+
+       }
         users = Arrays.asList(
-                new UserDto("goarmor@gmail.com", 4, "Dima"),
-                new UserDto("yarus@gmail.com", 6, "Yaroslav"),
-                new UserDto("sergiy@gmail.com", 10, "Sergiy"),
-                new UserDto("sasha@gmail.com", 15, "Sasha"),
-                new UserDto("user@gmail.com", 16, "Michail")
+                new UserDto("sergeyp3d@rambler.ru",photo, 4, 6),
+                new UserDto("yarus@gmail.com",photo, 6, 8),
+                new UserDto("sergiy@gmail.com",photo, 10, 12),
+                new UserDto("sasha@gmail.com",photo, 15, 17),
+                new UserDto("user@gmail.com",photo, 16, 25)
         );
         contacts = Arrays.asList(
                 new ContactDto(TypeContact.PHONE_NUMBER, "+38415426785"),
@@ -104,8 +112,8 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public Boolean isLoginValid(final String login) {
-        User model = userService.findByLogin(login);
-        return !StringUtils.isEmpty(login) && (model.getLogin().equals(login) & model.isConfirmed());
+        User model = userService.findByLogin(login).get();
+        return !StringUtils.isEmpty(login) & (model.getLogin().equals(login) & model.isHasCompany());
     }
 
     public static Boolean isShareIdValid(final String shareId) {
@@ -113,7 +121,7 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     private boolean checkCompanyOwner(String login){
-        return userService.findByLogin(login).isConfirmed();
+        return userService.findByLogin(login).get().isHasCompany();
     }
 
     private UserProfileResponse getUserProfileTestData(final Boolean valid) {
@@ -189,41 +197,35 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public Response registerCompany(final String login, final String address, final String phone, String internetShop, Long userId , int code) {
-        //    int code = ThreadLocalRandom.current().nextInt(CODE_LOWER_LIMIT, CODE_UPPER_LIMIT);
-        if(code == 1234) {
-            User user = userService.findByLogin(login);
-                registrationService.save(new Registration(login, address, phone, userId,true));
-                    Company company = new Company(login, address, phone, code, internetShop);
-                    user.setCompany(company);
-                companyService.save(company);
-            userService.save(user);
-            return new Response(true, 0);
-        }
-        //    emailService.sendSimpleMessage(login, "Registration code", "Your registration code: " + code);
-        return new Response(false,1);
+    public Response registerCompany(final String login, final String phone) {
+        String code = RandomString.getAlphaNumericString(6);
+        System.out.println("random code: " + code);
+        registrationService.save(new Registration(login,code , phone, userService.findByPhone(phone).getId(),true));
+    //    emailService.sendSimpleMessage(login, "Registration code", "Your registration code: " + code);
+        return new Response(true, 0);
     }
 
     @Override
-    public Response verifyCode(final String phone, final Integer code) {
+    @Transactional
+    public Response verifyCode(String login, String code, String address, String phone) {
 
-        Company company = companyService.findByPhone(phone);
         User user = userService.findByPhone(phone);
-
-        if (Objects.isNull(company)) {
-            return new Response(false, 1);
-        } else if (!company.getCode().equals(code) && !company.getPhone().equals(phone)) {
-            return new Response(false, 2);
+        Registration registration = null;
+        try {
+            registration = registrationService
+                              .findByCodeAndLogin(code, login)
+                                  .orElseThrow( () -> new RuntimeException());
+        }catch (RuntimeException e){
+            return new Response(false,1,"no such registration");
         }
-
-        companyService.save(company);
-        user.setConfirmed(true);
-        user.setCompany(company);
-        userService.save(user);
-        registrationService.deleteByPhone(phone);
-//        CompanyResponse response = new CompanyResponse();
-//        response.setContacts();
-        return new Response(true,0);
+        if (registration.getCode().equals(code) & user.getLogin().equals(login)){
+            Company company = new Company(login,address,phone,code);
+                company.setUser(user);
+                companyService.save(company);
+                    registrationService.deleteByPhone(phone);
+            return new Response(true,0);
+        }
+        return new Response(false,2,"something wrong");
     }
 
     private Boolean isValidRatingOfUsersRequest(final String country, final String region,
@@ -301,5 +303,21 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public Map<String, List<ContactDto>> getUserContacts() {
         return userContacts;
+    }
+
+    public static class RandomString {
+        static String getAlphaNumericString(int n)
+        {
+            String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    + "0123456789"
+                    + "abcdefghijklmnopqrstuvxyz";
+            StringBuilder sb = new StringBuilder(n);
+            for (int i = 0; i < n; i++) {
+                int index = (int)(AlphaNumericString.length() * Math.random());
+                sb.append(AlphaNumericString
+                        .charAt(index));
+            }
+            return sb.toString();
+        }
     }
 }

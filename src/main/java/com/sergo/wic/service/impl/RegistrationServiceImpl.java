@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
@@ -31,6 +32,11 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
+    public Optional<Registration> findByCodeAndLogin(String code, String login) {
+        return repository.findByCodeAndLogin(code,login);
+    }
+
+    @Override
     public boolean deleteByLogin(String login) {
         return repository.deleteByLogin(login);
     }
@@ -38,8 +44,12 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     @Transactional
     public boolean deleteByPhone(String phone) {
-        return repository.deleteByPhone(phone);
-
+        Registration registration = repository.findByPhone(phone);
+        if (registration != null){
+            repository.deleteById(registration.getId());
+            return true;
+        }
+        return false;
     }
 
     @Override

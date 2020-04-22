@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service("shareService")
 public class ShareServiceImpl implements ShareService {
@@ -54,12 +55,32 @@ public class ShareServiceImpl implements ShareService {
     }
 
     @Override
+    public Optional<Share> findByShareId(String shareId) {
+        return shareRepository.findByShareId(shareId);
+    }
+
+    @Override
     @Transactional
     public boolean deleteShare(String shareId) {
-        Share share = shareRepository.findByShareId(shareId);
+        Share share = shareRepository.findByShareId(shareId).get();
         if (share != null){
             shareRepository.deleteById(share.getId());
             return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Share findByLogin(String login) {
+        Optional<Share> share = shareRepository.findByLogin(login);
+        return  share.orElseGet(null);
+    }
+
+    @Override
+    public boolean checkLoginAndShare(String login, String share) {
+        Optional<Share> share1 = shareRepository.findByLogin(login);
+        if (share1.isPresent()){
+            return share.equals(share1.get().getShareId());
         }
         return false;
     }

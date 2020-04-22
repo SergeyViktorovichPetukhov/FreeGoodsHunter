@@ -1,9 +1,7 @@
 package com.sergo.wic.controller;
 
-import com.sergo.wic.dto.Response;
-import com.sergo.wic.dto.ShareResponse;
-import com.sergo.wic.dto.entity.CreateShareDto;
-import com.sergo.wic.dto.entity.ImageDto;
+import com.sergo.wic.dto.Response.Response;
+import com.sergo.wic.dto.ImageDto;
 import com.sergo.wic.facade.ImageFacade;
 import com.sergo.wic.facade.ShareFacade;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,5 +1,7 @@
 package com.sergo.wic.entities;
 
+import org.springframework.stereotype.Indexed;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -9,10 +11,10 @@ public class Registration {
 
     public Registration(){}
 
-    public Registration(String login, String address, String phone) {
+    public Registration(String login, String phone, String code) {
         this.login = login;
-        this.address = address;
         this.phone = phone;
+        this.code = code;
     }
 
     public Registration(String login, String address, String phone, Long userId) {
@@ -22,9 +24,9 @@ public class Registration {
         this.userId = userId;
     }
 
-    public Registration(String login, String address, String phone, Long userId, boolean isNew) {
+    public Registration(String login, String code, String phone, Long userId, boolean isNew) {
         this.login = login;
-        this.address = address;
+        this.code = code;
         this.phone = phone;
         this.userId = userId;
         this.isNew= isNew;

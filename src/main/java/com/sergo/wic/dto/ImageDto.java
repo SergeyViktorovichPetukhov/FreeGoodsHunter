@@ -1,4 +1,4 @@
-package com.sergo.wic.dto.entity;
+package com.sergo.wic.dto;
 
 public class ImageDto {
 

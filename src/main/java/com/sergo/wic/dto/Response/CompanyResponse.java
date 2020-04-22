@@ -1,5 +1,9 @@
-package com.sergo.wic.dto;
+package com.sergo.wic.dto.Response;
 
+import com.sergo.wic.dto.AddressDto;
+import com.sergo.wic.dto.ContactDto;
+import com.sergo.wic.dto.ShareForCompanyDto;
+import com.sergo.wic.dto.TypeContact;
 import com.sergo.wic.entities.ShareState;
 
 import java.util.List;

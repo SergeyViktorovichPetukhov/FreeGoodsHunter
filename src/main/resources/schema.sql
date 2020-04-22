@@ -7,11 +7,12 @@ CREATE TABLE users
 (
     id                    BIGSERIAL     NOT NULL,
     login                 VARCHAR(30)   NOT NULL      UNIQUE,
-    win_count             INTEGER,
+    all_items_count       INTEGER,
+    picked_items_count    INTEGER,
     email                 VARCHAR(30),
     phone                 VARCHAR(9),
     name                  VARCHAR(30),
-    is_confirmed          BOOLEAN       DEFAULT FALSE,
+    has_company           BOOLEAN       DEFAULT FALSE,
     company_id            INTEGER
 );
 
@@ -19,7 +20,7 @@ ALTER TABLE users
     ADD CONSTRAINT users_PK PRIMARY KEY (id);
 
 
-CREATE TABLE shares
+CREATE TABLE IF NOT EXISTS shares
 (
     id                    BIGSERIAL     NOT NULL,
     share_id              VARCHAR(50),
@@ -27,18 +28,18 @@ CREATE TABLE shares
     login                 VARCHAR(30)   NOT NULL,
     product_photo         VARCHAR(40)   NOT NULL,
     product_name          VARCHAR(100),
-    description           VARCHAR(300),
+    product_description   VARCHAR(300),
     count_of_product      INTEGER,
     product_image_id      INTEGER,
-    link_on_product_url   VARCHAR(100),
+    link_on_product       VARCHAR(50),
     product_price         FLOAT         NOT NULL,
     announcement_duration INTEGER,
     share_duration        INTEGER,
     after_share_duration  INTEGER,
-    color                 VARCHAR(40)   NOT NULL,
+    color                 INTEGER       NOT NULL,
     picked_items_count    INTEGER       NOT NULL,
     all_items_count       INTEGER       NOT NULL,
-    code_for_winner       VARCHAR(100),
+    code                  VARCHAR(15),
     date                  TIMESTAMP     NOT NULL,
     status                VARCHAR(10),
     creation_status       VARCHAR(10),
@@ -57,7 +58,7 @@ CREATE TABLE registrations
 (
     id                  BIGSERIAL     NOT NULL,
     login               VARCHAR(30)   NOT NULL   UNIQUE,
-    address             VARCHAR(30)   NOT NULL,
+    address             VARCHAR(30),
     phone               VARCHAR(10)   NOT NULL   UNIQUE,
     code                VARCHAR(30),
     is_new              BOOLEAN,
@@ -95,8 +96,8 @@ ALTER TABLE share_statuses
 CREATE TABLE items
 (
     id         BIGSERIAL  NOT NULL,
-    lon  FLOAT      NOT NULL,
-    lat   FLOAT      NOT NULL,
+    lon        FLOAT      NOT NULL,
+    lat        FLOAT      NOT NULL,
     share_id   INTEGER    NOT NULL,
     user_id    INTEGER
 );
@@ -116,20 +117,26 @@ CREATE TABLE address
 ALTER TABLE address
   ADD CONSTRAINT address_PK PRIMARY KEY (id);
 
-CREATE TABLE companies
+CREATE TABLE IF NOT EXISTS companies
 (
     id            BIGSERIAL    NOT NULL,
     login         VARCHAR(50)  NOT NULL,
-    address       VARCHAR(50)  NOT NULL,
+    address       VARCHAR(50),
     phone         VARCHAR(50)  NOT NULL,
     internet_shop VARCHAR(100),
-    code          INTEGER,
+    code          VARCHAR(40),
     label_path    VARCHAR(50),
     user_id       INTEGER
 );
 
 ALTER TABLE companies
     ADD CONSTRAINT companies_PK PRIMARY KEY (id);
+
+-- create table users_shares
+-- (
+--     user_id INTEGER not null,
+--     share_id INTEGER not null
+-- );
 
 -----------------------------------------------------------------------------------
 -------------------------------Foreign keys----------------------------------------
@@ -138,6 +145,15 @@ ALTER TABLE companies
 --     ADD CONSTRAINT user_company_FK FOREIGN KEY  (company_id)
 --         REFERENCES companies(id);
 -- --
+
+-- alter table users_shares
+--     add constraint shares_users_FK foreign key (share_id) references shares(id);
+--
+-- alter table users_shares
+--     add constraint users_shares_FK foreign key (user_id) references users(id);
+
+alter table items
+    add constraint items_users_FK foreign key (user_id) references users(id);
 
 ALTER TABLE shares
     ADD CONSTRAINT company_share_FK FOREIGN KEY (company_id)
@@ -163,7 +179,25 @@ REFERENCES shares
     id
   ) ON DELETE CASCADE;
 
+ALTER TABLE items
+    ADD CONSTRAINT items_user_FK FOREIGN KEY
+        (
+         user_id
+            )
+        REFERENCES users
+            (
+             id
+                ) ON DELETE CASCADE;
+
 ALTER TABLE registrations
     ADD CONSTRAINT registrations_FK FOREIGN KEY (user_id) REFERENCES users(id);
 
 COMMIT;
+
+
+-----------------------------------------------------------------------
+------------------------------------------------------------------------
+--------------       SEQUENCES    --------------------------------------
+
+CREATE SEQUENCE HIBERNATE_SEQUENCE START WITH 100 INCREMENT BY 1;
+

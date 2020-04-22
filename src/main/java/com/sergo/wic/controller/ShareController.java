@@ -1,26 +1,20 @@
 package com.sergo.wic.controller;
 
 import com.sergo.wic.converter.ShareConverter;
-import com.sergo.wic.dto.Response;
-import com.sergo.wic.dto.ShareResponse;
-import com.sergo.wic.dto.entity.CreateShareDto;
-import com.sergo.wic.entities.Share;
+import com.sergo.wic.dto.LoginAndShareDto;
+import com.sergo.wic.dto.Response.Response;
+import com.sergo.wic.dto.Response.ShareResponse;
+import com.sergo.wic.dto.CreateShareDto;
 import com.sergo.wic.facade.ImageFacade;
 import com.sergo.wic.facade.ShareFacade;
+import com.sergo.wic.service.ShareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.mail.internet.ContentType;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.io.IOException;
-import java.lang.reflect.Field;
 
 @RestController
 @RequestMapping("/shares")
@@ -33,22 +27,27 @@ public class ShareController {
     private ShareConverter shareConverter;
 
     @Autowired
+    ShareService shareService;
+
+    @Autowired
     private ImageFacade imageFacade;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/publish" , consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/publish" ,consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ShareResponse publicShare( @Valid @RequestBody final CreateShareDto createShareDto
-                                     ,@RequestParam("productPhoto") final byte[] productPhoto) {
-        createShareDto.setProductPhoto(productPhoto);
+                                     ,@RequestPart("productPhoto") MultipartFile productPhoto) {
+        createShareDto.setPhotoProduct(productPhoto);
         return new ShareResponse(shareConverter
                                     .convertToModel(shareFacade.saveShare(createShareDto))
                                          .getShareId());
     }
 
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @DeleteMapping("/cancel")
-    public Response cancelShare(@RequestParam ("login") String login, @RequestParam("share_id") String shareId ) {
-        return shareFacade.deleteShare(shareId);
+    @PostMapping(value = "/cancel", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response cancelShare(@RequestBody LoginAndShareDto dto) {
+        if (shareService.checkLoginAndShare(dto.getLogin(),dto.getShareId()))
+            return shareFacade.deleteShare(dto.getShareId());
+        else return new Response(false,1,"you are not the owner");
     }
 }
 
@@ -56,7 +55,7 @@ public class ShareController {
 
 //        System.out.println(createShareDto.getLogin());
 //                System.out.println(createShareDto.getProductName());
-//                System.out.println(createShareDto.getDescription());
+//                System.out.println(createShareDto.getProductDescription());
 //                System.out.println(createShareDto.getLinkOnProductUrl());
 //                System.out.println(createShareDto.getProductPrice());
 //                System.out.println(createShareDto.getProductCount());

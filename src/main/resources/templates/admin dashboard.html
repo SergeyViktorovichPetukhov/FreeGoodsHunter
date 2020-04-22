@@ -49,13 +49,13 @@
             <h3>Users list</h3>
             <table th:each="user : *{users}">
 
-                <thead th:if="${!user.isConfirmed()}">
+                <thead th:if="${!user.isHasCompany()}">
                     <tr width="500px">
                         <th>User #</th>
                         <th>email</th>
                     </tr>
                 </thead>
-                <tbody th:if="${!user.isConfirmed()}">
+                <tbody th:if="${!user.isHasCompany()}">
                     <tr>
                         <td width="150" th:id="userId">
                             <a th:href="@{/admin/show/{id}(id=${user.id})}"/>
@@ -69,13 +69,13 @@
                 </tr>
                 </tbody>
 
-                <thead th:if="${user.isConfirmed()}">
+                <thead th:if="${user.isHasCompany()}">
                     <tr width="500px">
                         <th>Shareholder #</th>
                         <th>email</th>
                     </tr>
                 </thead>
-                <tbody th:if="${user.isConfirmed()}">
+                <tbody th:if="${user.isHasCompany()}">
 
                     <tr>
                         <td width="150px" th:id="userId">

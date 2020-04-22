@@ -58,7 +58,7 @@ public class AdminController {
         Optional<User> user = userService.findById(Long.valueOf(id));
         model.addAttribute("user",user.get());
         List<Share> shares = null;
-        if (user.isPresent() & user.get().isConfirmed()){
+        if (user.isPresent() & user.get().isHasCompany()){
          shares = user
                     .get()
                        .getCompany()
@@ -105,6 +105,7 @@ public class AdminController {
                                    , @RequestBody String reason){
         Registration registration = registrationService.findByUserId(Long.valueOf(id));
         registration.setReasonOfRefuse(reason);
+        registration.setNew(false);
         registrationService.save(registration);
         return "redirect:/admin/";
     }

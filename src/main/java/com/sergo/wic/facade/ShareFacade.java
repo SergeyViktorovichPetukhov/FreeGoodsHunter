@@ -1,9 +1,9 @@
 package com.sergo.wic.facade;
 
-import com.sergo.wic.dto.Response;
-import com.sergo.wic.dto.SharesResponse;
-import com.sergo.wic.dto.entity.CreateShareDto;
-import com.sergo.wic.dto.entity.ShareDto;
+import com.sergo.wic.dto.Response.Response;
+import com.sergo.wic.dto.Response.SharesResponse;
+import com.sergo.wic.dto.CreateShareDto;
+import com.sergo.wic.dto.ShareDto;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ShareFacade {

@@ -1,4 +1,6 @@
-package com.sergo.wic.dto;
+package com.sergo.wic.dto.Response;
+
+import com.sergo.wic.dto.NoticeDto;
 
 import java.util.List;
 

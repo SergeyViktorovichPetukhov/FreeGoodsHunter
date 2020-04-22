@@ -1,17 +1,22 @@
 package com.sergo.wic.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class UserDto {
     private String login;
-    private Integer winCount;
-    private String name;
+    private byte[] userPhoto;
+    private Integer pickedItemsCount;
+    private Integer allItemsCount;
+
 
     public UserDto() {
     }
 
-    public UserDto(final String login, final Integer winCount, final String name) {
+    public UserDto(String login, byte[] userPhoto, Integer pickedItemsCount, Integer allItemsCount) {
         this.login = login;
-        this.winCount = winCount;
-        this.name = name;
+        this.userPhoto = userPhoto;
+        this.pickedItemsCount = pickedItemsCount;
+        this.allItemsCount = allItemsCount;
     }
 
     public String getLogin() {
@@ -22,19 +27,27 @@ public class UserDto {
         this.login = login;
     }
 
-    public Integer getWinCount() {
-        return winCount;
+    public Integer getPickedItemsCount() {
+        return pickedItemsCount;
     }
 
-    public void setWinCount(final Integer winCount) {
-        this.winCount = winCount;
+    public void setPickedItemsCount(final Integer pickedItemsCount) {
+        this.pickedItemsCount = pickedItemsCount;
     }
 
-    public String getName() {
-        return name;
+    public byte[] getUserPhoto() {
+        return userPhoto;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public void setUserPhoto(byte[] userPhoto) {
+        this.userPhoto = userPhoto;
+    }
+
+    public Integer getAllItemsCount() {
+        return allItemsCount;
+    }
+
+    public void setAllItemsCount(Integer allItemsCount) {
+        this.allItemsCount = allItemsCount;
     }
 }

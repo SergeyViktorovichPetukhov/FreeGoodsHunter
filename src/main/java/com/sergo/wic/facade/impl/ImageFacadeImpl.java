@@ -1,6 +1,6 @@
 package com.sergo.wic.facade.impl;
 
-import com.sergo.wic.dto.entity.ImageDto;
+import com.sergo.wic.dto.ImageDto;
 import com.sergo.wic.entities.Image;
 import com.sergo.wic.facade.ImageFacade;
 import com.sergo.wic.service.ImageService;

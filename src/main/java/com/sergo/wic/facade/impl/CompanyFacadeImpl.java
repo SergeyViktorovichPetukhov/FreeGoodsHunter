@@ -1,8 +1,8 @@
 package com.sergo.wic.facade.impl;
 
 import com.sergo.wic.dto.AddressDto;
-import com.sergo.wic.dto.CompanyResponse;
-import com.sergo.wic.dto.Response;
+import com.sergo.wic.dto.Response.CompanyResponse;
+import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.ShareForCompanyDto;
 import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.ShareState;

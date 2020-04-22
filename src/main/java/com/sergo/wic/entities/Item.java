@@ -4,12 +4,19 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "items")
+@Table(name = "items",
+       indexes = {
+        @Index(name = "SHARE_INDEX",
+               columnList = "share_id"),
+        @Index(name = "USER_INDEX",
+               columnList = "user_id")
+})
 public class Item {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @SequenceGenerator(name = "hibernateSeq", sequenceName = "HIBERNATE_SEQUENCE")
+    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "hibernateSeq")
     private Long id;
 
     @Column(name = "lon")
@@ -21,7 +28,9 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "share_id", referencedColumnName = "id", nullable = false)
     private Share share;
-
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     public Long getId() {
         return id;
@@ -55,6 +64,22 @@ public class Item {
         this.share = share;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    //    public String getSharesId() {
+//        return sharesId;
+//    }
+//
+//    public void setSharesId(String sharesId) {
+//        this.sharesId = sharesId;
+//    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -67,6 +92,6 @@ public class Item {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, lon, lat);
+        return Objects.hash(lon, lat);
     }
 }

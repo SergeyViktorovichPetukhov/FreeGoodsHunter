@@ -31,9 +31,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByLogin(String login){
-        return repository.findByLogin(login)
-                .orElseThrow(() -> new RuntimeException("no such user"));
+    public Optional<User> findByLogin(String login){
+        return repository.findByLogin(login);
     }
 
     @Override
@@ -53,8 +52,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getOne(Long id) {
+        return repository.getOne(id);
+    }
+
+    @Override
     public void confirmRegistration(@NotNull User user) {
-        user.setConfirmed(true);
+        user.setHasCompany(true);
         repository.save(user);
         Registration registration = registrationService.findByUserId(Long.valueOf(user.getId()));
         registration.setNew(false);
@@ -70,7 +74,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUserCompany(Long userId){
         User user = repository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("no such user"));
-        user.setConfirmed(false);
+        user.setHasCompany(false);
         repository.save(user);
 
     }

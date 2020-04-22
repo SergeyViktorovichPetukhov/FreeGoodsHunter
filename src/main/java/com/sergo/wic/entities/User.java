@@ -1,16 +1,18 @@
 package com.sergo.wic.entities;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
-import java.util.stream.Stream;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users"
+//        ,
+//       indexes = {
+//       @Index(name = "LOGIN_INDEX",
+//              columnList = "login")
+//          }
+          )
 public class User {
 
     public User(){}
@@ -21,23 +23,40 @@ public class User {
     private Long id;
     @Column(name = "login")
     private String login;
-    @Column(name = "win_count")
-    private Integer winCount;
+
+    @Column(name = "all_items_count")
+    private Integer allItemsCount;
+    @Column(name = "picked_items_count")
+    private Integer pickedItemsCount;
     @Column(name = "email")
     private String email;
     @Column(name = "phone")
     private String phone;
     @Column(name = "name")
     private String name;
-    @Column(name = "isConfirmed")
-    private boolean isConfirmed;     // if user is a company manager
+    @Column(name = "hasCompany")
+    private boolean hasCompany;     // if user is a company manager
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="company_id", referencedColumnName = "id")
     private Company company;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notification> notifications;
+
+    @ManyToMany(mappedBy = "users")
+    private List<Share> shares;
+
+    @OneToMany(mappedBy = "user")
+    private List<Item> items;
+
+    public List<Share> getShares() {
+        return shares;
+    }
+
+    public void setShares(List<Share> shares) {
+        this.shares = shares;
+    }
 
     public List<Notification> getNotifications() {
         return notifications;
@@ -51,9 +70,9 @@ public class User {
 
     public void setCompany(Company userCompany) { this.company = userCompany; }
 
-    public boolean isConfirmed() { return isConfirmed; }
+    public boolean isHasCompany() { return hasCompany; }
 
-    public void setConfirmed(boolean confirmed) { isConfirmed = confirmed; }
+    public void setHasCompany(boolean hasCompany) { this.hasCompany = hasCompany; }
 
     public String getPhone() {
         return phone;
@@ -87,12 +106,28 @@ public class User {
         this.login = login;
     }
 
-    public Integer getWinCount() {
-        return winCount;
+    public Integer getAllItemsCount() {
+        return allItemsCount;
     }
 
-    public void setWinCount(Integer winCount) {
-        this.winCount = winCount;
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
+    public void setAllItemsCount(Integer allItemsCount) {
+        this.allItemsCount = allItemsCount;
+    }
+
+    public Integer getPickedItemsCount() {
+        return pickedItemsCount;
+    }
+
+    public void setPickedItemsCount(Integer pickedItemsCount) {
+        this.pickedItemsCount = pickedItemsCount;
     }
 
     public String getName() {
@@ -111,7 +146,7 @@ public class User {
               .stream()
                  .filter(share -> (LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)
                                           .isEqual(share.getDate().toLocalDateTime().truncatedTo(ChronoUnit.DAYS))))
-                     .count();
+                     .count() + 1;
     }
 
     @Override
@@ -120,12 +155,10 @@ public class User {
         if (o == null || getClass() != o.getClass()) return false;
         User that = (User) o;
         return id == that.id &&
-                winCount == that.winCount &&
-                Objects.equals(login, that.login) &&
-                Objects.equals(name, that.name);
+                Objects.equals(login, that.login);
     }
 
     @Override public int hashCode() {
-        return Objects.hash(id, winCount, login, name);
+        return Objects.hash(id, login, name);
     }
 }

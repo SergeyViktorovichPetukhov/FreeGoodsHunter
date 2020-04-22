@@ -1,12 +1,10 @@
-package com.sergo.wic.dto.entity;
+package com.sergo.wic.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
@@ -16,7 +14,7 @@ public class CreateShareDto {
     private String login;
 
   //  @NotNull(message = "no image")
-    private byte[] photoProduct;
+    private MultipartFile photoProduct;
 
     @NotBlank(message = "productName must not be blank")
     private String productName;
@@ -27,6 +25,8 @@ public class CreateShareDto {
     private String linkOnProductUrl;
 
     private Double productPrice;
+
+    private Integer pickedItemsCount;
 
     @Positive(message = "productCount must be greater than 0")
     private Integer productCount;;
@@ -64,6 +64,22 @@ public class CreateShareDto {
 
 
     public CreateShareDto() {
+    }
+
+    public MultipartFile getPhotoProduct() {
+        return photoProduct;
+    }
+
+    public void setPhotoProduct(MultipartFile photoProduct) {
+        this.photoProduct = photoProduct;
+    }
+
+    public Integer getPickedItemsCount() {
+        return pickedItemsCount;
+    }
+
+    public void setPickedItemsCount(Integer pickedItemsCount) {
+        this.pickedItemsCount = pickedItemsCount;
     }
 
     public String getDescription() {
@@ -153,14 +169,6 @@ public class CreateShareDto {
 
     public void setLogin(String login) {
         this.login = login;
-    }
-
-    public byte[] getProductPhoto() {
-        return photoProduct;
-    }
-
-    public void setProductPhoto(byte[] photoProduct) {
-        this.photoProduct = photoProduct;
     }
 
     public String getPlaceCountry() {

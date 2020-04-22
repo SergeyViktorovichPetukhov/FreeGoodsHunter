@@ -5,9 +5,13 @@ import com.sergo.wic.entities.Share;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ShareService {
     Share findById(long id);
+    Share findByLogin(String login);
+    boolean checkLoginAndShare(String login, String share);
+    Optional<Share> findByShareId(String shareId);
     List<Share> findAll();
     Share saveShare(Share share);
     boolean deleteShare(String shareId);

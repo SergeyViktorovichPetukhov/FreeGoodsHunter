@@ -1,4 +1,4 @@
-package com.sergo.wic.dto;
+package com.sergo.wic.dto.Response;
 
 public class ShareResponse extends Response {
 

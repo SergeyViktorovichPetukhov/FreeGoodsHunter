@@ -4,18 +4,19 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+
 @Table(name = "companies")
 public class Company {
     public Company(){}
 
-    public Company(String login, String address, String phone, Integer code) {
+    public Company(String login, String address, String phone, String code) {
         this.login = login;
         this.address = address;
         this.phone = phone;
         this.code = code;
     }
 
-    public Company(String login, String address, String phone, Integer code, String internetShop) {
+    public Company(String login, String address, String phone, String code, String internetShop) {
         this.login = login;
         this.address = address;
         this.phone = phone;
@@ -24,8 +25,8 @@ public class Company {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @SequenceGenerator(name = "hibernateSeq", sequenceName = "HIBERNATE_SEQUENCE")
+    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "hibernateSeq")
     private long id;
     @Column(name = "login")
     private String login;
@@ -36,14 +37,14 @@ public class Company {
     @Column(name = "internetShop")
     private String internetShop;
     @Column(name = "code")
-    private Integer code;
+    private String code;
 
  //   private byte[] label;
 
     @Column(name = "label_path")
     private String label_path;
 
-    @OneToOne(mappedBy = "company")
+    @OneToOne(mappedBy = "company", fetch = FetchType.EAGER)
     private User user;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
@@ -89,7 +90,7 @@ public class Company {
         this.internetShop = internetShop;
     }
 
-    public Integer getCode() {
+    public String getCode() {
         return code;
     }
 
@@ -101,7 +102,7 @@ public class Company {
         this.label_path = label_path;
     }
 
-    public void setCode(Integer code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

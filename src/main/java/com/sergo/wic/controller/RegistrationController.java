@@ -1,6 +1,7 @@
 package com.sergo.wic.controller;
 
-import com.sergo.wic.dto.Response;
+import com.sergo.wic.dto.RegistrationDto;
+import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.VerifyCodeDto;
 import com.sergo.wic.entities.User;
 import com.sergo.wic.facade.CompanyFacade;
@@ -28,24 +29,24 @@ public class RegistrationController {
     @Autowired
     private RegistrationService registrationService;
 
-    @GetMapping(value = "/registrationCompany", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/registrationCompany", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Response generateCode(@RequestParam ("login") String login,
-                                 @RequestParam ("address") String address,
-                                 @RequestParam ("phone") String phone,
-                                 @RequestParam ("code") String code) {
-        User user;
-        try{
-            user = userService.findByLogin(login);
+    public Response generateCode(@RequestBody RegistrationDto registrationDto) {
+        try {
+            User user = userService.findByLogin(registrationDto.getLogin())
+                                   .orElseThrow(() -> new RuntimeException("no such user"));
         }catch (RuntimeException e){
             return new Response(false,0,"no such user");
         }
-        return userFacade.registerCompany(login, address, phone,null, user.getId(),Integer.valueOf(code));
+        return userFacade.registerCompany(registrationDto.getLogin(), registrationDto.getPhone());
     }
 
-    @PostMapping("/verifyCode")
+    @PostMapping(value = "/verifyCode", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Response verifyCode(@RequestBody VerifyCodeDto verifyCodeDto) {
-        return userFacade.verifyCode(verifyCodeDto.getPhone(), verifyCodeDto.getCode());
+        return userFacade.verifyCode(verifyCodeDto.getLogin(),
+                                     verifyCodeDto.getCode(),
+                                     verifyCodeDto.getAddress(),
+                                     verifyCodeDto.getPhone());
     }
 }

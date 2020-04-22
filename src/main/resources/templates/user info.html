@@ -19,7 +19,7 @@
             <tbody>
             <tr th:object="${user}">
                 <td th:text="${user.getLogin()}" /></td>
-                <td th:text="${user.isConfirmed()}"/></td>
+                <td th:text="${user.isHasCompany()}"/></td>
                 <th:form>
                     <td>
                         <a th:href="@{/admin/delete/{id}(id=${user.id})}"/>
@@ -36,7 +36,7 @@
                 <tr>
                     <th> login</th>
                     <th> product name</th>
-                    <th> description</th>
+                    <th> productDescription</th>
                     <th> linkOnProductUrl</th>
                     <th> price</th>
                     <th> count</th>
@@ -55,8 +55,8 @@
                     th:if="${share.createStatus == T(com.sergo.wic.entities.CreateShareState).CREATED }">
                     <td th:text="${share.getLogin()}" /></td>
                     <td th:text="${share.getProductName()}"/></td>
-                    <td th:text="${share.getDescription()}" /></td>
-                    <td th:text="${share.getLinkOnProductUrl()}"/></td>
+                    <td th:text="${share.getProductDescription()}" /></td>
+                    <td th:text="${share.getLinkOnProduct()}"/></td>
                     <td th:text="${share.getProductPrice()}" /></td>
                     <td th:text="${share.getCountOfProduct()}"/></td>
                     <td th:text="${share.getAnnouncementDuration()}" /></td>
