@@ -5,6 +5,7 @@ import com.sergo.wic.dto.LoginAndShareDto;
 import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.Response.ShareResponse;
 import com.sergo.wic.dto.CreateShareDto;
+import com.sergo.wic.entities.Share;
 import com.sergo.wic.facade.ImageFacade;
 import com.sergo.wic.facade.ShareFacade;
 import com.sergo.wic.service.ShareService;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.sql.SQLException;
 
 @RestController
 @RequestMapping("/shares")
@@ -33,13 +36,19 @@ public class ShareController {
     private ImageFacade imageFacade;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/publish" ,consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ShareResponse publicShare( @Valid @RequestBody final CreateShareDto createShareDto
+    @PostMapping(value = "/publish" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ShareResponse publicShare( @Valid @RequestPart("CreateShareDto") final CreateShareDto createShareDto
                                      ,@RequestPart("productPhoto") MultipartFile productPhoto) {
-        createShareDto.setPhotoProduct(productPhoto);
-        return new ShareResponse(shareConverter
-                                    .convertToModel(shareFacade.saveShare(createShareDto))
-                                         .getShareId());
+
+        String shareId;
+        try{
+           shareId = shareService.saveShare(
+                        shareConverter.convertToModel(createShareDto), productPhoto).getShareId();
+        }catch (IOException | NullPointerException e){
+            e.printStackTrace();
+            return new ShareResponse(false,"reason...");
+        }
+        return new ShareResponse(shareId);
     }
 
     @ResponseStatus(HttpStatus.ACCEPTED)

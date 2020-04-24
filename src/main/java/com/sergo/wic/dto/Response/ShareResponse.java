@@ -8,11 +8,11 @@ public class ShareResponse extends Response {
         this.share_id = share_id;
     }
 
-    public ShareResponse(boolean success){
+    public ShareResponse(boolean success, String reason){
         if (!success) {
             setSuccess(success);
             setErrorCode(1);
-            setErrorMessage("file wasn't upload, try again");
+            setErrorMessage(reason);
         }
     }
 

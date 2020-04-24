@@ -41,12 +41,12 @@ public class ShareFacadeImpl implements ShareFacade {
     @Autowired
     private ShareConverter shareConverter;
 
+
     @Autowired
     private ItemRepository itemRepository;
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private CompanyService companyService;
 
@@ -72,7 +72,7 @@ public class ShareFacadeImpl implements ShareFacade {
 
         company.getShares().add(share);
         share.setCompany(company);
-        shareService.saveShare(share);
+    //    shareService.saveShare(share,null);
         share.getItems().forEach(item -> {
             item.setShare(share);
             itemRepository.save(item);

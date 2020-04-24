@@ -14,7 +14,7 @@ public class CreateShareDto {
     private String login;
 
   //  @NotNull(message = "no image")
-    private MultipartFile photoProduct;
+//    private MultipartFile photoProduct;
 
     @NotBlank(message = "productName must not be blank")
     private String productName;
@@ -22,11 +22,12 @@ public class CreateShareDto {
     @NotBlank(message = "description must not be blank")
     private String description;
 
+    //надо добавить проверку
     private String linkOnProductUrl;
 
     private Double productPrice;
 
-    private Integer pickedItemsCount;
+//    private Integer pickedItemsCount;
 
     @Positive(message = "productCount must be greater than 0")
     private Integer productCount;;
@@ -40,8 +41,8 @@ public class CreateShareDto {
     @Positive(message = "afterShareDuration must be greater than 0")
     private Integer afterShareDuration;
 
-    @NotBlank(message = "color must not be blank")
-    private String color;
+    @Positive(message = "color must be greater than 0")
+    private Integer color;
 
     @NotBlank(message = "country must not be blank")
     private String placeCountry;
@@ -66,21 +67,21 @@ public class CreateShareDto {
     public CreateShareDto() {
     }
 
-    public MultipartFile getPhotoProduct() {
-        return photoProduct;
-    }
+//    public MultipartFile getPhotoProduct() {
+//        return photoProduct;
+//    }
+//
+//    public void setPhotoProduct(MultipartFile photoProduct) {
+//        this.photoProduct = photoProduct;
+//    }
 
-    public void setPhotoProduct(MultipartFile photoProduct) {
-        this.photoProduct = photoProduct;
-    }
-
-    public Integer getPickedItemsCount() {
-        return pickedItemsCount;
-    }
-
-    public void setPickedItemsCount(Integer pickedItemsCount) {
-        this.pickedItemsCount = pickedItemsCount;
-    }
+//    public Integer getPickedItemsCount() {
+//        return pickedItemsCount;
+//    }
+//
+//    public void setPickedItemsCount(Integer pickedItemsCount) {
+//        this.pickedItemsCount = pickedItemsCount;
+//    }
 
     public String getDescription() {
         return description;
@@ -146,11 +147,11 @@ public class CreateShareDto {
         this.afterShareDuration = afterShareDuration;
     }
 
-    public String getColor() {
+    public Integer getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(Integer color) {
         this.color = color;
     }
 

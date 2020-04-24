@@ -18,9 +18,12 @@ public class Share {
         this.creationStatus = CreateShareState.CREATED;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id")
+@Id
+@SequenceGenerator(name = "hibernateSeq", sequenceName = "HIBERNATE_SEQUENCE")
+@GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "hibernateSeq")
     private Long id;
 
     @Column(name = "share_id")
@@ -33,8 +36,8 @@ public class Share {
     @Column(name = "login")
     private String login;
 
-    @Column(name = "product_photo")
-    private String productPhoto;
+    @Column(name = "product_photo_url")
+    private String productPhotoUrl;
 
     @Column(name = "product_name")
     private String productName;
@@ -45,8 +48,8 @@ public class Share {
     @Column(name = "link_on_product")
     private String linkOnProduct;
 
-    @Column(name = "count_of_product")
-    private Integer countOfProduct;
+//    @Column(name = "count_of_product")
+//    private Integer countOfProduct;
 
     @Column(name = "product_image_id")
     private Long productImageId;
@@ -126,9 +129,9 @@ public class Share {
 //    }
 
 
-    public void setCountOfProduct(Integer countOfProduct) {
-        this.countOfProduct = countOfProduct;
-    }
+//    public void setCountOfProduct(Integer countOfProduct) {
+//        this.countOfProduct = countOfProduct;
+//    }
 
     public void setPickedItemsCount(Integer pickedItemsCount) {
         this.pickedItemsCount = pickedItemsCount;
@@ -154,12 +157,12 @@ public class Share {
         this.login = login;
     }
 
-    public String getProductPhoto() {
-        return productPhoto;
+    public String getProductPhotoUrl() {
+        return productPhotoUrl;
     }
 
-    public void setProductPhoto(String productPhoto) {
-        this.productPhoto = productPhoto;
+    public void setProductPhotoUrl(String productPhotoUrl) {
+        this.productPhotoUrl = productPhotoUrl;
     }
 
     public String getPlaceCountry() {
@@ -242,13 +245,13 @@ public class Share {
         this.productDescription = productDescription;
     }
 
-    public int getCountOfProduct() {
-        return countOfProduct;
-    }
-
-    public void setCountOfProduct(int countOfProduct) {
-        this.countOfProduct = countOfProduct;
-    }
+//    public int getCountOfProduct() {
+//        return countOfProduct;
+//    }
+//
+//    public void setCountOfProduct(int countOfProduct) {
+//        this.countOfProduct = countOfProduct;
+//    }
 
     public Long getProductImageId() {
         return productImageId;
@@ -388,7 +391,7 @@ public class Share {
     }
 
     @Override public int hashCode() {
-        return Objects.hash( countOfProduct, productPrice, announcementDuration, shareDuration,
+        return Objects.hash( productPrice, announcementDuration, shareDuration,
                             afterShareDuration, pickedItemsCount, allItemsCount);
 
     }

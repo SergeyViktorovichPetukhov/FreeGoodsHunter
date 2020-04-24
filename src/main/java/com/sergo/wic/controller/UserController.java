@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -44,9 +46,12 @@ public class UserController {
     }
 
     @PostMapping(value = "/userInfo")
-    public UserResponse userInfo(@RequestBody LoginDto login){
-        User user = userService.findByLogin(login.getLogin()).get();
-        return new UserResponse(user.isHasCompany());
+    public Response userInfo(@RequestBody LoginDto login){
+        Optional<User> user = userService.findByLogin(login.getLogin());
+        if (user.isPresent()){
+            return new UserResponse(user.get().isHasCompany());
+        }
+        return new UserResponse(false,true);
     }
 
     @PostMapping(value = "pickItem" ,

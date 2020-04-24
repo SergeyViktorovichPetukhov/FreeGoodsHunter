@@ -3,9 +3,12 @@ package com.sergo.wic.service.impl;
 import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.CreateShareState;
 import com.sergo.wic.entities.Share;
+import com.sergo.wic.entities.User;
 import com.sergo.wic.repository.ShareRepository;
 import com.sergo.wic.service.ImageService;
+import com.sergo.wic.service.ItemService;
 import com.sergo.wic.service.ShareService;
+import com.sergo.wic.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,25 +18,37 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.OneToOne;
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.*;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service("shareService")
 public class ShareServiceImpl implements ShareService {
 
+    private static final String PHOTO_PATH = "/D:/photoFGH";
+    private static final String SERVER_PHOTO_PATH = "/photoFGH";
 
     public ShareServiceImpl(@Autowired Environment env, @Autowired
-    ShareRepository shareRepository, @Autowired ImageService imageService){
+    ShareRepository shareRepository, @Autowired ImageService imageService,
+     @Autowired UserService userService){
        this.env = env;
        this.imageService = imageService;
        this.shareRepository = shareRepository;
+       this.userService = userService;
+  //     this.itemService = itemService;
     }
 
     private Environment env;
     private ShareRepository shareRepository;
     private ImageService imageService;
+    private UserService userService;
+   // private ItemService itemService;
 
     private static final String PRODUCT_PHOTO_PATH = "product.photo.path";
     private static final Logger LOG = LoggerFactory.getLogger(ShareServiceImpl.class);
@@ -50,8 +65,40 @@ public class ShareServiceImpl implements ShareService {
     }
 
     @Override
-    public Share saveShare(final Share share) {
-        return shareRepository.save(share);
+    public Share saveShare(final Share share, final MultipartFile productPhoto) throws IOException {
+        Optional<User> userOptional = userService.findByLogin(share.getLogin());
+
+        if (!productPhoto.isEmpty() && userOptional.isPresent()){
+            User user = userOptional.get();
+
+            byte[] bytes = productPhoto.getBytes();
+
+            UUID uuid = new UUID(1000000*100,26);
+
+            File userPhotoPath = new File(PHOTO_PATH + "/" + user.getLogin());
+            Path path = Paths.get(userPhotoPath.toString());
+
+            String photoUrl = null;
+//            if (!userPhotoPath.isDirectory()){
+//            if (!Files.exists(path)){
+//                Files.createDirectory(path);
+                photoUrl = userPhotoPath.toString() + " " + uuid.toString();
+//            }else {
+//                photoUrl = userPhotoPath.toString() + " " + uuid.toString();
+//            }
+
+            FileOutputStream outputStream = new FileOutputStream(photoUrl + productPhoto.getOriginalFilename().substring(productPhoto.getOriginalFilename().lastIndexOf(".")));
+                outputStream.write(bytes);
+                outputStream.close();
+
+            share.setProductPhotoUrl(photoUrl);
+            share.setShareId(user.getEmail() + " "
+                    + LocalDate.now().toString() + " #"
+                    + user.getSharesCount(share));
+            return shareRepository.save(share);
+        }
+        else return null;
+
     }
 
     @Override

@@ -18,6 +18,15 @@ public class UserResponse extends Response {
         }
     }
 
+    public UserResponse( boolean hasCompany, boolean noUser){
+        this.setSuccess(true);
+        this.setErrorCode(2);
+        this.setErrorMessage("no such user");
+        this.hasCompany = false;
+    }
+
+
+
     public boolean isHasCompany() {
         return hasCompany;
     }

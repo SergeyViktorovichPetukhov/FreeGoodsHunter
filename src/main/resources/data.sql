@@ -9,7 +9,7 @@ INSERT INTO users (id, login, email, phone, has_company, company_id) VALUES (3, 
 
 INSERT INTO companies(id,login, address, phone, user_id) VALUES (1,'company owner','address XXX',7777777,3);
 
-INSERT INTO shares(id,share_id,company_id,login,product_photo,product_name,product_description,count_of_product, link_on_product ,
+INSERT INTO shares(id,share_id,company_id,login,product_photo_url,product_name,product_description,count_of_product, link_on_product ,
                    product_price, announcement_duration, share_duration, after_share_duration,
                    color, picked_items_count, all_items_count, code,date, creation_status,place_country, place_region, place_city)
                    VALUES (1, 'company_owner@mail.ru 2020-04-20 #1', 1,'company owner',121,'NAMEEEE','descr',2,'link/link',

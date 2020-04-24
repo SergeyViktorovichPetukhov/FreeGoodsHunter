@@ -4,6 +4,7 @@ import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.Share;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +14,7 @@ public interface ShareService {
     boolean checkLoginAndShare(String login, String share);
     Optional<Share> findByShareId(String shareId);
     List<Share> findAll();
-    Share saveShare(Share share);
+    Share saveShare(Share share, MultipartFile productPhoto) throws IOException;
     boolean deleteShare(String shareId);
     void deleteById(Long id);
     boolean confirmShare(Long id);
