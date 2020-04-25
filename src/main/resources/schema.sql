@@ -25,18 +25,18 @@ CREATE TABLE IF NOT EXISTS shares
     id                    BIGSERIAL     NOT NULL,
     share_id              VARCHAR(50),
     company_id            INTEGER,
-    login                 VARCHAR(30)   NOT NULL,
+    login                 VARCHAR(30),
     product_photo_url     VARCHAR(100),
     product_name          VARCHAR(100),
     product_description   VARCHAR(300),
-    count_of_product      INTEGER,
+    product_count         INTEGER,
     product_image_id      INTEGER,
     link_on_product       VARCHAR(50),
     product_price         FLOAT         NOT NULL,
     announcement_duration INTEGER,
     share_duration        INTEGER,
     after_share_duration  INTEGER,
-    color                 INTEGER       NOT NULL,
+    color                 VARCHAR(50)   NOT NULL,
     picked_items_count    INTEGER,
     all_items_count       INTEGER,
     code                  VARCHAR(15),
@@ -96,8 +96,8 @@ ALTER TABLE share_statuses
 CREATE TABLE items
 (
     id         BIGSERIAL  NOT NULL,
-    lon        FLOAT      NOT NULL,
-    lat        FLOAT      NOT NULL,
+    longitude  FLOAT      NOT NULL,
+    latitude   FLOAT      NOT NULL,
     share_id   INTEGER    NOT NULL,
     user_id    INTEGER
 );

@@ -1,7 +1,5 @@
 package com.sergo.wic.dto;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -30,7 +28,7 @@ public class CreateShareDto {
 //    private Integer pickedItemsCount;
 
     @Positive(message = "productCount must be greater than 0")
-    private Integer productCount;;
+    private Integer productCount;
 
     @Positive(message = "announcementDuration must be greater than 0")
     private Integer announcementDuration;
@@ -41,8 +39,8 @@ public class CreateShareDto {
     @Positive(message = "afterShareDuration must be greater than 0")
     private Integer afterShareDuration;
 
-    @Positive(message = "color must be greater than 0")
-    private Integer color;
+    @Positive(message = "color must not be blank")
+    private String color;
 
     @NotBlank(message = "country must not be blank")
     private String placeCountry;
@@ -67,13 +65,14 @@ public class CreateShareDto {
     public CreateShareDto() {
     }
 
-//    public MultipartFile getPhotoProduct() {
-//        return photoProduct;
-//    }
-//
-//    public void setPhotoProduct(MultipartFile photoProduct) {
-//        this.photoProduct = photoProduct;
-//    }
+    public Integer getProductCount() {
+        return productCount;
+    }
+
+    public void setProductCount(Integer productCount) {
+        this.productCount = productCount;
+    }
+
 
 //    public Integer getPickedItemsCount() {
 //        return pickedItemsCount;
@@ -91,13 +90,7 @@ public class CreateShareDto {
         this.description = description;
     }
 
-    public Integer getProductCount() {
-        return productCount;
-    }
 
-    public void setProductCount(Integer productCount) {
-        this.productCount = productCount;
-    }
 
     public String getProductName() {
         return productName;
@@ -147,11 +140,11 @@ public class CreateShareDto {
         this.afterShareDuration = afterShareDuration;
     }
 
-    public Integer getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(Integer color) {
+    public void setColor(String color) {
         this.color = color;
     }
 

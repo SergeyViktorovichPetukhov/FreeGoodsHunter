@@ -1,12 +1,18 @@
 package com.sergo.wic.controller;
 
+import com.sergo.wic.converter.ShareConverter;
+import com.sergo.wic.dto.CreateShareDto;
+import com.sergo.wic.dto.LoginAndShareDto;
 import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.ImageDto;
+import com.sergo.wic.dto.Response.ShareResponse;
 import com.sergo.wic.facade.ImageFacade;
 import com.sergo.wic.facade.ShareFacade;
+import com.sergo.wic.service.ShareService;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +29,12 @@ public class WicRestController {
 
     @Autowired
     private ImageFacade imageFacade;
+
+    @Autowired
+    ShareService shareService;
+
+    @Autowired
+    ShareConverter shareConverter;
 
 //    @ResponseStatus(HttpStatus.CREATED)
 ////    @PostMapping("/shares")
@@ -45,4 +57,14 @@ public class WicRestController {
         response.setContentType(imageDto.getFormat());
         IOUtils.copy(in, response.getOutputStream());
     }
+
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PostMapping(value = "/cancel", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response cancelShare(@RequestBody LoginAndShareDto dto) {
+        if (shareService.checkShare(dto.getShareId()))
+            return shareFacade.deleteShare(dto.getShareId());
+        else return new Response(false,1,"share does not exists");
+    }
 }
+

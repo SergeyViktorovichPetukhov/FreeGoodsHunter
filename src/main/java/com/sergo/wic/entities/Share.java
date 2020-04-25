@@ -48,8 +48,8 @@ public class Share {
     @Column(name = "link_on_product")
     private String linkOnProduct;
 
-//    @Column(name = "count_of_product")
-//    private Integer countOfProduct;
+    @Column(name = "product_count")
+    private Integer productCount;
 
     @Column(name = "product_image_id")
     private Long productImageId;
@@ -67,7 +67,7 @@ public class Share {
     private Integer afterShareDuration;
 
     @Column(name = "color")
-    private Integer color;
+    private String color;
 
     @Column(name = "picked_items_count")
     private Integer pickedItemsCount;
@@ -129,9 +129,9 @@ public class Share {
 //    }
 
 
-//    public void setCountOfProduct(Integer countOfProduct) {
-//        this.countOfProduct = countOfProduct;
-//    }
+    public void setProductCount(Integer productCount) {
+        this.productCount = productCount;
+    }
 
     public void setPickedItemsCount(Integer pickedItemsCount) {
         this.pickedItemsCount = pickedItemsCount;
@@ -245,13 +245,9 @@ public class Share {
         this.productDescription = productDescription;
     }
 
-//    public int getCountOfProduct() {
-//        return countOfProduct;
-//    }
-//
-//    public void setCountOfProduct(int countOfProduct) {
-//        this.countOfProduct = countOfProduct;
-//    }
+    public Integer getProductCount() {
+        return productCount;
+    }
 
     public Long getProductImageId() {
         return productImageId;
@@ -309,11 +305,11 @@ public class Share {
         this.afterShareDuration = afterShareDuration;
     }
 
-    public Integer getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(Integer color) {
+    public void setColor(String color) {
         this.color = color;
     }
 

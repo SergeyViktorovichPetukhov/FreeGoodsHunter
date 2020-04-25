@@ -11,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface ShareRepository extends JpaRepository<Share, Long> {
     boolean deleteByShareId(String shareId);
+    boolean existsByShareId(String shareId);
     Optional<Share> findByLogin(String login);
     Optional<Share> findByShareId(String shareId);
     List<Share> findAllByCompany(Company company);

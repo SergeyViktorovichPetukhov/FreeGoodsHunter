@@ -61,7 +61,7 @@ public class UserController {
         User user = userService.findByLogin(dto.getUserLogin()).get();
         Item item = itemConverter.convertToModel(dto);
 
-        Share share = (Share) shareService.findByShareId(dto.getShareId()).get();
+        Share share = shareService.findByShareId(dto.getShareId()).get();
         int pickedItemsCount = share.getPickedItemsCount();
            if (companyService.checkCompanyOwner(share.getLogin(),user.getLogin())){
                 item.setUser(user);

@@ -201,7 +201,7 @@ public class UserFacadeImpl implements UserFacade {
         String code = RandomString.getAlphaNumericString(6);
         System.out.println("random code: " + code);
         registrationService.save(new Registration(login,code , phone, userService.findByPhone(phone).getId(),true));
-    //    emailService.sendSimpleMessage(login, "Registration code", "Your registration code: " + code);
+        emailService.sendSimpleMessage(login, "Registration code", "Your registration code: " + code);
         return new Response(true, 0);
     }
 

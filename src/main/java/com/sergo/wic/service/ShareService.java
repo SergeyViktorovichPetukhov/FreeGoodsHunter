@@ -11,10 +11,12 @@ import java.util.Optional;
 public interface ShareService {
     Share findById(long id);
     Share findByLogin(String login);
-    boolean checkLoginAndShare(String login, String share);
+    boolean checkShare( String shareId);
+    boolean existsByShareId(String shareId);
     Optional<Share> findByShareId(String shareId);
     List<Share> findAll();
     Share saveShare(Share share, MultipartFile productPhoto) throws IOException;
+    Share saveShare1(final Share share) throws IOException;
     boolean deleteShare(String shareId);
     void deleteById(Long id);
     boolean confirmShare(Long id);

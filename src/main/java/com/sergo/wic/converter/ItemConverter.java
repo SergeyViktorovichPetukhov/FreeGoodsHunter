@@ -21,8 +21,8 @@ public class ItemConverter {
 
     public Item convertToModel(final ItemDto source) {
         final Item item = new Item();
-          item.setLat(source.getPoint().getLat());
-          item.setLon(source.getPoint().getLon());
+          item.setLatitude(source.getPoint().getLatitude());
+          item.setLongitude(source.getPoint().getLongitude());
             Optional<Share> share = shareService.findByShareId(source.getShareId());
             share.ifPresent((sh) -> item.setShare(sh));
         return item;

@@ -42,7 +42,7 @@ public class ShareConverter {
     }
 
     public Share convertToModel(final CreateShareDto source) {
-        Share share = new Share();
+        final Share share = new Share();
         modelMapper.map(source, share);
         share.setDate(new Timestamp(System.currentTimeMillis()));
         return share;

@@ -9,6 +9,7 @@ import com.sergo.wic.entities.Share;
 import com.sergo.wic.facade.ImageFacade;
 import com.sergo.wic.facade.ShareFacade;
 import com.sergo.wic.service.ShareService;
+import com.sergo.wic.validation.ShareValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,15 +31,20 @@ public class ShareController {
     private ShareConverter shareConverter;
 
     @Autowired
+    private ShareValidator shareValidator;
+
+    @Autowired
     ShareService shareService;
 
     @Autowired
     private ImageFacade imageFacade;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/publish" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ShareResponse publicShare( @Valid @RequestPart("CreateShareDto") final CreateShareDto createShareDto
-                                     ,@RequestPart("productPhoto") MultipartFile productPhoto) {
+    @PostMapping(value = "/publish" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+                                      produces = MediaType.APPLICATION_JSON_VALUE)
+                                   // @Valid
+    public ShareResponse publicShare( @RequestPart(value = "сreateShareDto") final CreateShareDto createShareDto
+                                     ,@RequestPart(value = "productPhoto", required = false) MultipartFile productPhoto) {
 
         String shareId;
         try{
@@ -46,17 +52,34 @@ public class ShareController {
                         shareConverter.convertToModel(createShareDto), productPhoto).getShareId();
         }catch (IOException | NullPointerException e){
             e.printStackTrace();
-            return new ShareResponse(false,"reason...");
+            return new ShareResponse(false,e.getMessage());
         }
         return new ShareResponse(shareId);
     }
 
+//@ResponseStatus(HttpStatus.CREATED)
+//@PostMapping(value = "/publish" , consumes = MediaType.APPLICATION_JSON_VALUE,
+//        produces = MediaType.APPLICATION_JSON_VALUE)
+//
+//public ShareResponse publicShare( @RequestBody final CreateShareDto createShareDto) {
+//
+//    String shareId;
+//    try{
+//        shareId = shareService.saveShare1(
+//                shareConverter.convertToModel(createShareDto)).getShareId();
+//    }catch (IOException | NullPointerException e){
+//        e.printStackTrace();
+//        return new ShareResponse(false,e.getMessage());
+//    }
+//    return new ShareResponse(shareId);
+//}
+
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping(value = "/cancel", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Response cancelShare(@RequestBody LoginAndShareDto dto) {
-        if (shareService.checkLoginAndShare(dto.getLogin(),dto.getShareId()))
+        if (shareService.checkShare(dto.getShareId()))
             return shareFacade.deleteShare(dto.getShareId());
-        else return new Response(false,1,"you are not the owner");
+        else return new Response(false,1,"share does not exists");
     }
 }
 
@@ -74,5 +97,5 @@ public class ShareController {
 //                System.out.println(createShareDto.getPlaceCountry());
 //                System.out.println(createShareDto.getPlaceRegion());
 //                System.out.println(createShareDto.getPlaceCity());
-//                System.out.println(createShareDto.getItems().get(0).getLat() + " " + createShareDto.getItems().get(0).getLon());
+//                System.out.println(createShareDto.getItems().get(0).getLatitude() + " " + createShareDto.getItems().get(0).getLongitude());
 //                System.out.println(createShareDto.getColor());

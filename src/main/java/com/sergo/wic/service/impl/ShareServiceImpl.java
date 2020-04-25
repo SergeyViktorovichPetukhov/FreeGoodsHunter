@@ -66,39 +66,80 @@ public class ShareServiceImpl implements ShareService {
 
     @Override
     public Share saveShare(final Share share, final MultipartFile productPhoto) throws IOException {
+
         Optional<User> userOptional = userService.findByLogin(share.getLogin());
+
+
+        if (productPhoto == null && userOptional.isPresent()){
+            User user = userOptional.get();
+            UUID uuid = new UUID(10*100,26);
+            File userPhotoPath = new File(SERVER_PHOTO_PATH + "/" + user.getLogin());
+            String photoUrl = userPhotoPath.toString() + " " + uuid.toString();
+            String shareId = user.getEmail() + " "
+                    + LocalDate.now().toString() + " #"
+                    + user.getSharesCount(share);
+            if (existsByShareId(shareId)) {
+                throw new IOException("share already exists");
+            }
+            share.setShareId(shareId);
+            return shareRepository.save(share);
+        }
+
 
         if (!productPhoto.isEmpty() && userOptional.isPresent()){
             User user = userOptional.get();
 
+            UUID uuid = new UUID(10*100,26);
+
+           // File userPhotoPath = new File(PHOTO_PATH + "/" + user.getLogin());
+            File userPhotoPath = new File(SERVER_PHOTO_PATH + "/" + user.getLogin());
+            String photoUrl = userPhotoPath.toString() + " " + uuid.toString();
+
+            String shareId = user.getEmail() + " "
+                    + LocalDate.now().toString() + " #"
+                    + user.getSharesCount(share);
+            if (existsByShareId(shareId)) {
+                throw new IOException("share already exists");
+            }
+
+            share.setShareId(shareId);
             byte[] bytes = productPhoto.getBytes();
-
-            UUID uuid = new UUID(1000000*100,26);
-
-            File userPhotoPath = new File(PHOTO_PATH + "/" + user.getLogin());
-            Path path = Paths.get(userPhotoPath.toString());
-
-            String photoUrl = null;
-//            if (!userPhotoPath.isDirectory()){
-//            if (!Files.exists(path)){
-//                Files.createDirectory(path);
-                photoUrl = userPhotoPath.toString() + " " + uuid.toString();
-//            }else {
-//                photoUrl = userPhotoPath.toString() + " " + uuid.toString();
-//            }
-
-            FileOutputStream outputStream = new FileOutputStream(photoUrl + productPhoto.getOriginalFilename().substring(productPhoto.getOriginalFilename().lastIndexOf(".")));
+            FileOutputStream outputStream = null;
+            try {
+                outputStream = new FileOutputStream(photoUrl + productPhoto.getOriginalFilename().substring(productPhoto.getOriginalFilename().lastIndexOf(".")));
                 outputStream.write(bytes);
+            }catch (IOException e){
+                throw new IOException("could not upload image");
+            }
+            finally {
                 outputStream.close();
+            }
 
             share.setProductPhotoUrl(photoUrl);
-            share.setShareId(user.getEmail() + " "
-                    + LocalDate.now().toString() + " #"
-                    + user.getSharesCount(share));
             return shareRepository.save(share);
         }
-        else return null;
+        else{
+            throw new IOException("could not load photo, try again");
+        }
+    }
 
+    @Override
+    public Share saveShare1(final Share share) throws IOException {
+
+        Optional<User> userOptional = userService.findByLogin(share.getLogin());
+
+        if (userOptional.isPresent()){
+            User user = userOptional.get();
+            String shareId = user.getEmail() + " "
+                    + LocalDate.now().toString() + " #"
+                    + user.getSharesCount(share);
+            if (existsByShareId(shareId)) {
+                throw new IOException("share already exists");
+            }
+            share.setShareId(shareId);
+
+        }
+        return shareRepository.save(share);
     }
 
     @Override
@@ -124,12 +165,13 @@ public class ShareServiceImpl implements ShareService {
     }
 
     @Override
-    public boolean checkLoginAndShare(String login, String share) {
-        Optional<Share> share1 = shareRepository.findByLogin(login);
-        if (share1.isPresent()){
-            return share.equals(share1.get().getShareId());
-        }
-        return false;
+    public boolean checkShare(String shareId) {
+        return shareRepository.existsByShareId(shareId);
+    }
+
+    @Override
+    public boolean existsByShareId(String shareId){
+        return shareRepository.existsByShareId(shareId);
     }
 
     @Override
