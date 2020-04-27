@@ -93,7 +93,7 @@ public class Share {
     @Column(name = "message_for_user")
     private String messageForUser;
 
-    @OneToMany(mappedBy = "share",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "share",fetch = FetchType.LAZY)
     private List<Item> items;
 
 //    @OneToMany(mappedBy = "sharesId",fetch = FetchType.EAGER)

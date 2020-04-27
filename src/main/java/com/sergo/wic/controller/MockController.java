@@ -4,6 +4,7 @@ import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.facade.CompanyFacade;
 import com.sergo.wic.facade.ShareFacade;
 import com.sergo.wic.facade.UserFacade;
+import com.sergo.wic.google_api.GooglePlacesRequestor;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,6 +21,9 @@ public class MockController {
 
     @Autowired
     private ShareFacade shareFacade;
+
+    @Autowired
+    private GooglePlacesRequestor requestor;
 
     @Autowired
     private UserFacade userFacade;
@@ -64,6 +68,12 @@ public class MockController {
     public AllItemsResponse getAllItems(@RequestParam(value = "login", required = false) String login) {
         return userFacade.getAllItems(login);
     }
+
+//    @GetMapping("/test")
+//    public void test(){
+//        requestor.test();
+//        System.out.println("test");
+//    }
 
     @GetMapping("/notices")
     public NoticeResponse getNotices(@RequestParam(value = "login", required = false) String login) {

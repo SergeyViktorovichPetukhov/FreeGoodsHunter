@@ -43,10 +43,11 @@ public class ShareController {
     @PostMapping(value = "/publish" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
                                       produces = MediaType.APPLICATION_JSON_VALUE)
                                    // @Valid
-    public ShareResponse publicShare( @RequestPart(value = "сreateShareDto") final CreateShareDto createShareDto
+    public ShareResponse publicShare( @RequestPart(value = "сreateShareDto", required = false) final CreateShareDto createShareDto
                                      ,@RequestPart(value = "productPhoto", required = false) MultipartFile productPhoto) {
 
         String shareId;
+        System.out.println("gfkgyukik");
         try{
            shareId = shareService.saveShare(
                         shareConverter.convertToModel(createShareDto), productPhoto).getShareId();

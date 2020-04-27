@@ -10,6 +10,7 @@ import com.sergo.wic.service.CompanyService;
 import com.sergo.wic.service.RegistrationService;
 import com.sergo.wic.service.UserService;
 import com.sergo.wic.service.email.EmailService;
+import com.sergo.wic.utils.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -305,19 +306,4 @@ public class UserFacadeImpl implements UserFacade {
         return userContacts;
     }
 
-    public static class RandomString {
-        static String getAlphaNumericString(int n)
-        {
-            String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                    + "0123456789"
-                    + "abcdefghijklmnopqrstuvxyz";
-            StringBuilder sb = new StringBuilder(n);
-            for (int i = 0; i < n; i++) {
-                int index = (int)(AlphaNumericString.length() * Math.random());
-                sb.append(AlphaNumericString
-                        .charAt(index));
-            }
-            return sb.toString();
-        }
-    }
 }

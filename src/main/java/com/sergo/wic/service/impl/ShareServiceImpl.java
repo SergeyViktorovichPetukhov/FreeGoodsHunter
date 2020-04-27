@@ -9,6 +9,7 @@ import com.sergo.wic.service.ImageService;
 import com.sergo.wic.service.ItemService;
 import com.sergo.wic.service.ShareService;
 import com.sergo.wic.service.UserService;
+import com.sergo.wic.utils.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,23 +70,6 @@ public class ShareServiceImpl implements ShareService {
 
         Optional<User> userOptional = userService.findByLogin(share.getLogin());
 
-
-        if (productPhoto == null && userOptional.isPresent()){
-            User user = userOptional.get();
-            UUID uuid = new UUID(10*100,26);
-            File userPhotoPath = new File(SERVER_PHOTO_PATH + "/" + user.getLogin());
-            String photoUrl = userPhotoPath.toString() + " " + uuid.toString();
-            String shareId = user.getEmail() + " "
-                    + LocalDate.now().toString() + " #"
-                    + user.getSharesCount(share);
-            if (existsByShareId(shareId)) {
-                throw new IOException("share already exists");
-            }
-            share.setShareId(shareId);
-            return shareRepository.save(share);
-        }
-
-
         if (!productPhoto.isEmpty() && userOptional.isPresent()){
             User user = userOptional.get();
 
@@ -97,7 +81,8 @@ public class ShareServiceImpl implements ShareService {
 
             String shareId = user.getEmail() + " "
                     + LocalDate.now().toString() + " #"
-                    + user.getSharesCount(share);
+                    + user.getSharesCount(share) + " ,"
+                    + RandomString.getAlphaNumericString(3);
             if (existsByShareId(shareId)) {
                 throw new IOException("share already exists");
             }
@@ -105,15 +90,12 @@ public class ShareServiceImpl implements ShareService {
             share.setShareId(shareId);
             byte[] bytes = productPhoto.getBytes();
             FileOutputStream outputStream = null;
-            try {
+//            try {
                 outputStream = new FileOutputStream(photoUrl + productPhoto.getOriginalFilename().substring(productPhoto.getOriginalFilename().lastIndexOf(".")));
                 outputStream.write(bytes);
-            }catch (IOException e){
-                throw new IOException("could not upload image");
-            }
-            finally {
-                outputStream.close();
-            }
+//            }catch (IOException e){
+//                throw new IOException("could not upload image");
+//            }
 
             share.setProductPhotoUrl(photoUrl);
             return shareRepository.save(share);
