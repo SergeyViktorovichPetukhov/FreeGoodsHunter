@@ -10,7 +10,7 @@ CREATE TABLE users
     all_items_count       INTEGER,
     picked_items_count    INTEGER,
     email                 VARCHAR(30),
-    phone                 VARCHAR(9),
+    phone                 VARCHAR(25),
     name                  VARCHAR(30),
     has_company           BOOLEAN       DEFAULT FALSE,
     company_id            INTEGER

@@ -4,6 +4,6 @@
 //
 //public class GoogleMapsTest {
 //    public static void main(String[] args) {
-//        GooglePlacesRequestor.test();
+//        GooglePlacesRequestor.checkPhone();
 //    }
 //}

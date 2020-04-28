@@ -71,8 +71,8 @@ public class MockController {
 
 //    @GetMapping("/test")
 //    public void test(){
-//        requestor.test();
-//        System.out.println("test");
+//        requestor.checkPhone();
+//        System.out.println("checkPhone");
 //    }
 
     @GetMapping("/notices")

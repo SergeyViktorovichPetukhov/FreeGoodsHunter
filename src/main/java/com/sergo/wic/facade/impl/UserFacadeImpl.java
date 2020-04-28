@@ -179,9 +179,9 @@ public class UserFacadeImpl implements UserFacade {
     private NoticeResponse getNoticesTestData(final Boolean valid) {
         NoticeResponse noticesResponse = new NoticeResponse();
         if (valid) {
-            NoticeDto notice1 = new NoticeDto("test note 1", LocalDateTime.now().minusDays(2).toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
-            NoticeDto notice2 = new NoticeDto("test note 2", LocalDateTime.now().minusDays(4).toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
-            NoticeDto notice3 = new NoticeDto("test note 3", LocalDateTime.now().minusDays(6).toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
+            NoticeDto notice1 = new NoticeDto("checkPhone note 1", LocalDateTime.now().minusDays(2).toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
+            NoticeDto notice2 = new NoticeDto("checkPhone note 2", LocalDateTime.now().minusDays(4).toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
+            NoticeDto notice3 = new NoticeDto("checkPhone note 3", LocalDateTime.now().minusDays(6).toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
             noticesResponse = new NoticeResponse(Arrays.asList(notice1, notice2, notice3));
             noticesResponse.setSuccess(true);
             noticesResponse.setErrorCode(0);

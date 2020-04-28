@@ -1,5 +1,6 @@
 package com.sergo.wic.config;
 
+import com.google.maps.GeoApiContext;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,13 @@ public class SpringConfig {
     @Bean
     public MultipartConfigElement multipartConfigElement() {
         return new MultipartConfigElement("");
+    }
+
+    @Bean
+    public GeoApiContext geoApiContext(){
+        return new GeoApiContext.Builder()
+                .apiKey("AIzaSyDGzXLWA6Lp69ELTKPwwVMtY9GcSgnWAIQ")
+                .build();
     }
 
     @Bean

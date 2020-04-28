@@ -47,7 +47,6 @@ public class ShareController {
                                      ,@RequestPart(value = "productPhoto", required = false) MultipartFile productPhoto) {
 
         String shareId;
-        System.out.println("gfkgyukik");
         try{
            shareId = shareService.saveShare(
                         shareConverter.convertToModel(createShareDto), productPhoto).getShareId();

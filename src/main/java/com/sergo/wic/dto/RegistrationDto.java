@@ -1,10 +1,15 @@
 package com.sergo.wic.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RegistrationDto {
+    @JsonProperty("login")
     private String login;
     private String phone;
+    private String placeName;
 
-    public RegistrationDto(String login, String phone) {
+    public RegistrationDto(String login, String phone, String placeName) {
+        this.placeName = placeName;
         this.login = login;
         this.phone = phone;
     }
@@ -24,5 +29,13 @@ public class RegistrationDto {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getPlaceName() {
+        return placeName;
+    }
+
+    public void setPlaceName(String placeName) {
+        this.placeName = placeName;
     }
 }
