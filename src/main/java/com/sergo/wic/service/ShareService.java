@@ -14,6 +14,7 @@ public interface ShareService {
     boolean checkShare( String shareId);
     boolean existsByShareId(String shareId);
     Optional<Share> findByShareId(String shareId);
+    Optional<Share> findByShareItems(String shareId);
     List<Share> findAll();
     Share saveShare(Share share, MultipartFile productPhoto) throws IOException;
     Share saveShare1(final Share share) throws IOException;

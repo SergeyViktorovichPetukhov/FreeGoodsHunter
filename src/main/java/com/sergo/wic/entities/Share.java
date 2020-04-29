@@ -93,8 +93,8 @@ public class Share {
     @Column(name = "message_for_user")
     private String messageForUser;
 
-    @OneToMany(mappedBy = "share",fetch = FetchType.LAZY)
-    private List<Item> items;
+    @OneToMany(mappedBy = "share",fetch = FetchType.EAGER)
+    private List<ShareItems> shareItems;
 
 //    @OneToMany(mappedBy = "sharesId",fetch = FetchType.EAGER)
 //    private List<Item> items;
@@ -108,13 +108,13 @@ public class Share {
     @Column (name = "place_city")
     private String placeCity;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "users_shares",
-            joinColumns = { @JoinColumn(name = "share_id") },
-            inverseJoinColumns = { @JoinColumn(name = "user_id") }
-    )
-    private List<User> users;
+//    @ManyToMany(cascade = { CascadeType.ALL })
+//    @JoinTable(
+//            name = "users_shares",
+//            joinColumns = { @JoinColumn(name = "share_id") },
+//            inverseJoinColumns = { @JoinColumn(name = "user_id") }
+//    )
+//    private List<User> users;
 
 //    @ManyToOne
 //    @JoinColumn(name = "place_address_id", referencedColumnName = "id")
@@ -141,13 +141,13 @@ public class Share {
         this.allItemsCount = allItemsCount;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
+//    public List<User> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(List<User> users) {
+//        this.users = users;
+//    }
 
     public String getLogin() {
         return login;
@@ -361,12 +361,12 @@ public class Share {
 //        this.companyId = companyId;
 //    }
 
-    public List<Item> getItems() {
-        return items;
+    public List<ShareItems> getShareItems() {
+        return shareItems;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void setShareItems(List<ShareItems> items) {
+        this.shareItems = items;
     }
 
 //    public Address getPlaceAddress() {

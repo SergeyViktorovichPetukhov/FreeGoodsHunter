@@ -65,6 +65,7 @@ public class ShareServiceImpl implements ShareService {
         return shareRepository.findAll();
     }
 
+    @Transactional
     @Override
     public Share saveShare(final Share share, final MultipartFile productPhoto) throws IOException {
 
@@ -127,6 +128,11 @@ public class ShareServiceImpl implements ShareService {
     @Override
     public Optional<Share> findByShareId(String shareId) {
         return shareRepository.findByShareId(shareId);
+    }
+
+    @Override
+    public Optional<Share> findByShareItems(String shareId) {
+        return Optional.empty();
     }
 
     @Override

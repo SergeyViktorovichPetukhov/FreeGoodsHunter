@@ -44,19 +44,19 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notification> notifications;
 
-    @ManyToMany(mappedBy = "users")
-    private List<Share> shares;
+//    @ManyToMany(mappedBy = "users")
+//    private List<Share> shares;
 
-    @OneToMany(mappedBy = "user")
-    private List<Item> items;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<UserItems> userItems;
 
-    public List<Share> getShares() {
-        return shares;
-    }
-
-    public void setShares(List<Share> shares) {
-        this.shares = shares;
-    }
+//    public List<Share> getShares() {
+//        return shares;
+//    }
+//
+//    public void setShares(List<Share> shares) {
+//        this.shares = shares;
+//    }
 
     public List<Notification> getNotifications() {
         return notifications;
@@ -110,12 +110,12 @@ public class User {
         return allItemsCount;
     }
 
-    public List<Item> getItems() {
-        return items;
+    public List<UserItems> getUserItems() {
+        return userItems;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void setUserItems(List<UserItems> userItems) {
+        this.userItems = userItems;
     }
 
     public void setAllItemsCount(Integer allItemsCount) {

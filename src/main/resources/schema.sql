@@ -95,11 +95,11 @@ ALTER TABLE share_statuses
 
 CREATE TABLE items
 (
-    id         BIGSERIAL  NOT NULL,
-    longitude  FLOAT      NOT NULL,
-    latitude   FLOAT      NOT NULL,
-    share_id   INTEGER    NOT NULL,
-    user_id    INTEGER
+    id              BIGSERIAL       NOT NULL,
+    longitude       FLOAT           NOT NULL,
+    latitude        FLOAT           NOT NULL,
+    share_id        BIGSERIAL       NOT NULL,
+    user_id         BIGSERIAL
 );
 
 ALTER TABLE items
@@ -132,12 +132,19 @@ CREATE TABLE IF NOT EXISTS companies
 ALTER TABLE companies
     ADD CONSTRAINT companies_PK PRIMARY KEY (id);
 
--- create table users_shares
--- (
---     user_id INTEGER not null,
---     share_id INTEGER not null
--- );
+create table user_items
+  (
+      id          BIGSERIAL NOT NULL PRIMARY KEY ,
+      user_id     BIGSERIAL not null,
+      item_id     BIGSERIAL not null
+  );
 
+create table share_items
+(
+    id           BIGSERIAL NOT NULL PRIMARY KEY ,
+    share_id     BIGSERIAL not null,
+    item_id      BIGSERIAL not null
+);
 -----------------------------------------------------------------------------------
 -------------------------------Foreign keys----------------------------------------
 -----------------------------------------------------------------------------------
@@ -146,11 +153,18 @@ ALTER TABLE companies
 --         REFERENCES companies(id);
 -- --
 
--- alter table users_shares
---     add constraint shares_users_FK foreign key (share_id) references shares(id);
---
--- alter table users_shares
---     add constraint users_shares_FK foreign key (user_id) references users(id);
+alter table user_items
+    add constraint users_FK foreign key (user_id) references users(id);
+
+alter table user_items
+    add constraint items_FK foreign key (item_id) references items(id);
+
+alter table share_items
+    add constraint users_FK foreign key (share_id) references shares(id);
+
+alter table share_items
+    add constraint items_FK foreign key (item_id) references items(id);
+
 
 alter table items
     add constraint items_users_FK foreign key (user_id) references users(id);

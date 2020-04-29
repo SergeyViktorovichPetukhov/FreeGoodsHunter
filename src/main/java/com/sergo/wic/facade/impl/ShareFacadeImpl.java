@@ -13,6 +13,7 @@ import com.sergo.wic.entities.User;
 import com.sergo.wic.facade.ShareFacade;
 //import com.sergo.wic.repository.AddressRepository;
 import com.sergo.wic.repository.ItemRepository;
+import com.sergo.wic.repository.ShareItemsRepository;
 import com.sergo.wic.service.CompanyService;
 import com.sergo.wic.service.ShareService;
 import com.sergo.wic.service.UserService;
@@ -46,6 +47,9 @@ public class ShareFacadeImpl implements ShareFacade {
     private ItemRepository itemRepository;
 
     @Autowired
+    private ShareItemsRepository shareItemsRepository;
+
+    @Autowired
     private UserService userService;
     @Autowired
     private CompanyService companyService;
@@ -73,9 +77,9 @@ public class ShareFacadeImpl implements ShareFacade {
         company.getShares().add(share);
         share.setCompany(company);
     //    shareService.saveShare(share,null);
-        share.getItems().forEach(item -> {
+        share.getShareItems().forEach(item -> {
             item.setShare(share);
-            itemRepository.save(item);
+            shareItemsRepository.save(item);
         });
         return shareConverter.convertToDto(share);
     }

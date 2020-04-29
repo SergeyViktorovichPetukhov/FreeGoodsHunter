@@ -6,9 +6,7 @@ import com.sergo.wic.dto.Response.PickItemResponse;
 import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.Response.UserResponse;
 import com.sergo.wic.dto.ItemDto;
-import com.sergo.wic.entities.Item;
-import com.sergo.wic.entities.Share;
-import com.sergo.wic.entities.User;
+import com.sergo.wic.entities.*;
 import com.sergo.wic.service.CompanyService;
 import com.sergo.wic.service.ItemService;
 import com.sergo.wic.service.ShareService;
@@ -17,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @RestController
@@ -54,17 +53,17 @@ public class UserController {
         return new UserResponse(false,true);
     }
 
+    @Transactional
     @PostMapping(value = "pickItem" ,
                 produces = MediaType.APPLICATION_JSON_VALUE,
                 consumes = MediaType.APPLICATION_JSON_VALUE)
+
     public Response pickItem(@RequestBody ItemDto dto){
         User user = userService.findByLogin(dto.getUserLogin()).get();
-        Item item = itemConverter.convertToModel(dto);
-
         Share share = shareService.findByShareId(dto.getShareId()).get();
+        Item item = itemConverter.convertToModel(dto,user,share);
         int pickedItemsCount = share.getPickedItemsCount();
            if (companyService.checkCompanyOwner(share.getLogin(),user.getLogin())){
-                item.setUser(user);
                 itemService.save(item);
                 return new PickItemResponse(true,0,pickedItemsCount);
            }

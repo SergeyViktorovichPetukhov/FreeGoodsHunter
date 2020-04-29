@@ -4,13 +4,14 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "items",
-       indexes = {
-        @Index(name = "SHARE_INDEX",
-               columnList = "share_id"),
-        @Index(name = "USER_INDEX",
-               columnList = "user_id")
-})
+@Table(name = "items"
+//        ,
+//       indexes = {
+//        @Index(name = "SHARE_INDEX",
+//               columnList = "share_id"),
+//        @Index(name = "USER_INDEX",
+//               columnList = "user_id")}
+)
 public class Item {
 
     @Id
@@ -25,12 +26,11 @@ public class Item {
     @Column(name = "latitude")
     private double latitude;
 
-    @ManyToOne
-    @JoinColumn(name = "share_id", referencedColumnName = "id", nullable = false)
-    private Share share;
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @OneToOne(mappedBy = "share", fetch = FetchType.EAGER , cascade = CascadeType.ALL)
+    private ShareItems shareItems;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
+    private UserItems userItems;
 
     public Long getId() {
         return id;
@@ -56,20 +56,20 @@ public class Item {
         this.latitude = latitude;
     }
 
-    public Share getShare() {
-        return share;
+    public ShareItems getShareItems() {
+        return shareItems;
     }
 
-    public void setShare(Share share) {
-        this.share = share;
+    public void setShareItems(ShareItems shareItems) {
+        this.shareItems = shareItems;
     }
 
-    public User getUser() {
-        return user;
+    public UserItems getUserItems() {
+        return userItems;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserItems(UserItems user) {
+        this.userItems = user;
     }
 
     //    public String getSharesId() {

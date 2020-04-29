@@ -37,8 +37,8 @@ public class ItemServiceImpl implements ItemService {
         return false;
     }
 
-    @Override
-    public Item findByShare(Share share) {
-        return repository.findByShare(share);
-    }
+//    @Override
+//    public Item findByShare(Share share) {
+//        return repository.findByShare(share);
+//    }
 }

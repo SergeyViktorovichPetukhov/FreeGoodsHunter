@@ -15,9 +15,17 @@ INSERT INTO shares(id,share_id,company_id,login,product_photo_url,product_name,p
                    VALUES (1, 'company_owner@mail.ru 2020-04-20 #1', 1,'company owner',121,'NAMEEEE','descr',2,'link/link',
                            25,23,56,45,2,45,57,'3Fd6ht','2020-04-20 10:45:28.437','CREATED','USA','California','Los Angeles');
 
+INSERT INTO shares(id,share_id,company_id,login,product_photo_url,product_name,product_description,product_count, link_on_product ,
+                   product_price, announcement_duration, share_duration, after_share_duration,
+                   color, picked_items_count, all_items_count, code,date, creation_status,place_country, place_region, place_city)
+VALUES (2, 'company_owner@mail.ru 2020-04-20 #2', 1,'company owner','url','NAME2','descrip',3,'link/link2',
+        25,23,56,45,2,45,57,'5Sxvui','2020-04-20 10:50:28.437','CREATED','USA','California','Los Angeles');
+
 INSERT INTO items(id,longitude,latitude, share_id) VALUES (1,43,25,1);
 INSERT INTO items(id,longitude,latitude, share_id) VALUES (2,34,32,1);
 
--- INSERT INTO users_shares VALUES (1,1);
+INSERT INTO share_items (id,share_id,item_id) VALUES (1,1,1), (2,1,2);
+
+
 
 COMMIT;
