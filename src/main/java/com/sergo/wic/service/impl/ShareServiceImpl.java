@@ -5,10 +5,7 @@ import com.sergo.wic.entities.CreateShareState;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.entities.User;
 import com.sergo.wic.repository.ShareRepository;
-import com.sergo.wic.service.ImageService;
-import com.sergo.wic.service.ItemService;
-import com.sergo.wic.service.ShareService;
-import com.sergo.wic.service.UserService;
+import com.sergo.wic.service.*;
 import com.sergo.wic.utils.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,18 +34,19 @@ public class ShareServiceImpl implements ShareService {
 
     public ShareServiceImpl(@Autowired Environment env, @Autowired
     ShareRepository shareRepository, @Autowired ImageService imageService,
-     @Autowired UserService userService){
+                            @Autowired UserService userService , @Autowired CompanyService companyService){
        this.env = env;
        this.imageService = imageService;
        this.shareRepository = shareRepository;
        this.userService = userService;
-  //     this.itemService = itemService;
+       this.companyService = companyService;
     }
 
     private Environment env;
     private ShareRepository shareRepository;
     private ImageService imageService;
     private UserService userService;
+    private CompanyService companyService;
    // private ItemService itemService;
 
     private static final String PRODUCT_PHOTO_PATH = "product.photo.path";
@@ -69,10 +67,10 @@ public class ShareServiceImpl implements ShareService {
     public Share saveShare(final Share share, final MultipartFile productPhoto) throws IOException {
 
         Optional<User> userOptional = userService.findByLogin(share.getLogin());
-
+        Company company = null;
         if (!productPhoto.isEmpty() && userOptional.isPresent()){
             User user = userOptional.get();
-
+            company = user.getCompany();
             UUID uuid = new UUID(10*100,26);
 
            // File userPhotoPath = new File(PHOTO_PATH + "/" + user.getLogin());
@@ -98,6 +96,8 @@ public class ShareServiceImpl implements ShareService {
 //            }
 
             share.setProductPhotoUrl(photoUrl);
+            share.setCompany(company);
+            companyService.save(company);
             return shareRepository.save(share);
         }
         else{
@@ -167,10 +167,10 @@ public class ShareServiceImpl implements ShareService {
     }
 
     @Override
-    public boolean confirmShare(Long id) {
+    public boolean confirmShare(Long id, String reason) {
         Share share = findById(id);
         share.setCreateStatus(CreateShareState.CONFIRMED);
-        share.setMessageForUser("Спасибо за публикацию акции. Вы делаете всех нас лучше!");
+        share.setMessageForUser(reason);
         shareRepository.save(share);
         return true;
     }

@@ -5,11 +5,24 @@
     <title>User info</title>
     <link rel="stylesheet" type="text/css" media="all"
           href="/static/css/styles.css" th:href="@{/css/styles.css}" />
+
 </head>
 <body>
-<div>
+<div id="google_translate_element">
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'ru'
+            }, 'google_translate_element');
+        }
+    </script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <div class="tab-label">
-        <table>
+
+        <div th:if="${user.hasCompany}">
+            <h2 align="center" th:text="#{company.shares}"></h2>
+        </div>
+
+        <table width="500px" align="center">
             <thead>
             <tr>
                 <th> login</th>
@@ -19,7 +32,7 @@
             <tbody>
             <tr th:object="${user}">
                 <td th:text="${user.getLogin()}" /></td>
-                <td th:text="${user.isHasCompany()}"/></td>
+                <td th:if="${user.isHasCompany()}" th:text="${company.getName()}"/></td>
                 <th:form>
                     <td>
                         <a th:href="@{/admin/delete/{id}(id=${user.id})}"/>
@@ -30,23 +43,41 @@
             </tbody>
         </table>
 
+        <div style="height: 100px">
+
+        </div>
+
         <div >
             <table th:if="${shares != null}">
                 <thead>
                 <tr>
-                    <th> login</th>
-                    <th> product name</th>
-                    <th> productDescription</th>
-                    <th> linkOnProductUrl</th>
-                    <th> price</th>
-                    <th> count</th>
-                    <th> announcementDuration</th>
-                    <th> shareDuration</th>
-                    <th> afterShareDuration</th>
-                    <th> placeCountry</th>
-                    <th> placeRegion</th>
-                    <th> placeCity</th>
-                    <th> color</th>
+<!--                    <th><a th:text="#{share.login}"></a></th>-->
+<!--                    <th><a th:text="#{share.productName}"></a> </th>-->
+<!--                    <th><a th:text="#{share.productDescription}"></a> </th>-->
+<!--                    <th><a th:text="#{share.linkOnProductUrl}"></a> </th>-->
+<!--                    <th><a th:text="#{share.price}"></a> </th>-->
+<!--                    <th><a th:text="#{share.count}"></a> </th>-->
+<!--                    <th><a th:text="#{share.announcementDuration}"></a> </th>-->
+<!--                    <th><a th:text="#{share.shareDuration}"></a> </th>-->
+<!--                    <th><a th:text="#{share.afterShareDuration}"></a> </th>-->
+<!--                    <th><a th:text="#{share.placeCountry}"></a> </th>-->
+<!--                    <th><a th:text="#{share.placeRegion}"></a></th>-->
+<!--                    <th><a th:text="#{share.placeCity}"></a> </th>-->
+<!--                    <th><a th:text="#{share.color}"></a></th>-->
+<!--                    <th>      </th>-->
+                    <th><a >login</a></th>
+                    <th><a >product name</a> </th>
+                    <th><a >product description</a> </th>
+                    <th><a>link on product url</a> </th>
+                    <th><a>price</a> </th>
+                    <th><a>count</a> </th>
+                    <th><a>announcement duration</a> </th>
+                    <th><a>share duration</a> </th>
+                    <th><a>after share duration</a> </th>
+                    <th><a>place country</a> </th>
+                    <th><a>place region</a></th>
+                    <th><a >place city</a> </th>
+                    <th><a>color</a></th>
                     <th>      </th>
                 </tr>
                 </thead>
@@ -71,13 +102,25 @@
                         <div>
                             <div>
                                 <form th:action="@{'/admin/show/'+ ${user.id} + '/confirm'}" method="post">
+                                    <select name="reason" required size="3">
+                                        <option disabled>choose message</option>
+                                        <option value="mistake">thanks for choosing us!</option>
+                                        <option value="bad content">great!</option>
+                                    </select>
+
+<!--                                    <input type="text" th:placeholder="'enter message'" name="reason" required/>-->
                                     <input type="hidden" name="share_id" th:value="${share.id}">
                                     <input type="submit" value="confirm" />
                                 </form>
                             </div>
                             <div>
                                 <form th:action="@{'/admin/show/' + ${user.id} + '/cancel'}" method="post">
-                                    <input type="text" th:placeholder="'enter reason'" name="reason" />
+                                    <select name="reason" required size="3">
+                                        <option disabled>choose reason</option>
+                                        <option value="mistake">mistake</option>
+                                        <option value="bad content">bad content</option>
+                                    </select>
+<!--                                    <input type="text" th:placeholder="'enter reason'" name="reason" required />-->
                                     <input type="hidden" name="share_id" th:value="${share.id}">
                                     <input type="submit" value="cancel" />
                                 </form>

@@ -29,7 +29,7 @@ public class Share {
     @Column(name = "share_id")
     private String shareId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", referencedColumnName = "id" )
     private Company company;
 
@@ -108,13 +108,6 @@ public class Share {
     @Column (name = "place_city")
     private String placeCity;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "users_shares",
-            joinColumns = { @JoinColumn(name = "share_id") },
-            inverseJoinColumns = { @JoinColumn(name = "user_id") }
-    )
-    private List<User> users;
 
 //    @ManyToOne
 //    @JoinColumn(name = "place_address_id", referencedColumnName = "id")
@@ -139,14 +132,6 @@ public class Share {
 
     public void setAllItemsCount(Integer allItemsCount) {
         this.allItemsCount = allItemsCount;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
     }
 
     public String getLogin() {

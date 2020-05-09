@@ -5,7 +5,7 @@ import com.sergo.wic.dto.LoginDto;
 import com.sergo.wic.dto.Response.PickItemResponse;
 import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.Response.UserResponse;
-import com.sergo.wic.dto.ItemDto;
+import com.sergo.wic.dto.PickedItemDto;
 import com.sergo.wic.entities.Item;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.entities.User;
@@ -54,21 +54,22 @@ public class UserController {
         return new UserResponse(false,true);
     }
 
-    @PostMapping(value = "pickItem" ,
+    @PostMapping(value = "/pickItem" ,
                 produces = MediaType.APPLICATION_JSON_VALUE,
                 consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Response pickItem(@RequestBody ItemDto dto){
-        User user = userService.findByLogin(dto.getUserLogin()).get();
+    public Response pickItem(@RequestBody PickedItemDto dto){
+        Optional<User> user = userService.findByLogin(dto.getUserLogin());
+        if (user.isPresent()){
         Item item = itemConverter.convertToModel(dto);
-
-        Share share = shareService.findByShareId(dto.getShareId()).get();
+        Share share = item.getShare();
         int pickedItemsCount = share.getPickedItemsCount();
-           if (companyService.checkCompanyOwner(share.getLogin(),user.getLogin())){
-                item.setUser(user);
-                itemService.save(item);
+           if (companyService.checkCompanyOwner(share.getLogin(),user.get().getLogin())){
+                itemService.save(item,user.get());
                 return new PickItemResponse(true,0,pickedItemsCount);
            }
         return new Response(false,1,"you are the owner of this share");
+        }
+        return new Response(false,2,"no such user");
     }
 
 }

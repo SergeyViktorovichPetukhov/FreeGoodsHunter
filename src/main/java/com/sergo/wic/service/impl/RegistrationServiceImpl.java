@@ -59,6 +59,14 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
+    public void refuseRegistration(String id, String reason) {
+        Registration registration = repository.findByUserId(Long.valueOf(id));
+        registration.setReasonOfRefuse(reason);
+        registration.setNew(false);
+        repository.save(registration);
+    }
+
+    @Override
     public List<Registration> findAll(){
         return repository.findAll();
     }

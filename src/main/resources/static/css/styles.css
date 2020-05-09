@@ -14,3 +14,8 @@ table.tab2 {
     text-align: center;
     vertical-align: bottom;
 }
+.prepared_answers {
+    display: inline-block;
+    width: 300px;
+    border: 3px solid black
+}

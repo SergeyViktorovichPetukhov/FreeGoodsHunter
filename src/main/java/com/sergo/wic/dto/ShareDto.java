@@ -61,7 +61,7 @@ public class ShareDto {
 
     @Valid
     @NotEmpty
-    private List<ItemDto> items;
+    private List<PickedItemDto> items;
 
     public ShareDto() {
     }
@@ -210,11 +210,11 @@ public class ShareDto {
         this.placeAddress = placeAddress;
     }
 
-    public List<ItemDto> getItems() {
+    public List<PickedItemDto> getItems() {
         return items;
     }
 
-    public void setItems(List<ItemDto> items) {
+    public void setItems(List<PickedItemDto> items) {
         this.items = items;
     }
 }

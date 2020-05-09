@@ -1,49 +1,26 @@
 package com.sergo.wic.dto;
 
-import com.sergo.wic.entities.Item;
-
 public class ItemDto {
 
-    private String userLogin;
-    private Item point;
-    private String shareId;
+    public ItemDto(){}
 
+    private double longitude;
 
-    public ItemDto() {
+    private double latitude;
+
+    public double getLongitude() {
+        return longitude;
     }
 
-    public ItemDto(Item item) {
-        this.point = item;
-
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
-    public ItemDto(Item item, String shareId, String login) {
-        this.point = item;
-        this.shareId = shareId;
-        this.userLogin = login;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public String getShareId() {
-        return shareId;
-    }
-
-    public void setShareId(String id) {
-        this.shareId = id;
-    }
-
-    public String getUserLogin() {
-        return userLogin;
-    }
-
-    public void setUserLogin(String userLogin) {
-        this.userLogin = userLogin;
-    }
-
-    public Item getPoint() {
-        return point;
-    }
-
-    public void setPoint(Item point) {
-        this.point = point;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 }

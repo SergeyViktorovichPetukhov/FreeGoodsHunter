@@ -2,9 +2,12 @@ package com.sergo.wic.controller;
 
 import com.sergo.wic.converter.ItemConverter;
 import com.sergo.wic.converter.ShareConverter;
+import com.sergo.wic.dto.Response.CompanyResponse;
+import com.sergo.wic.dto.Response.GetShareResponse;
 import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.RequestGetShareDto;
 import com.sergo.wic.dto.LoginDto;
+import com.sergo.wic.dto.Response.ShareResponse;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.facade.CompanyFacade;
 import com.sergo.wic.facade.UserFacade;
@@ -38,7 +41,8 @@ public class CompanyController {
     @PostMapping(value = "/response", produces = MediaType.APPLICATION_JSON_VALUE)
     public Response companyResponse(@RequestBody LoginDto dto){
         if (userFacade.hasUserCompany(dto.getLogin())) {
-            return companyFacade.getShares(dto.getLogin());
+            CompanyResponse companyResponse = companyFacade.getShares(dto.getLogin());
+            return new Response(true,0,companyResponse);
         }
         return new Response(false, 1,"user doesn't have company");
     }
@@ -49,7 +53,8 @@ public class CompanyController {
         System.out.println(dto.getLogin() + " " + dto.getShareId());
         Optional<Share> share = shareService.findByShareId(dto.getShareId());
         if (share.isPresent() & userFacade.isLoginValid(dto.getLogin())){
-            return shareConverter.convertToShareResponse(share.get());
+            GetShareResponse getShareResponse = shareConverter.convertToShareResponse(share.get());
+            return new Response(true,0,getShareResponse);
         }
         return new Response(false,1,"no such share");
     }

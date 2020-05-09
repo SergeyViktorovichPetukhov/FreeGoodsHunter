@@ -1,11 +1,12 @@
 package com.sergo.wic.dto.Response;
 
+import com.sergo.wic.dto.ResponseContent;
 import com.sergo.wic.dto.UserDto;
-import com.sergo.wic.dto.ItemDto;
+import com.sergo.wic.dto.PickedItemDto;
 
 import java.util.List;
 
-public class GetShareResponse extends Response {
+public class GetShareResponse extends ResponseContent {
 
     private String productName;
     private String productDescription;
@@ -19,7 +20,7 @@ public class GetShareResponse extends Response {
     private String city;
 
     private int color;
-    private List<ItemDto> points;
+    private List<PickedItemDto> points;
 
     public GetShareResponse(){
     }
@@ -105,11 +106,11 @@ public class GetShareResponse extends Response {
         this.color = color;
     }
 
-    public List<ItemDto> getPoints() {
+    public List<PickedItemDto> getPoints() {
         return points;
     }
 
-    public void setPoints(List<ItemDto> points) {
+    public void setPoints(List<PickedItemDto> points) {
         this.points = points;
     }
 }

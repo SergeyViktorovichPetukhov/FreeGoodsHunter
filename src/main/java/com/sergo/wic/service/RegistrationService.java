@@ -13,5 +13,6 @@ public interface RegistrationService {
     boolean deleteByLogin(String login);
     boolean deleteByPhone(String phone);
     Registration save(Registration registration);
+    void refuseRegistration(String id, String reason);
     List<Registration> findAll();
 }

@@ -7,11 +7,11 @@ import java.util.*;
 
 @Entity
 @Table(name = "users"
-//        ,
-//       indexes = {
-//       @Index(name = "LOGIN_INDEX",
-//              columnList = "login")
-//          }
+        ,
+       indexes = {
+       @Index(name = "LOGIN_INDEX",
+              columnList = "login")
+          }
           )
 public class User {
 
@@ -37,26 +37,14 @@ public class User {
     @Column(name = "hasCompany")
     private boolean hasCompany;     // if user is a company manager
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="company_id", referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL ,mappedBy = "user", fetch = FetchType.LAZY)
     private Company company;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notification> notifications;
 
-    @ManyToMany(mappedBy = "users")
-    private List<Share> shares;
-
-    @OneToMany(mappedBy = "user")
-    private List<Item> items;
-
-    public List<Share> getShares() {
-        return shares;
-    }
-
-    public void setShares(List<Share> shares) {
-        this.shares = shares;
-    }
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER , cascade = CascadeType.ALL)
+    private UserItem userItem;
 
     public List<Notification> getNotifications() {
         return notifications;
@@ -110,12 +98,12 @@ public class User {
         return allItemsCount;
     }
 
-    public List<Item> getItems() {
-        return items;
+    public UserItem getUserItem() {
+        return userItem;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void setUserItem(UserItem item) {
+        this.userItem = item;
     }
 
     public void setAllItemsCount(Integer allItemsCount) {
@@ -141,6 +129,9 @@ public class User {
 
 
     public long getSharesCount(final Share currentShare){
+        for (Share share : this.company.getShares()){
+        System.out.println(share.getId());
+        }
         return this.company
            .getShares()
               .stream()

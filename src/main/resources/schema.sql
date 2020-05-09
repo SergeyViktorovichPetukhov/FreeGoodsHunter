@@ -3,7 +3,7 @@ commit;
 CREATE SCHEMA public;
 commit;
 
-CREATE TABLE users
+CREATE TABLE IF NOT EXISTS users
 (
     id                    BIGSERIAL     NOT NULL,
     login                 VARCHAR(30)   NOT NULL      UNIQUE,
@@ -12,8 +12,9 @@ CREATE TABLE users
     email                 VARCHAR(30),
     phone                 VARCHAR(25),
     name                  VARCHAR(30),
-    has_company           BOOLEAN       DEFAULT FALSE,
-    company_id            INTEGER
+    has_company           BOOLEAN       DEFAULT FALSE
+-- ,
+--     company_id            INTEGER
 );
 
 ALTER TABLE users
@@ -54,7 +55,7 @@ ALTER TABLE shares
     ADD CONSTRAINT shares_PK PRIMARY KEY (id);
 
 
-CREATE TABLE registrations
+CREATE TABLE IF NOT EXISTS registrations
 (
     id                  BIGSERIAL     NOT NULL,
     login               VARCHAR(30)   NOT NULL   UNIQUE,
@@ -93,13 +94,12 @@ ALTER TABLE share_statuses
 ALTER TABLE share_statuses
   ADD CONSTRAINT share_statuses_UN UNIQUE (name);
 
-CREATE TABLE items
+CREATE TABLE  items
 (
-    id         BIGSERIAL  NOT NULL,
-    longitude  FLOAT      NOT NULL,
-    latitude   FLOAT      NOT NULL,
-    share_id   INTEGER    NOT NULL,
-    user_id    INTEGER
+    id              BIGSERIAL       NOT NULL,
+    longitude       FLOAT           NOT NULL,
+    latitude        FLOAT           NOT NULL,
+    share_id        BIGSERIAL       NOT NULL
 );
 
 ALTER TABLE items
@@ -121,6 +121,7 @@ CREATE TABLE IF NOT EXISTS companies
 (
     id            BIGSERIAL    NOT NULL,
     login         VARCHAR(50)  NOT NULL,
+    name          VARCHAR(50)  NOT NULL,
     address       VARCHAR(50),
     phone         VARCHAR(50)  NOT NULL,
     internet_shop VARCHAR(100),
@@ -132,12 +133,12 @@ CREATE TABLE IF NOT EXISTS companies
 ALTER TABLE companies
     ADD CONSTRAINT companies_PK PRIMARY KEY (id);
 
--- create table users_shares
+-- CREATE TABLE user_item
 -- (
---     user_id INTEGER not null,
---     share_id INTEGER not null
+--     id               BIGSERIAL    NOT NULL    PRIMARY KEY ,
+--     user_id          BIGSERIAL    NOT NULL,
+--     item_id          BIGSERIAL    NOT NULL
 -- );
-
 -----------------------------------------------------------------------------------
 -------------------------------Foreign keys----------------------------------------
 -----------------------------------------------------------------------------------
@@ -146,14 +147,14 @@ ALTER TABLE companies
 --         REFERENCES companies(id);
 -- --
 
--- alter table users_shares
---     add constraint shares_users_FK foreign key (share_id) references shares(id);
+-- ALTER TABLE user_item
+--     ADD CONSTRAINT user_items_FK FOREIGN KEY  (item_id)
+--         REFERENCES items(id);
 --
--- alter table users_shares
---     add constraint users_shares_FK foreign key (user_id) references users(id);
-
-alter table items
-    add constraint items_users_FK foreign key (user_id) references users(id);
+-- ALTER TABLE user_item
+--     ADD CONSTRAINT user_FK FOREIGN KEY  (user_id)
+--         REFERENCES users(id);
+--
 
 ALTER TABLE shares
     ADD CONSTRAINT company_share_FK FOREIGN KEY (company_id)
@@ -177,17 +178,17 @@ ALTER TABLE items
 REFERENCES shares
   (
     id
-  ) ON DELETE CASCADE;
+  ) ON UPDATE CASCADE;
 
-ALTER TABLE items
-    ADD CONSTRAINT items_user_FK FOREIGN KEY
-        (
-         user_id
-            )
-        REFERENCES users
-            (
-             id
-                ) ON DELETE CASCADE;
+-- ALTER TABLE items
+--     ADD CONSTRAINT items_user_FK FOREIGN KEY
+--         (
+--          user_id
+--             )
+--         REFERENCES users
+--             (
+--              id
+--                 ) ON DELETE CASCADE;
 
 ALTER TABLE registrations
     ADD CONSTRAINT registrations_FK FOREIGN KEY (user_id) REFERENCES users(id);

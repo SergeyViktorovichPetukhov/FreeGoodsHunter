@@ -19,7 +19,7 @@ public interface ShareService {
     Share saveShare1(final Share share) throws IOException;
     boolean deleteShare(String shareId);
     void deleteById(Long id);
-    boolean confirmShare(Long id);
+    boolean confirmShare(Long id, String reason);
     boolean cancelShare(Long id ,String reason);
     Share savePhotoForShareProduct(MultipartFile photo, Long shareId);
     List<Share> findAllByCompany(Company company);

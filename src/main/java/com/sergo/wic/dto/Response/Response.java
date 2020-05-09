@@ -1,10 +1,13 @@
 package com.sergo.wic.dto.Response;
 
+import com.sergo.wic.dto.ResponseContent;
+
 public class Response {
 
-    private boolean isSuccess = true;
-    private int errorCode = 0;
+    private boolean isSuccess;
+    private int errorCode;
     private String errorMessage;
+    private ResponseContent content;
 //    private List<String> errors;
 
     public Response() {
@@ -25,11 +28,11 @@ public class Response {
         this.errorMessage = errorMessage;
     }
 
-    //    public Response(boolean isSuccess, int errorCode, List<String> errors) {
-//        this.isSuccess = isSuccess;
-//        this.errorCode = errorCode;
-//        this.errors = errors;
-//    }
+        public Response(boolean isSuccess, int errorCode, ResponseContent content) {
+        this.isSuccess = isSuccess;
+        this.errorCode = errorCode;
+        this.content = content;
+    }
 
 //    public List<String> getErrors() {
 //        return errors;
@@ -38,6 +41,15 @@ public class Response {
 //    public void setErrors(List<String> errors) {
 //        this.errors = errors;
 //    }
+
+
+    public ResponseContent getContent() {
+        return content;
+    }
+
+    public void setContent(ResponseContent content) {
+        this.content = content;
+    }
 
     public boolean isSuccess() {
         return isSuccess;

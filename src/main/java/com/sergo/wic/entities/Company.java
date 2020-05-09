@@ -38,13 +38,17 @@ public class Company {
     private String internetShop;
     @Column(name = "code")
     private String code;
+    @Column(name = "name")
+    private String name;
 
  //   private byte[] label;
 
     @Column(name = "label_path")
     private String label_path;
 
-    @OneToOne(mappedBy = "company", fetch = FetchType.EAGER)
+
+    @OneToOne
+    @JoinColumn(name="user_id", referencedColumnName = "id")
     private User user;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
@@ -122,7 +126,15 @@ public class Company {
         this.login = login;
     }
 
-//    public byte[] getLabel() {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    //    public byte[] getLabel() {
 //        return label;
 //    }
 //

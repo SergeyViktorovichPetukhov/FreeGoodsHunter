@@ -53,11 +53,11 @@ public class CompanyFacadeImpl implements CompanyFacade {
             userProfileResponse.setWebPage("https://mcdonalds.by/ru/");
             userProfileResponse.setShops(Arrays.asList(address1, address2));
 
-            userProfileResponse.setSuccess(true);
-            userProfileResponse.setErrorCode(0);
+//            userProfileResponse.setSuccess(true);
+//            userProfileResponse.setErrorCode(0);
         } else {
-            userProfileResponse.setSuccess(false);
-            userProfileResponse.setErrorCode(1);
+//            userProfileResponse.setSuccess(false);
+//            userProfileResponse.setErrorCode(1);
         }
         return userProfileResponse;
     }

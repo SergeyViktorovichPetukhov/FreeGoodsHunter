@@ -1,10 +1,7 @@
 package com.sergo.wic.controller;
 
 import com.sergo.wic.entities.*;
-import com.sergo.wic.service.NotificationService;
-import com.sergo.wic.service.RegistrationService;
-import com.sergo.wic.service.ShareService;
-import com.sergo.wic.service.UserService;
+import com.sergo.wic.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,15 +29,14 @@ public class AdminController {
     @Autowired
     private NotificationService notificationService;
 
-    List<User> users = new ArrayList<>();
-    List<Registration> registrations = new ArrayList<>();
+    @Autowired
+    private CompanyService companyService;
+
 
     @GetMapping
     public String showAdminDashboard(Model model){
-        users = userService.findAll();
-        registrations = registrationService.findAll();
-        model.addAttribute("users", users);
-        model.addAttribute("registrations", registrations);
+        model.addAttribute("users", userService.findAll());
+        model.addAttribute("registrations",registrationService.findAll());
         return "admin dashboard";
     }
 
@@ -56,15 +52,14 @@ public class AdminController {
     @GetMapping(value = "/show/{id}")
     public String showUser(@PathVariable("id") Long id, Model model){
         Optional<User> user = userService.findById(Long.valueOf(id));
-        model.addAttribute("user",user.get());
-        List<Share> shares = null;
-        if (user.isPresent() & user.get().isHasCompany()){
-         shares = user
-                    .get()
-                       .getCompany()
-                          .getShares();
+        List<Share> shares;
+        if (user.isPresent() && user.get().isHasCompany()){
+            model.addAttribute("user",user.get());
+            Company company = user.get().getCompany();
+            model.addAttribute("company",company);
+            shares = user.get().getCompany().getShares();
+            model.addAttribute("shares",shares);
         }
-        model.addAttribute("shares",shares);
         return "user info";
     }
 
@@ -75,38 +70,27 @@ public class AdminController {
                               Model model){
 
         shareService.cancelShare(Long.valueOf(shareId),reason);
-        System.out.println(reason + " reason");
-        User user = userService.findById(id).get();
-        model.addAttribute("user", user);
-        notificationService.save(new Notification(reason, user));
-        model.addAttribute("shares",shareService.findAll());
-        model.addAttribute("notificatations", notificationService.findAllByUser(user));
-        return "user info";
+        notificationService.save(new Notification(reason,(User) model.getAttribute("user")));
+        return "redirect:/admin/show/" + id;
     }
 
     @PostMapping(value = "/show/{id}/confirm")
     public String confirmShare(@PathVariable("id") Long id,
                                @RequestParam("share_id") Long shareId,
-                               Model model){
+                               @RequestParam("reason")  String reason,
+                               Model model
+    ){
 
-        shareService.confirmShare(Long.valueOf(shareId));
-        User user = userService.findById(id).get();
-        model.addAttribute("user", user);
-        notificationService.save(new Notification(THANKS_MESSAGE, user));
-        model.addAttribute("shares",shareService.findAll());
-        model.addAttribute("notificatations", notificationService.findAllByUser(user));
-        return "user info";
-        //    return "redirect:/admin/show/" + id;
+        shareService.confirmShare(Long.valueOf(shareId), reason);
+        notificationService.save(new Notification(reason, (User) model.getAttribute("user")));
+        return "redirect:/admin/show/" + id;
     }
 
 
     @PostMapping("/refuse")
     public String refuseRegistration(@RequestParam("id") String id
                                    , @RequestBody String reason){
-        Registration registration = registrationService.findByUserId(Long.valueOf(id));
-        registration.setReasonOfRefuse(reason);
-        registration.setNew(false);
-        registrationService.save(registration);
+        registrationService.refuseRegistration(id,reason);
         return "redirect:/admin/";
     }
 
