@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.OneToOne;
@@ -20,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.*;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -182,6 +184,19 @@ public class ShareServiceImpl implements ShareService {
         share.setMessageForUser(reason);
         shareRepository.save(share);
         return true;
+    }
+
+    @Override
+    public List<Share> findNewShares(Long maxOldId,Long companyId) {
+        Optional<List<Share>> newShares =  shareRepository.findNewShares(maxOldId);
+        if (newShares.isPresent()){
+        for(Share share : newShares.get()){
+            System.out.println(share.getId() + " new share");
+        }
+            System.out.println();
+            return newShares.get();
+        }
+        return null;
     }
 
     //    @Override

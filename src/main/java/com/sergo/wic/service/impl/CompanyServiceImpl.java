@@ -8,6 +8,8 @@ import com.sergo.wic.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
@@ -25,6 +27,11 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Company findByPhone(String phone){
         return companyRepository.findByPhone(phone);
+    }
+
+    @Override
+    public Company findById(long id) {
+        return companyRepository.findById(id).orElseGet(null);
     }
 
     @Override

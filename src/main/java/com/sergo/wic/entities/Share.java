@@ -1,5 +1,7 @@
 package com.sergo.wic.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
@@ -21,14 +23,16 @@ public class Share {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Column(name = "id")
-@Id
-@SequenceGenerator(name = "hibernateSeq", sequenceName = "HIBERNATE_SEQUENCE")
-@GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "hibernateSeq")
+    @Id
+    @SequenceGenerator(name = "hibernateSeq", sequenceName = "HIBERNATE_SEQUENCE")
+    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "hibernateSeq")
     private Long id;
 
+    @JsonIgnore
     @Column(name = "share_id")
     private String shareId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", referencedColumnName = "id" )
     private Company company;
@@ -36,6 +40,7 @@ public class Share {
     @Column(name = "login")
     private String login;
 
+    @JsonIgnore
     @Column(name = "product_photo_url")
     private String productPhotoUrl;
 
@@ -51,6 +56,7 @@ public class Share {
     @Column(name = "product_count")
     private Integer productCount;
 
+    @JsonIgnore
     @Column(name = "product_image_id")
     private Long productImageId;
 
@@ -69,30 +75,33 @@ public class Share {
     @Column(name = "color")
     private String color;
 
+    @JsonIgnore
     @Column(name = "picked_items_count")
     private Integer pickedItemsCount;
 
+    @JsonIgnore
     @Column(name = "all_items_count")
     private Integer allItemsCount;
-
+    @JsonIgnore
     @Column(name = "code")
     private String code;
-
+    @JsonIgnore
     @Column(name = "date")
     private Timestamp date;
 
-
+    @JsonIgnore
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ShareState status;
 
     @Column(name = "creation_status")
     @Enumerated(EnumType.STRING)
+    @JsonIgnore
     private CreateShareState creationStatus;
-
+    @JsonIgnore
     @Column(name = "message_for_user")
     private String messageForUser;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "share",fetch = FetchType.LAZY)
     private List<Item> items;
 

@@ -5,7 +5,61 @@
     <title>User info</title>
     <link rel="stylesheet" type="text/css" media="all"
           href="/static/css/styles.css" th:href="@{/css/styles.css}" />
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.js"></script>
+    <script src="/javascript/NewSharesRequest.js" type="text/javascript"></script>
+    <script>
+        function newSharesRequest() {
+            // var time = new Date();
+            // var formatDate = time.getFullYear() + '-' + ('0' + (time.getMonth() + 1)).slice(-2) + '-' +  ('0' + time.getDate()).slice(-2)  + ' ' + ('0' + time.getHours()).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2);
+            var company_id = Number(document.getElementById('company_id').textContent);
+            var shareIds = document.getElementsByClassName('td_share_id');
+            var maxShareId =0;
+            var current = 0;
+            for (var i = 0; i < shareIds.length; i++) {
+                current = shareIds[i].innerHTML;
+                if (current >= maxShareId){
+                    maxShareId = current;
+                }
+            }
 
+                 $.ajax({
+                 type: "GET",
+                 url: "/ajax/getNewShares",
+                 dataType: "json",
+                 data: {
+                     'max_share_id' : maxShareId,
+                     'company_id' : company_id
+                 },
+                 async: true,
+                 success: function (msg) {
+                     console.log(msg);
+                     var trHTML = '';
+                     $.each(msg, function (i, item) {
+                     trHTML += '<tr><td class="td_share_id">'
+                         + item.id + '</td ><td>'
+                         + item.login + '</td><td>'
+                         + item.productName + '</td><td>'
+                         + item.productDescription + '</td><td>'
+                         + item.linkOnProduct + '</td><td>'
+                         + item.productPrice + '</td><td>'
+                         + item.productCount + '</td><td>'
+                         + item.announcementDuration + '</td><td>'
+                         + item.shareDuration + '</td><td>'
+                         + item.afterShareDuration + '</td><td>'
+                         + item.placeCountry + '</td><td>'
+                         + item.placeCity + '</td><td>'
+                         + item.placeRegion + '</td><td>'
+                         + item.color + '</td></tr>';
+                     });
+                     $('#company_shares').append(trHTML);
+                 },
+                 error: function (xhr, status, error) {
+                     console.log(error,status)
+                 }
+         });
+        }
+        setInterval(newSharesRequest,4000);
+    </script>
 </head>
 <body>
 <div id="google_translate_element">
@@ -27,12 +81,14 @@
             <tr>
                 <th> login</th>
                 <th> company</th>
+                <th> company id</th>
             </tr>
             </thead>
             <tbody>
             <tr th:object="${user}">
                 <td th:text="${user.getLogin()}" /></td>
                 <td th:if="${user.isHasCompany()}" th:text="${company.getName()}"/></td>
+                <td id="company_id" th:if="${user.isHasCompany()}" th:text="${company.getId()}"/></td>
                 <th:form>
                     <td>
                         <a th:href="@{/admin/delete/{id}(id=${user.id})}"/>
@@ -44,11 +100,11 @@
         </table>
 
         <div style="height: 100px">
-
+            <a id="test"></a>
         </div>
 
         <div >
-            <table th:if="${shares != null}">
+            <table id="company_shares" th:if="${shares != null}">
                 <thead>
                 <tr>
 <!--                    <th><a th:text="#{share.login}"></a></th>-->
@@ -65,6 +121,7 @@
 <!--                    <th><a th:text="#{share.placeCity}"></a> </th>-->
 <!--                    <th><a th:text="#{share.color}"></a></th>-->
 <!--                    <th>      </th>-->
+                    <th class="share_id"><a >id</a></th>
                     <th><a >login</a></th>
                     <th><a >product name</a> </th>
                     <th><a >product description</a> </th>
@@ -84,6 +141,7 @@
                 <tbody>
                 <tr th:each="share : ${shares}"
                     th:if="${share.createStatus == T(com.sergo.wic.entities.CreateShareState).CREATED }">
+                    <td class="td_share_id" th:text="${share.getId()}" /></td>
                     <td th:text="${share.getLogin()}" /></td>
                     <td th:text="${share.getProductName()}"/></td>
                     <td th:text="${share.getProductDescription()}" /></td>
@@ -101,13 +159,15 @@
                     <td/>
                         <div>
                             <div>
+
                                 <form th:action="@{'/admin/show/'+ ${user.id} + '/confirm'}" method="post">
                                     <select name="reason" required size="3">
                                         <option disabled>choose message</option>
                                         <option value="mistake">thanks for choosing us!</option>
                                         <option value="bad content">great!</option>
+                                        <option value="choose your reason">enter reason</option>
                                     </select>
-
+                                    <input type="hidden" name="custom_reason" th:value="${share.id}">
 <!--                                    <input type="text" th:placeholder="'enter message'" name="reason" required/>-->
                                     <input type="hidden" name="share_id" th:value="${share.id}">
                                     <input type="submit" value="confirm" />
@@ -119,6 +179,7 @@
                                         <option disabled>choose reason</option>
                                         <option value="mistake">mistake</option>
                                         <option value="bad content">bad content</option>
+                                        <option value="choose your reason">enter reason</option>
                                     </select>
 <!--                                    <input type="text" th:placeholder="'enter reason'" name="reason" required />-->
                                     <input type="hidden" name="share_id" th:value="${share.id}">
