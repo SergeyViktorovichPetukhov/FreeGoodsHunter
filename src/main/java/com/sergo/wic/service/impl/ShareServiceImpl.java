@@ -99,6 +99,7 @@ public class ShareServiceImpl implements ShareService {
 
             share.setProductPhotoUrl(photoUrl);
             share.setCompany(company);
+            share.setCreateStatus(CreateShareState.CREATED);
             companyService.save(company);
             return shareRepository.save(share);
         }

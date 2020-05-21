@@ -2,13 +2,13 @@ package com.sergo.wic.dto.Response;
 
 import com.sergo.wic.dto.ItemDto;
 import com.sergo.wic.dto.PickedItemDto;
+import com.sergo.wic.dto.ResponseContent;
 
 import java.util.List;
 
-public class ShowItemsResponse extends Response {
+public class ShowItemsResponse extends ResponseContent {
     List<ItemDto> items;
-    public ShowItemsResponse(List<ItemDto> items, boolean isSuccess, int errorCode){
-        super(isSuccess,errorCode);
+    public ShowItemsResponse(List<ItemDto> items){
         this.items = items;
     }
     public ShowItemsResponse(){}

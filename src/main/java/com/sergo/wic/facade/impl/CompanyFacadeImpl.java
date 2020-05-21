@@ -47,7 +47,7 @@ public class CompanyFacadeImpl implements CompanyFacade {
 
             userProfileResponse.setShares(Arrays.asList(cocaColaShare, cocaColaShare2));
             userProfileResponse.setContacts(userFacade.getUserContacts().get("user@gmail.com"));
-            userProfileResponse.setLabel("/images/cocacola-logo.png");
+            userProfileResponse.setLabel("/photoFGH/company owner 00000000-0000-03e8-0000-00000000001a.jpg");
             userProfileResponse.setNameCompany("Macdonalds");
             userProfileResponse.setShortDescription("Fast food");
             userProfileResponse.setWebPage("https://mcdonalds.by/ru/");

@@ -8,6 +8,10 @@
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.js"></script>
     <script src="/javascript/NewSharesRequest.js" type="text/javascript"></script>
     <script>
+
+        var cloneElement = $('.messages_forms').clone(true,true);
+        // var userId = Number(document.getElementById('user_id').textContent);
+        // console.log(userId);
         function newSharesRequest() {
             // var time = new Date();
             // var formatDate = time.getFullYear() + '-' + ('0' + (time.getMonth() + 1)).slice(-2) + '-' +  ('0' + time.getDate()).slice(-2)  + ' ' + ('0' + time.getHours()).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2);
@@ -32,7 +36,8 @@
                  },
                  async: true,
                  success: function (msg) {
-                     console.log(msg);
+                     if (msg === null)
+                         return;
                      var trHTML = '';
                      $.each(msg, function (i, item) {
                      trHTML += '<tr><td class="td_share_id">'
@@ -49,7 +54,12 @@
                          + item.placeCountry + '</td><td>'
                          + item.placeCity + '</td><td>'
                          + item.placeRegion + '</td><td>'
-                         + item.color + '</td></tr>';
+                         + item.color + '</td><td>'
+                         // + '<div class="messages_forms" id="' + item.id +'">'
+                         // + '<button class="confirm_button" id="' + item.id + '" value="confirm"> confirm </button>'
+                         // + '<div class="confirm_messages" >'
+                     //    + '<form action="/admin/show/"' + userId + '/confirm" method="post">'
+                         + '</td><tr>';
                      });
                      $('#company_shares').append(trHTML);
                  },
@@ -60,6 +70,46 @@
         }
         setInterval(newSharesRequest,4000);
     </script>
+    <script>
+        $( document ).ready( function() {
+            let $cancelButton = $( ".cancel_button" );
+            let $confirmButton = $( ".confirm_button" );
+
+            let $confirmMessages = $('.confirm_messages');
+            let $cancelMessages = $('.cancel_messages');
+
+            $cancelButton.mouseover( function() {
+                $('.messages_forms#' + $(this).attr('id')).find('.cancel_messages').toggle( 'slow' );
+                $('.messages_forms#' + $(this).attr('id')).find('.confirm_messages').hide();
+            });
+
+            $confirmButton.mouseover( function() {
+                $('.messages_forms#' + $(this).attr('id')).find('.confirm_messages').toggle( 'slow' );
+                $('.messages_forms#' + $(this).attr('id')).find('.cancel_messages').hide();
+            });
+
+            let $confirmSelect = $('.confirm_select');
+            let $cancelSelect = $('.cancel_select');
+
+            $confirmSelect.change(function(){
+                var o = $('.confirm_message');
+                if (this.value == 'another') {
+                    o.show();
+                } else {
+                    o.hide();
+                }
+            });
+
+            $cancelSelect.change(function(){
+                var o = $('.cancel_message');
+                if (this.value == 'another') {
+                    o.show();
+                } else {
+                    o.hide();
+                }
+            });
+        });
+    </script>
 </head>
 <body>
 <div id="google_translate_element">
@@ -69,7 +119,8 @@
                 pageLanguage: 'ru'
             }, 'google_translate_element');
         }
-    </script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <div class="tab-label">
 
         <div th:if="${user.hasCompany}">
@@ -86,6 +137,7 @@
             </thead>
             <tbody>
             <tr th:object="${user}">
+<!--                <td id="userId" th:text="${user.getId()}" hidden></td>-->
                 <td th:text="${user.getLogin()}" /></td>
                 <td th:if="${user.isHasCompany()}" th:text="${company.getName()}"/></td>
                 <td id="company_id" th:if="${user.isHasCompany()}" th:text="${company.getId()}"/></td>
@@ -98,10 +150,6 @@
             </tr>
             </tbody>
         </table>
-
-        <div style="height: 100px">
-            <a id="test"></a>
-        </div>
 
         <div >
             <table id="company_shares" th:if="${shares != null}">
@@ -156,35 +204,42 @@
                     <td th:text="${share.getPlaceCity()}"/></td>
                     <td th:text="${share.getColor()}"/></td>
 
-                    <td/>
-                        <div>
-                            <div>
-
+                    <td>
+                        <div class="messages_forms" data-th-id="${share.id}">
+                            <button class="confirm_button" data-th-id="${share.id}"  value="confirm"> confirm </button>
+                            <div class="confirm_messages" >
                                 <form th:action="@{'/admin/show/'+ ${user.id} + '/confirm'}" method="post">
-                                    <select name="reason" required size="3">
+                                    <select name="reason" class="confirm_select" required size="4">
                                         <option disabled>choose message</option>
-                                        <option value="mistake">thanks for choosing us!</option>
-                                        <option value="bad content">great!</option>
-                                        <option value="choose your reason">enter reason</option>
+                                        <option selected value="thanks for choosing us!">thanks for choosing us!</option>
+                                        <option value="great!">great!</option>
+                                        <option value="another">another</option>
                                     </select>
-                                    <input type="hidden" name="custom_reason" th:value="${share.id}">
-<!--                                    <input type="text" th:placeholder="'enter message'" name="reason" required/>-->
+                                    <div id="confirm_text">
+                                    <input type="text" class="confirm_message" placeholder="enter message" name="custom_confirm_reason">
+                                    </div>
                                     <input type="hidden" name="share_id" th:value="${share.id}">
                                     <input type="submit" value="confirm" />
                                 </form>
                             </div>
-                            <div>
+                            <div class="messages_forms">
+                                <button class="cancel_button" data-th-id="${share.id}"  value="cancel"> cancel </button>
+                                <div class="cancel_messages" data-th-id="${share.id}">
+
                                 <form th:action="@{'/admin/show/' + ${user.id} + '/cancel'}" method="post">
-                                    <select name="reason" required size="3">
+                                    <select id="cancel_select" name="reason" required size="4">
                                         <option disabled>choose reason</option>
-                                        <option value="mistake">mistake</option>
+                                        <option selected value="mistake">mistake</option>
                                         <option value="bad content">bad content</option>
-                                        <option value="choose your reason">enter reason</option>
+                                        <option value="another">another</option>
                                     </select>
-<!--                                    <input type="text" th:placeholder="'enter reason'" name="reason" required />-->
+                                    <div id="cancel_text">
+                                    <input  type="text" class="cancel_message" placeholder="enter your reason" name="custom_cancel_reason">
+                                    </div>
                                     <input type="hidden" name="share_id" th:value="${share.id}">
                                     <input type="submit" value="cancel" />
                                 </form>
+                                </div>
                             </div>
                         </div>
                     </td>

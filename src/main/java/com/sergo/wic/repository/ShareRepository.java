@@ -21,7 +21,7 @@ public interface ShareRepository extends JpaRepository<Share, Long> {
     Optional<Share> findByShareId(String shareId);
     List<Share> findAllByCompany(Company company);
     //Query(value = "SELECT * FROM shares WHERE id > :old_id AND company_id = :comp_id;", nativeQuery = true)
-    @Query(value = "SELECT * FROM shares WHERE id > :old_id ;", nativeQuery = true)
+    @Query(value = "SELECT * FROM shares WHERE id > :old_id AND creation_status = 'CREATED';", nativeQuery = true)
     Optional<List<Share>> findNewShares(@Param("old_id") Long oldId);
 
 

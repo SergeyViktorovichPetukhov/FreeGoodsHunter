@@ -1,11 +1,17 @@
 table {
     padding: 10px;
-    border: 5px solid black;
+    border: 2px solid black;
     border-collapse: collapse;
+
+}
+
+table td {
+    text-align: center;
+    vertical-align: center;
 }
 
 th, td {
-    border: 3px solid black;
+    border: 1.5px solid black;
     border-collapse: collapse;
 }
 
@@ -18,4 +24,28 @@ table.tab2 {
     display: inline-block;
     width: 300px;
     border: 3px solid black
+}
+
+.cancel_messages {
+    display : none;
+
+}
+.confirm_messages {
+    display : none;
+}
+button {
+    margin: 10px;
+    width: 50px;
+    height: 20px;
+}
+.messages_forms {
+    width: 260px;
+    height: 200px;
+    /*display: none;*/
+}
+.hidden-input {
+    position: sticky;
+    display: none;
+    width: 150px;
+    height: 30px
 }

@@ -3,8 +3,10 @@ package com.sergo.wic.controller;
 import com.sergo.wic.converter.ItemConverter;
 import com.sergo.wic.dto.ItemDto;
 import com.sergo.wic.dto.PickedItemDto;
+import com.sergo.wic.dto.Response.GetShareItemsResponse;
 import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.Response.ShowItemsResponse;
+import com.sergo.wic.dto.ResponseContent;
 import com.sergo.wic.entities.Item;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.service.ItemService;
@@ -40,7 +42,7 @@ public class ItemController {
     public Response getShareItems(@RequestParam String shareId){
         Optional<Share> share = shareService.findByShareId(shareId);
         if (share.isPresent()){
-            return new ShowItemsResponse(itemService.getShareItems(share.get()),true,0);
+            return new Response(true,0, new GetShareItemsResponse(itemService.getShareItems(share.get())));
         }
         return new Response(false,1,"no such share");
     }
@@ -53,7 +55,7 @@ public class ItemController {
                     (item) -> item.getUserItem() == null).collect(Collectors.toList());
                 List<ItemDto> dtos = new ArrayList<>();
                 itemConverter.convertAllDtos(dtos);
-            return new ShowItemsResponse(dtos,true,0);
+            return new Response(true,0, new ShowItemsResponse(dtos));
         }
         return new Response(false,1,"no shares");
     }
