@@ -4,7 +4,9 @@ import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.facade.CompanyFacade;
 import com.sergo.wic.facade.ShareFacade;
 import com.sergo.wic.facade.UserFacade;
+import com.sergo.wic.google_api.AWSAPIChecker;
 import com.sergo.wic.google_api.GooglePlacesRequestor;
+import com.sergo.wic.google_api.SimilarWebChecker;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,12 +17,19 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 @RestController
 public class MockController {
 
     @Autowired
     private ShareFacade shareFacade;
+
+    @Autowired
+    AWSAPIChecker awsapiChecker;
 
     @Autowired
     private GooglePlacesRequestor requestor;
@@ -33,6 +42,13 @@ public class MockController {
 
     @Autowired
     private ServletContext servletContext;
+
+
+
+    @GetMapping("test2")
+    public void test2(@RequestParam String url){
+       awsapiChecker.APICall(url);
+    }
 
 
 

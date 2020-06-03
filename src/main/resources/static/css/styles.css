@@ -2,7 +2,7 @@ table {
     padding: 10px;
     border: 2px solid black;
     border-collapse: collapse;
-
+    background: #2e82c3;
 }
 
 table td {
@@ -10,9 +10,16 @@ table td {
     vertical-align: center;
 }
 
-th, td {
+th {
     border: 1.5px solid black;
     border-collapse: collapse;
+    background: #cbdfaa;
+}
+
+ td {
+    border: 1.5px solid black;
+    border-collapse: collapse;
+    background: #cbdfef;
 }
 
 table.tab2 {
@@ -20,6 +27,11 @@ table.tab2 {
     text-align: center;
     vertical-align: bottom;
 }
+/*table {width: 100%; border-collapse: separate; border-spacing: 4px;}*/
+/*table thead tr {color: #ffffff; font-weight: bold;}*/
+/*table thead tr td {border-radius: 4px 4px 0 0; background: #2e82c3;}*/
+/*table tbody tr td {border: 1px solid #2e82c3; border-radius: 4px; background: #cbdfef;}*/
+/*table tbody tr td:hover {background: #a2c3dd; transition-duration: 0.2s;}*/
 .prepared_answers {
     display: inline-block;
     width: 300px;
@@ -39,8 +51,10 @@ button {
     height: 20px;
 }
 .messages_forms {
-    width: 260px;
+    width: 170px;
     height: 200px;
+    background: white;
+    border-color: white;
     /*display: none;*/
 }
 .hidden-input {

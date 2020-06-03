@@ -53,9 +53,7 @@ public class ItemController {
         if (items != null) {
             List<Item> result = items.stream().filter(
                     (item) -> item.getUserItem() == null).collect(Collectors.toList());
-                List<ItemDto> dtos = new ArrayList<>();
-                itemConverter.convertAllDtos(dtos);
-            return new Response(true,0, new ShowItemsResponse(dtos));
+            return new Response(true,0, new ShowItemsResponse(itemConverter.convertAllItems(result)));
         }
         return new Response(false,1,"no shares");
     }

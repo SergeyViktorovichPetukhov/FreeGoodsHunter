@@ -7,109 +7,7 @@
           href="/static/css/styles.css" th:href="@{/css/styles.css}" />
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.js"></script>
     <script src="/javascript/NewSharesRequest.js" type="text/javascript"></script>
-    <script>
 
-        var cloneElement = $('.messages_forms').clone(true,true);
-        // var userId = Number(document.getElementById('user_id').textContent);
-        // console.log(userId);
-        function newSharesRequest() {
-            // var time = new Date();
-            // var formatDate = time.getFullYear() + '-' + ('0' + (time.getMonth() + 1)).slice(-2) + '-' +  ('0' + time.getDate()).slice(-2)  + ' ' + ('0' + time.getHours()).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2);
-            var company_id = Number(document.getElementById('company_id').textContent);
-            var shareIds = document.getElementsByClassName('td_share_id');
-            var maxShareId =0;
-            var current = 0;
-            for (var i = 0; i < shareIds.length; i++) {
-                current = shareIds[i].innerHTML;
-                if (current >= maxShareId){
-                    maxShareId = current;
-                }
-            }
-
-                 $.ajax({
-                 type: "GET",
-                 url: "/ajax/getNewShares",
-                 dataType: "json",
-                 data: {
-                     'max_share_id' : maxShareId,
-                     'company_id' : company_id
-                 },
-                 async: true,
-                 success: function (msg) {
-                     if (msg === null)
-                         return;
-                     var trHTML = '';
-                     $.each(msg, function (i, item) {
-                     trHTML += '<tr><td class="td_share_id">'
-                         + item.id + '</td ><td>'
-                         + item.login + '</td><td>'
-                         + item.productName + '</td><td>'
-                         + item.productDescription + '</td><td>'
-                         + item.linkOnProduct + '</td><td>'
-                         + item.productPrice + '</td><td>'
-                         + item.productCount + '</td><td>'
-                         + item.announcementDuration + '</td><td>'
-                         + item.shareDuration + '</td><td>'
-                         + item.afterShareDuration + '</td><td>'
-                         + item.placeCountry + '</td><td>'
-                         + item.placeCity + '</td><td>'
-                         + item.placeRegion + '</td><td>'
-                         + item.color + '</td><td>'
-                         // + '<div class="messages_forms" id="' + item.id +'">'
-                         // + '<button class="confirm_button" id="' + item.id + '" value="confirm"> confirm </button>'
-                         // + '<div class="confirm_messages" >'
-                     //    + '<form action="/admin/show/"' + userId + '/confirm" method="post">'
-                         + '</td><tr>';
-                     });
-                     $('#company_shares').append(trHTML);
-                 },
-                 error: function (xhr, status, error) {
-                     console.log(error,status)
-                 }
-         });
-        }
-        setInterval(newSharesRequest,4000);
-    </script>
-    <script>
-        $( document ).ready( function() {
-            let $cancelButton = $( ".cancel_button" );
-            let $confirmButton = $( ".confirm_button" );
-
-            let $confirmMessages = $('.confirm_messages');
-            let $cancelMessages = $('.cancel_messages');
-
-            $cancelButton.mouseover( function() {
-                $('.messages_forms#' + $(this).attr('id')).find('.cancel_messages').toggle( 'slow' );
-                $('.messages_forms#' + $(this).attr('id')).find('.confirm_messages').hide();
-            });
-
-            $confirmButton.mouseover( function() {
-                $('.messages_forms#' + $(this).attr('id')).find('.confirm_messages').toggle( 'slow' );
-                $('.messages_forms#' + $(this).attr('id')).find('.cancel_messages').hide();
-            });
-
-            let $confirmSelect = $('.confirm_select');
-            let $cancelSelect = $('.cancel_select');
-
-            $confirmSelect.change(function(){
-                var o = $('.confirm_message');
-                if (this.value == 'another') {
-                    o.show();
-                } else {
-                    o.hide();
-                }
-            });
-
-            $cancelSelect.change(function(){
-                var o = $('.cancel_message');
-                if (this.value == 'another') {
-                    o.show();
-                } else {
-                    o.hide();
-                }
-            });
-        });
-    </script>
 </head>
 <body>
 <div id="google_translate_element">
@@ -123,21 +21,22 @@
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <div class="tab-label">
 
-        <div th:if="${user.hasCompany}">
+        <div th:if="${user.isHasCompany()}">
             <h2 align="center" th:text="#{company.shares}"></h2>
         </div>
 
         <table width="500px" align="center">
             <thead>
             <tr>
+                <th> user id</th>
                 <th> login</th>
-                <th> company</th>
+                <th> company name</th>
                 <th> company id</th>
             </tr>
             </thead>
             <tbody>
             <tr th:object="${user}">
-<!--                <td id="userId" th:text="${user.getId()}" hidden></td>-->
+                <td ><p id="userId" th:text="${user.getId()}"></p></td>
                 <td th:text="${user.getLogin()}" /></td>
                 <td th:if="${user.isHasCompany()}" th:text="${company.getName()}"/></td>
                 <td id="company_id" th:if="${user.isHasCompany()}" th:text="${company.getId()}"/></td>
@@ -150,7 +49,8 @@
             </tr>
             </tbody>
         </table>
-
+        <br>
+        <br>
         <div >
             <table id="company_shares" th:if="${shares != null}">
                 <thead>
@@ -183,7 +83,7 @@
                     <th><a>place region</a></th>
                     <th><a >place city</a> </th>
                     <th><a>color</a></th>
-                    <th>      </th>
+<!--                    <th>      </th>-->
                 </tr>
                 </thead>
                 <tbody>
@@ -249,5 +149,131 @@
         </div>
     </div>
 </div>
+<script>
+    var userId = $('#userId').text();
+    function newSharesRequest() {
+        var company_id = Number(document.getElementById('company_id').textContent);
+        var shareIds = document.getElementsByClassName('td_share_id');
+        var maxShareId =0;
+        var current = 0;
+        for (var i = 0; i < shareIds.length; i++) {
+            current = shareIds[i].innerHTML;
+            if (current >= maxShareId){
+                maxShareId = current;
+            }
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "/ajax/getNewShares",
+            dataType: "json",
+            data: {
+                'max_share_id' : maxShareId,
+                'company_id' : company_id
+            },
+            async: true,
+            success: function (msg) {
+                if (msg === null)
+                    return;
+                var trHTML = '';
+                $.each(msg, function (i, item) {
+                    trHTML += '<tr><td class="td_share_id">'
+                        + item.id + '</td ><td>'
+                        + item.login + '</td><td>'
+                        + item.productName + '</td><td>'
+                        + item.productDescription + '</td><td>'
+                        + item.linkOnProduct + '</td><td>'
+                        + item.productPrice + '</td><td>'
+                        + item.productCount + '</td><td>'
+                        + item.announcementDuration + '</td><td>'
+                        + item.shareDuration + '</td><td>'
+                        + item.afterShareDuration + '</td><td>'
+                        + item.placeCountry + '</td><td>'
+                        + item.placeCity + '</td><td>'
+                        + item.placeRegion + '</td><td>'
+                        + item.color + '</td><td>'
+                        + '<div class="messages_forms" width="300px" id="' + item.id +'">'
+                        + '<button class="confirm_button" id="' + item.id + '" value="confirm"> confirm </button>'
+                        + '<div class="confirm_messages" >'
+                        + '<form action="/admin/show/' + userId + '/confirm" method="post">'
+                        + '<select name="reason" class="confirm_select" required size="4">'
+                        + '<option disabled>choose message</option>'
+                        + '<option selected value="thanks for choosing us!">thanks for choosing us!</option>'
+                        + '<option value="great!">great!</option>'
+                        + '<option value="another">another</option>'
+                        + '</select>'
+                        + '<div id="confirm_text">' +
+                        ' <input type="text" class="confirm_message" placeholder="enter message" name="custom_confirm_reason">' +
+                        ' </div>' +
+                        ' <input type="hidden" name="share_id" th:value="${share.id}">' +
+                        ' <input type="submit" value="confirm" />' +
+                        ' </form>'
+                        +'</div>' +
+                        '<div class="messages_forms" id="' + item.id +'">' +
+                        '<button class="cancel_button"' + item.id + ' value="cancel"> cancel </button>\n' +
+                        '<div class="cancel_messages">' +
+                        '<form action="/admin/show/' + userId + '/cancel" method="post">' +
+                        '<select id="cancel_select" name="reason" required size="4">' +
+                        '<option disabled>choose reason</option>' +
+                        '<option selected value="mistake">mistake</option>' +
+                        '<option value="bad content">bad content</option>' +
+                        '<option value="another">another</option>' +
+                        '</select>' +
+                        '<div id="cancel_text">' +
+                        '<input  type="text" class="cancel_message" placeholder="enter your reason" name="custom_cancel_reason">' +
+                        '</div>' +
+                        '<input type="hidden" name="share_id" value="' + item.id + '>' +
+                        '<input type="submit" value="cancel"/>' +
+                        '</form>' +
+                        '</div>' +
+                        '</div>'
+                        + '</td><tr>';
+                });
+                $('#company_shares').append(trHTML);
+            },
+            error: function (xhr, status, error) {
+                console.log(error,status)
+            }
+        });
+    }
+    setInterval(newSharesRequest,4000);
+</script>
+<script>
+    let $cancelButton = $( ".cancel_button" );
+    let $confirmButton = $( ".confirm_button" );
+
+    $( document ).on('mouseover', ".cancel_button",function() {
+        $('.messages_forms#' + $(this).attr('id')).find('.cancel_messages').toggle( 'slow' );
+        $('.messages_forms#' + $(this).attr('id')).find('.confirm_messages').hide();
+    });
+    $( document ).on('mouseover', ".confirm_button",function() {
+        $('.messages_forms#' + $(this).attr('id')).find('.confirm_messages').toggle( 'slow' );
+        $('.messages_forms#' + $(this).attr('id')).find('.cancel_messages').hide();
+    });
+
+    $( document ).ready( function() {
+
+        let $confirmSelect = $('.confirm_select');
+        let $cancelSelect = $('.cancel_select');
+
+        $confirmSelect.change(function(){
+            var o = $('.confirm_message');
+            if (this.value == 'another') {
+                o.show();
+            } else {
+                o.hide();
+            }
+        });
+
+        $cancelSelect.change(function(){
+            var o = $('.cancel_message');
+            if (this.value == 'another') {
+                o.show();
+            } else {
+                o.hide();
+            }
+        });
+    });
+</script>
 </body>
 </html>
