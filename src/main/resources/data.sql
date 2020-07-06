@@ -3,11 +3,11 @@ INSERT INTO share_statuses (id, name) VALUES (0, 'ACTIVE');
 INSERT INTO share_statuses (id, name) VALUES (1, 'SOON');
 INSERT INTO share_statuses (id, name) VALUES (2, 'COMPLETED');
 
-INSERT INTO companies(id,login,name, address, phone, user_id) VALUES (1,'company owner','roga i kopita','address XXX',7777777,3);
+INSERT INTO companies(id,login,name, address, contact, user_id) VALUES (1,'company owner','roga i kopita','address XXX',7777777,3);
 
-INSERT INTO users (id, login, email, phone) VALUES (1, 'vasya pupkin','pupkin@mail.ru','123456789');
-INSERT INTO users (id, login, email, phone) VALUES (2, 'sergeyp3d@rambler.ru','ps@mail.ru','+7 495 333-91-44');
-INSERT INTO users (id, login, email, phone, has_company) VALUES (3, 'company owner','company_owner@mail.ru','7777777', TRUE);
+INSERT INTO users (id, login, email, contact) VALUES (1, 'vasya pupkin','pupkin@mail.ru','123456789');
+INSERT INTO users (id, login, email, contact) VALUES (2, 'sergeyp3d@rambler.ru','ps@mail.ru','+7 495 333-91-44');
+INSERT INTO users (id, login, email, contact, has_company) VALUES (3, 'company owner','company_owner@mail.ru','7777777', TRUE);
 
 
 INSERT INTO shares(id,share_id,company_id,login,product_photo_url,product_name,product_description,product_count, link_on_product ,

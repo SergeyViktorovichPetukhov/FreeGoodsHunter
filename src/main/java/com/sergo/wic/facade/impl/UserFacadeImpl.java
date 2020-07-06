@@ -1,5 +1,6 @@
 package com.sergo.wic.facade.impl;
 
+import com.sergo.wic.company_check.AWSAPIChecker;
 import com.sergo.wic.dto.*;
 import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.entities.Company;
@@ -59,6 +60,9 @@ public class UserFacadeImpl implements UserFacade {
 
     @Autowired
     private RegistrationService registrationService;
+
+    @Autowired
+    private AWSAPIChecker awsapiChecker;
 
     {
        byte[] photo = null;
@@ -201,9 +205,20 @@ public class UserFacadeImpl implements UserFacade {
     public Response registerCompany(final String login, final String phone) {
         String code = RandomString.getAlphaNumericString(6);
         System.out.println("random code: " + code);
-        registrationService.save(new Registration(login,code , phone, userService.findByPhone(phone).getId(),true));
-        emailService.sendSimpleMessage(login, "Registration code", "Your registration code: " + code);
+        registrationService.save(new Registration(login,code , phone, userService.findByLogin(login).get().getId()));
+      //  emailService.sendSimpleMessage(login, "Registration code", "Your registration code: " + code);
         return new Response(true, 0);
+    }
+
+    @Override
+    public Response registerCompany(final String login, final String phone, final String url) {
+        String code = RandomString.getAlphaNumericString(6);
+        System.out.println("random code: " + code);
+        Registration registration = new Registration(login,code , phone, userService.findByLogin(login).get().getId());
+        registration.setAlexaRank(awsapiChecker.getAlexaRank(url));
+        registrationService.save(registration);
+        emailService.sendSimpleMessage(login, "Registration code", "Your registration code: " + code);
+        return new Response(true, 0,"application submitted to moderator");
     }
 
     @Override

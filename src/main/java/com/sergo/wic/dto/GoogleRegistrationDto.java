@@ -2,13 +2,13 @@ package com.sergo.wic.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class RegistrationDto {
+public class GoogleRegistrationDto {
     @JsonProperty("login")
     private String login;
     private String phone;
     private String placeName;
 
-    public RegistrationDto(String login, String phone, String placeName) {
+    public GoogleRegistrationDto(String login, String phone, String placeName) {
         this.placeName = placeName;
         this.login = login;
         this.phone = phone;

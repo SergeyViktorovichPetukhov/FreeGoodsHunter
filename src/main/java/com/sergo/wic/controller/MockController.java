@@ -1,12 +1,14 @@
 package com.sergo.wic.controller;
 
+import com.sergo.wic.company_check.WebSiteChecker;
+import com.sergo.wic.dto.HtmlByEmailDto;
+import com.sergo.wic.dto.HtmlByPhoneDto;
 import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.facade.CompanyFacade;
 import com.sergo.wic.facade.ShareFacade;
 import com.sergo.wic.facade.UserFacade;
-import com.sergo.wic.google_api.AWSAPIChecker;
-import com.sergo.wic.google_api.GooglePlacesRequestor;
-import com.sergo.wic.google_api.SimilarWebChecker;
+import com.sergo.wic.company_check.AWSAPIChecker;
+import com.sergo.wic.company_check.GooglePlacesRequestor;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,10 +19,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
 
 @RestController
 public class MockController {
@@ -30,6 +28,9 @@ public class MockController {
 
     @Autowired
     AWSAPIChecker awsapiChecker;
+
+    @Autowired
+    WebSiteChecker webSiteChecker;
 
     @Autowired
     private GooglePlacesRequestor requestor;
@@ -47,10 +48,25 @@ public class MockController {
 
     @GetMapping("test2")
     public void test2(@RequestParam String url){
-       awsapiChecker.APICall(url);
+
+        awsapiChecker.getAlexaTrafficHistory(url);
+      //  awsapiChecker.getAlexaLinksInCount(url);
     }
 
+    @PostMapping("test3")
+    public String checkHtmlPageByEmail(@RequestBody HtmlByEmailDto dto){
+        return String.valueOf(webSiteChecker.checkHtmlPageByEmail(dto.getUrl(),dto.getEmail()));
+    }
 
+    @PostMapping("test4")
+    public String checkHtmlPageByPhone(@RequestBody HtmlByPhoneDto dto){
+        return String.valueOf(webSiteChecker.checkHtmlPageByPhone(dto.getUrl(),dto.getPhone()));
+    }
+
+    @GetMapping("test5")
+    public void test5(){
+        awsapiChecker.getAlexaCategories( );
+    }
 
     @GetMapping("/images/uploadedPhotos/{id}")
     public void getImageAsResource(HttpServletResponse response, @PathVariable("id") String id) throws IOException {

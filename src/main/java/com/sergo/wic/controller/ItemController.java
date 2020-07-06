@@ -2,8 +2,10 @@ package com.sergo.wic.controller;
 
 import com.sergo.wic.converter.ItemConverter;
 import com.sergo.wic.dto.ItemDto;
+import com.sergo.wic.dto.MaxCountItemsDto;
 import com.sergo.wic.dto.PickedItemDto;
 import com.sergo.wic.dto.Response.GetShareItemsResponse;
+import com.sergo.wic.dto.Response.MaxCountItemsResponse;
 import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.Response.ShowItemsResponse;
 import com.sergo.wic.dto.ResponseContent;
@@ -12,14 +14,12 @@ import com.sergo.wic.entities.Share;
 import com.sergo.wic.service.ItemService;
 import com.sergo.wic.service.ShareService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @RestController
@@ -56,6 +56,11 @@ public class ItemController {
             return new Response(true,0, new ShowItemsResponse(itemConverter.convertAllItems(result)));
         }
         return new Response(false,1,"no shares");
+    }
+
+    @PostMapping("/getMaxCountItems")
+    public Response getMaxCountItems(@RequestBody(required = false) MaxCountItemsDto dto){
+        return new MaxCountItemsResponse(itemService.getMaxCountItems("C:\\Users\\HP\\Desktop\\moscow qgis\\data.qgs","Moscow_utm_37n"));
     }
 
 }

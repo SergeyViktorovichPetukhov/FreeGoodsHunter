@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +24,9 @@ public class ItemServiceImpl implements ItemService {
     private CompanyService companyService;
     private ItemConverter itemConverter;
     private UserItemService userItemService;
+
+    private static final String PYTHONPATH = "C:\\Program Files\\QGIS 3.12\\bin";
+    private static final String[] COMMANDS = {"python3" , "calculate_area.py"};
 
     public ItemServiceImpl(@Autowired ItemRepository repository,
                            @Autowired CompanyService companyService,
@@ -79,6 +83,28 @@ public class ItemServiceImpl implements ItemService {
         List<Item> items = repository.findAllByShare(share);
         List<Item> result = items.stream().filter((item) -> item.getUserItem() == null).collect(Collectors.toList());
         return itemConverter.convertAllItems(result);
+    }
+
+    @Override
+    public Integer getMaxCountItems(String projectPath,String layerName){
+        String pythonResult = null;
+        Process p;
+        try{
+            p = Runtime.getRuntime()
+                    .exec(COMMANDS, null,new File(PYTHONPATH)
+                    //        + projectPath + " " + layerName, PYTHONPATH
+                    );
+            ByteArrayOutputStream result = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = p.getInputStream().read(buffer)) != -1) {
+                result.write(buffer, 0, length);
+            }
+            pythonResult = result.toString("UTF-8");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return Integer.valueOf(pythonResult);
     }
 
     @Override

@@ -17,4 +17,5 @@ public interface ItemService {
     List<Item> findAll();
     List<ItemDto> getShareItems(Share share);
     boolean isPickedFullItemsForOneProduct();
+    Integer getMaxCountItems(String project,String layer);
 }

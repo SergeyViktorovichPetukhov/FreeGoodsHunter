@@ -13,7 +13,7 @@ public class ShareResponse extends Response {
             setSuccess(success);
             setId(null);
             setErrorCode(1);
-            setErrorMessage(reason);
+            setMessage(reason);
         }
     }
 

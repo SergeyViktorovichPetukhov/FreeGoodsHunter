@@ -16,6 +16,7 @@ public interface UserFacade {
     NoticeResponse getNotices(String login);
     RatingResponse getRatingOfUsers(String country, String region, String city);
     Response registerCompany(String login, String phone);
+    Response registerCompany(String login, String phone, String url);
     Response verifyCode(String login, String code,String address, String phone);
     Response addContactToUser(String login, String typeContact, String contact);
     Response setPhotoToUser(String login, MultipartFile photo);

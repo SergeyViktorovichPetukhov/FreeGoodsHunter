@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS users
     all_items_count       INTEGER,
     picked_items_count    INTEGER,
     email                 VARCHAR(30),
-    phone                 VARCHAR(25),
+    contact                 VARCHAR(25),
     name                  VARCHAR(30),
     has_company           BOOLEAN       DEFAULT FALSE
 -- ,
@@ -60,7 +60,8 @@ CREATE TABLE IF NOT EXISTS registrations
     id                  BIGSERIAL     NOT NULL,
     login               VARCHAR(30)   NOT NULL   UNIQUE,
     address             VARCHAR(30),
-    phone               VARCHAR(10)   NOT NULL   UNIQUE,
+    contact               VARCHAR(30)   NOT NULL   UNIQUE,
+    alexa_rank          VARCHAR(10),
     code                VARCHAR(30),
     is_new              BOOLEAN,
     is_confirmed        BOOLEAN,
@@ -123,7 +124,7 @@ CREATE TABLE IF NOT EXISTS companies
     login         VARCHAR(50)  NOT NULL,
     name          VARCHAR(50)  NOT NULL,
     address       VARCHAR(50),
-    phone         VARCHAR(50)  NOT NULL,
+    contact         VARCHAR(50)  NOT NULL,
     internet_shop VARCHAR(100),
     code          VARCHAR(40),
     label_path    VARCHAR(50),
@@ -202,3 +203,8 @@ COMMIT;
 
 CREATE SEQUENCE HIBERNATE_SEQUENCE START WITH 100 INCREMENT BY 1;
 
+
+------------------ EXTENSIONS  --------------------------
+
+
+CREATE EXTENSION postgis;

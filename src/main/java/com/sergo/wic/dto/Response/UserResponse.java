@@ -13,7 +13,7 @@ public class UserResponse extends Response {
         else {
             this.setSuccess(true);
             this.setErrorCode(1);
-            this.setErrorMessage("user hasn't company");
+            this.setMessage("user hasn't company");
             this.hasCompany = false;
         }
     }
@@ -21,7 +21,7 @@ public class UserResponse extends Response {
     public UserResponse( boolean hasCompany, boolean noUser){
         this.setSuccess(true);
         this.setErrorCode(2);
-        this.setErrorMessage("no such user");
+        this.setMessage("no such user");
         this.hasCompany = false;
     }
 

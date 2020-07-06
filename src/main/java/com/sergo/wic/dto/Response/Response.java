@@ -6,7 +6,7 @@ public class Response {
 
     private boolean isSuccess;
     private int errorCode;
-    private String errorMessage;
+    private String message;
     private ResponseContent content;
 //    private List<String> errors;
 
@@ -22,10 +22,10 @@ public class Response {
         this.errorCode = errorCode;
     }
 
-    public Response(final boolean isSuccess,final int errorCode,final String errorMessage) {
+    public Response(final boolean isSuccess,final int errorCode,final String message) {
         this.isSuccess = isSuccess;
         this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
+        this.message = message;
     }
 
         public Response(boolean isSuccess, int errorCode, ResponseContent content) {
@@ -67,11 +67,11 @@ public class Response {
         this.errorCode = errorCode;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public String getMessage() {
+        return message;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

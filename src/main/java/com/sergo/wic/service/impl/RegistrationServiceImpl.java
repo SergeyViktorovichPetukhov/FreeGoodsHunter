@@ -23,7 +23,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public Registration findByPhone(String phone) {
-        return repository.findByPhone(phone);
+        return repository.findByContact(phone);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     @Transactional
     public boolean deleteByPhone(String phone) {
-        Registration registration = repository.findByPhone(phone);
+        Registration registration = repository.findByContact(phone);
         if (registration != null){
             repository.deleteById(registration.getId());
             return true;

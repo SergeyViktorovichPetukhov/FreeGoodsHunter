@@ -1,7 +1,5 @@
 package com.sergo.wic.entities;
 
-import org.springframework.stereotype.Indexed;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -11,23 +9,23 @@ public class Registration {
 
     public Registration(){}
 
-    public Registration(String login, String phone, String code) {
+    public Registration(String login, String contact, String code) {
         this.login = login;
-        this.phone = phone;
+        this.contact = contact;
         this.code = code;
     }
 
-    public Registration(String login, String address, String phone, Long userId) {
+    public Registration(String login, String address, String contact, Long userId) {
         this.login = login;
         this.address = address;
-        this.phone = phone;
+        this.contact = contact;
         this.userId = userId;
     }
 
-    public Registration(String login, String code, String phone, Long userId, boolean isNew) {
+    public Registration(String login, String code, String contact, Long userId, boolean isNew) {
         this.login = login;
         this.code = code;
-        this.phone = phone;
+        this.contact = contact;
         this.userId = userId;
         this.isNew= isNew;
     }
@@ -40,12 +38,14 @@ public class Registration {
     private String login;
     @Column(name = "address")
     private String address;
-    @Column(name = "phone")
-    private String phone;
+    @Column(name = "contact")
+    private String contact;
     @Column(name = "code")
     private String code;
+    @Column(name ="alexa_rank")
+    private String alexaRank;
     @Column(name = "is_new")
-    private boolean isNew;
+    private boolean isNew = true;
     @Column(name = "is_confirmed")
     private boolean isConfirmed;
     @Column(name = "reason_of_refuse")
@@ -77,6 +77,14 @@ public class Registration {
         this.id = id;
     }
 
+    public String getAlexaRank() {
+        return alexaRank;
+    }
+
+    public void setAlexaRank(String alexaRank) {
+        this.alexaRank = alexaRank;
+    }
+
     public String getLogin() {
         return login;
     }
@@ -101,12 +109,12 @@ public class Registration {
         this.address = address;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getContact() {
+        return contact;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
     public String getCode() {
@@ -133,11 +141,11 @@ public class Registration {
         return id == that.id &&
                 this.address.equals(((Registration) o).getAddress())
                &this.login.equals(((Registration) o).getLogin())
-               &this.phone.equals(((Registration)o).getPhone()) ;
+               &this.contact.equals(((Registration)o).getContact()) ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, address, phone);
+        return Objects.hash(id, address, contact);
     }
 }

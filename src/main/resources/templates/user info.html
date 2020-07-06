@@ -21,7 +21,7 @@
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <div class="tab-label">
 
-        <div th:if="${user.isHasCompany()}">
+        <div th:if="${user.hasCompany}">
             <h2 align="center" th:text="#{company.shares}"></h2>
         </div>
 

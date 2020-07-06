@@ -19,13 +19,15 @@
                     <thead>
                     <tr>
                         <th>login</th>
-                        <th>phone</th>
+                        <th>contact</th>
+                        <th>alexa rank</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr style="border: 2px"   th:if="${registration.isNew() == true}" th:each="registration : *{registrations}">
                         <td th:id="userLogin" th:text="${registration.login}" /></td>
-                        <td th:id="userPhone" th:text="${registration.getPhone()}"/></td>
+                        <td th:id="userContact" th:text="${registration.getContact()}"/></td>
+                        <td th:id="alexaRank" th:text="${registration.getAlexaRank()}"/></td>
 
                         <td align="right" valign="center">
                         <form th:action="@{/admin/confirm}" th:object="${registration}" th:method="GET">

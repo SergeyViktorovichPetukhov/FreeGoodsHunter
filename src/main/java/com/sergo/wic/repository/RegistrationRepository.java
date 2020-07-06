@@ -9,10 +9,10 @@ import java.util.Optional;
 @Repository
 public interface RegistrationRepository extends JpaRepository<Registration,Long> {
     Registration findByLogin(String login);
-    Registration findByPhone(String phone);
+    Registration findByContact(String c);
     Registration findByUserId(Long userId);
     Registration findByCode(String code);
     Optional<Registration> findByCodeAndLogin(String code, String login);
     boolean deleteByLogin(String login);
-    boolean deleteByPhone(String phone);
+    boolean deleteByContact(String c);
 }

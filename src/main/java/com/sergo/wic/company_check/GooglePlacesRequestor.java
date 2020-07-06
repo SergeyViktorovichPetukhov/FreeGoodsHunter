@@ -1,4 +1,4 @@
-package com.sergo.wic.google_api;
+package com.sergo.wic.company_check;
 
 import com.google.maps.*;
 import com.google.maps.errors.ApiException;
@@ -7,14 +7,8 @@ import com.google.maps.model.PlaceDetails;
 import com.google.maps.model.PlacesSearchResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.walkercrou.places.AddressComponent;
-import se.walkercrou.places.GooglePlaces;
-import se.walkercrou.places.Place;
-import se.walkercrou.places.exception.NoResultsFoundException;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class GooglePlacesRequestor {
