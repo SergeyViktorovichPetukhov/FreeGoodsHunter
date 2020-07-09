@@ -6,11 +6,10 @@ commit;
 CREATE TABLE IF NOT EXISTS users
 (
     id                    BIGSERIAL     NOT NULL,
-    login                 VARCHAR(30)   NOT NULL      UNIQUE,
+    login                 VARCHAR(40)   NOT NULL      UNIQUE,
     all_items_count       INTEGER,
     picked_items_count    INTEGER,
-    email                 VARCHAR(30),
-    contact                 VARCHAR(25),
+    contact               VARCHAR(25),
     name                  VARCHAR(30),
     has_company           BOOLEAN       DEFAULT FALSE
 -- ,
@@ -60,7 +59,7 @@ CREATE TABLE IF NOT EXISTS registrations
     id                  BIGSERIAL     NOT NULL,
     login               VARCHAR(30)   NOT NULL   UNIQUE,
     address             VARCHAR(30),
-    contact               VARCHAR(30)   NOT NULL   UNIQUE,
+    contact             VARCHAR(30)   NOT NULL   UNIQUE,
     alexa_rank          VARCHAR(10),
     code                VARCHAR(30),
     is_new              BOOLEAN,
@@ -207,4 +206,4 @@ CREATE SEQUENCE HIBERNATE_SEQUENCE START WITH 100 INCREMENT BY 1;
 ------------------ EXTENSIONS  --------------------------
 
 
-CREATE EXTENSION postgis;
+-- CREATE EXTENSION postgis;

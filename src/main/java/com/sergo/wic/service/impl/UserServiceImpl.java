@@ -36,8 +36,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByPhone(String phone){
-        return repository.findByPhone(phone)
+    public User findByContact(String contact){
+        return repository.findByContact(contact)
                 .orElseThrow(() -> new RuntimeException("no such user"));
     }
 
@@ -61,13 +61,13 @@ public class UserServiceImpl implements UserService {
         user.setHasCompany(true);
         repository.save(user);
         Registration registration = registrationService.findByUserId(Long.valueOf(user.getId()));
-        registration.setNew(false);
+        registration.setChecked(false);
         registrationService.save(registration);
     }
 
     @Override
     public void refuseRegistration(@NotNull User user, String reason) {
-        emailService.sendSimpleMessage(user.getEmail(),"registration refused",reason);
+        emailService.sendSimpleMessage(user.getLogin(),"registration refused",reason);
     }
 
     @Override

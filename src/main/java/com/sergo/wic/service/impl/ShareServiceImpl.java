@@ -79,7 +79,7 @@ public class ShareServiceImpl implements ShareService {
             File userPhotoPath = new File(SERVER_PHOTO_PATH + "/" + user.getLogin());
             String photoUrl = userPhotoPath.toString() + " " + uuid.toString();
 
-            String shareId = user.getEmail() + " "
+            String shareId = user.getLogin() + " "
                     + LocalDate.now().toString() + " #"
                     + user.getSharesCount(share) + " ,"
                     + RandomString.getAlphaNumericString(3);
@@ -115,7 +115,7 @@ public class ShareServiceImpl implements ShareService {
 
         if (userOptional.isPresent()){
             User user = userOptional.get();
-            String shareId = user.getEmail() + " "
+            String shareId = user.getLogin() + " "
                     + LocalDate.now().toString() + " #"
                     + user.getSharesCount(share);
             if (existsByShareId(shareId)) {

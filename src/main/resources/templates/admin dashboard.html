@@ -21,10 +21,15 @@
                         <th>login</th>
                         <th>contact</th>
                         <th>alexa rank</th>
+                        <th><a href="http://web.archive.org/">web-archive</a></th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr style="border: 2px"   th:if="${registration.isNew() == true}" th:each="registration : *{registrations}">
+                    <tr style="border: 2px"
+                        th:each="registration : *{registrations}"
+                        th:object="registration"
+                        th:if="${registration.isChecked() == true}">
+
                         <td th:id="userLogin" th:text="${registration.login}" /></td>
                         <td th:id="userContact" th:text="${registration.getContact()}"/></td>
                         <td th:id="alexaRank" th:text="${registration.getAlexaRank()}"/></td>
@@ -65,7 +70,7 @@
                         </td>
                         <td width="350">
                             <a th:href="@{/admin/show/{id}(id=${user.id})}"/>
-                            <div th:text="${user.getEmail()}"></div>
+                            <div th:text="${user.getContact()}"></div>
                         </td>
 
                 </tr>
@@ -86,7 +91,7 @@
                         </td>
                         <td width="350px">
                             <a th:href="@{/admin/show/{id}(id=${user.id})}"/>
-                            <div th:text="${user.getEmail()}"></div>
+                            <div th:text="${user.getContact()}"></div>
                         </td>
 
                     </tr>

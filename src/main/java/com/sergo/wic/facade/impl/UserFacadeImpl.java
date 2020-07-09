@@ -202,30 +202,35 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public Response registerCompany(final String login, final String phone) {
+    public Response registerCompany(final String login, final String contact) {
         String code = RandomString.getAlphaNumericString(6);
         System.out.println("random code: " + code);
-        registrationService.save(new Registration(login,code , phone, userService.findByLogin(login).get().getId()));
-      //  emailService.sendSimpleMessage(login, "Registration code", "Your registration code: " + code);
+        registrationService.save(new Registration(login,code , contact, userService.findByLogin(login).get().getId()));
+        emailService.sendSimpleMessage(contact, "Registration code", "Your registration code: " + code);
         return new Response(true, 0);
     }
 
     @Override
-    public Response registerCompany(final String login, final String phone, final String url) {
+    public Response registerCompany(final String login, final String contact, final String url) {
         String code = RandomString.getAlphaNumericString(6);
         System.out.println("random code: " + code);
-        Registration registration = new Registration(login,code , phone, userService.findByLogin(login).get().getId());
+        Registration registration = new Registration(login, code, contact, userService.findByLogin(login).get().getId());
         registration.setAlexaRank(awsapiChecker.getAlexaRank(url));
         registrationService.save(registration);
-        emailService.sendSimpleMessage(login, "Registration code", "Your registration code: " + code);
+        emailService.sendSimpleMessage(contact, "Registration code", "Your registration code: " + code);
         return new Response(true, 0,"application submitted to moderator");
     }
 
     @Override
     @Transactional
     public Response verifyCode(String login, String code, String address, String phone) {
-
-        User user = userService.findByPhone(phone);
+        User user;
+        Optional<User> userOptional = userService.findByLogin(login);
+        if (userOptional.isPresent()){
+            user = userOptional.get();
+        }
+        else
+            return new Response(false,1,"no such registration");
         Registration registration = null;
         try {
             registration = registrationService
@@ -235,10 +240,11 @@ public class UserFacadeImpl implements UserFacade {
             return new Response(false,1,"no such registration");
         }
         if (registration.getCode().equals(code) & user.getLogin().equals(login)){
-            Company company = new Company(login,address,phone,code);
-                company.setUser(user);
-                companyService.save(company);
-                    registrationService.deleteByPhone(phone);
+//            Company company = new Company(login,address,phone,code);
+//                company.setUser(user);
+//                companyService.save(company);
+                registration.setChecked(true);
+                registrationService.save(registration);
             return new Response(true,0);
         }
         return new Response(false,2,"something wrong");

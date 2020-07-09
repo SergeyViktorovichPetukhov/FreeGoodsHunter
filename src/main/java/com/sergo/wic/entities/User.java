@@ -28,10 +28,8 @@ public class User {
     private Integer allItemsCount;
     @Column(name = "picked_items_count")
     private Integer pickedItemsCount;
-    @Column(name = "email")
-    private String email;
-    @Column(name = "phone")
-    private String phone;
+    @Column(name = "contact")
+    private String contact;
     @Column(name = "name")
     private String name;
     @Column(name = "hasCompany")
@@ -62,20 +60,12 @@ public class User {
 
     public void setHasCompany(boolean hasCompany) { this.hasCompany = hasCompany; }
 
-    public String getPhone() {
-        return phone;
+    public String getContact() {
+        return contact;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
     public Long getId() {

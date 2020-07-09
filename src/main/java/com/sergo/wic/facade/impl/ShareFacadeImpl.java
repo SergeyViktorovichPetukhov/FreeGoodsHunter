@@ -66,7 +66,7 @@ public class ShareFacadeImpl implements ShareFacade {
         for(Share share1 : company.getShares()){
             System.out.println(share1.getDate() + " share get date");
         }
-        share.setShareId(user.getEmail() + " "
+        share.setShareId(user.getLogin() + " "
                        + LocalDate.now().toString() + " #"
                        + user.getSharesCount(share));
 

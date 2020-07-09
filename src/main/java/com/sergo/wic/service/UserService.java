@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface UserService {
     Optional<User> findById(long id);
     Optional<User> findByLogin(String login);
-    User findByPhone(String phone);
+    User findByContact(String contact);
     User getOne(Long id);
     void save(User user);
     List<User> findAll();

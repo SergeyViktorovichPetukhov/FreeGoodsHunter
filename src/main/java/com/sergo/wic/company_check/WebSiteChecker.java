@@ -29,6 +29,7 @@ public class WebSiteChecker {
         Document doc = connect(url);
         if (doc == null)
             return false;
+
         Elements links = doc.select("a");
         if (links == null)
             return false;

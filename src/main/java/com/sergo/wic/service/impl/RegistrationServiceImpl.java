@@ -62,7 +62,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     public void refuseRegistration(String id, String reason) {
         Registration registration = repository.findByUserId(Long.valueOf(id));
         registration.setReasonOfRefuse(reason);
-        registration.setNew(false);
+        registration.setChecked(false);
         repository.save(registration);
     }
 

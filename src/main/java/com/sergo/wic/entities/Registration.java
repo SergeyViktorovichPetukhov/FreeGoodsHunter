@@ -15,19 +15,19 @@ public class Registration {
         this.code = code;
     }
 
-    public Registration(String login, String address, String contact, Long userId) {
-        this.login = login;
-        this.address = address;
-        this.contact = contact;
-        this.userId = userId;
-    }
-
-    public Registration(String login, String code, String contact, Long userId, boolean isNew) {
+    public Registration(String login, String code, String contact, Long userId) {
         this.login = login;
         this.code = code;
         this.contact = contact;
         this.userId = userId;
-        this.isNew= isNew;
+    }
+
+    public Registration(String login, String code, String contact, Long userId, boolean isChecked) {
+        this.login = login;
+        this.code = code;
+        this.contact = contact;
+        this.userId = userId;
+        this.isChecked = isChecked;
     }
 
     @Id
@@ -45,7 +45,7 @@ public class Registration {
     @Column(name ="alexa_rank")
     private String alexaRank;
     @Column(name = "is_new")
-    private boolean isNew = true;
+    private boolean isChecked;
     @Column(name = "is_confirmed")
     private boolean isConfirmed;
     @Column(name = "reason_of_refuse")
@@ -53,12 +53,12 @@ public class Registration {
     @Column(name = "user_id")
     private Long userId;
 
-    public boolean isNew() {
-        return isNew;
+    public boolean isChecked() {
+        return isChecked;
     }
 
-    public void setNew(boolean aNew) {
-        isNew = aNew;
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
     public String getReasonOfRefuse() {
