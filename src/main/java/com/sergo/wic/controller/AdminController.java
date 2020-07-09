@@ -42,9 +42,16 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/confirm", method = RequestMethod.GET)
-    public String confirmRegistration(@RequestParam String id){
-        Optional<User> user = userService.findById(Long.valueOf(id));
+    public String confirmRegistration(
+                                      @RequestParam String userId,
+                                      @RequestParam(required = false) String one,
+                                      @RequestParam(required = false) String two){
+        Optional<User> user = userService.findById(Long.valueOf(userId));
         if (user.isPresent()){
+            if (one == null || two == null){
+                registrationService.refuseRegistration(userId,"reason");
+                return "redirect:/admin/";
+            }
             userService.confirmRegistration(user.get());
         }
         return "redirect:/admin/";

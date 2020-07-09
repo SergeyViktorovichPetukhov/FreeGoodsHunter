@@ -9,17 +9,23 @@ import java.util.List;
 public class Company {
     public Company(){}
 
-    public Company(String login, String address, String phone, String code) {
+    public Company(String login, String contact, User user) {
+        this.login = login;
+        this.contact = contact;
+        this.user = user;
+    }
+
+    public Company(String login, String address, String contact, String code) {
         this.login = login;
         this.address = address;
-        this.phone = phone;
+        this.contact = contact;
         this.code = code;
     }
 
-    public Company(String login, String address, String phone, String code, String internetShop) {
+    public Company(String login, String address, String contact, String code, String internetShop) {
         this.login = login;
         this.address = address;
-        this.phone = phone;
+        this.contact = contact;
         this.code = code;
         this.internetShop = internetShop;
     }
@@ -32,8 +38,8 @@ public class Company {
     private String login;
     @Column(name = "address")
     private String address;
-    @Column(name = "phone")
-    private String phone;
+    @Column(name = "contact")
+    private String contact;
     @Column(name = "internetShop")
     private String internetShop;
     @Column(name = "code")
@@ -78,12 +84,12 @@ public class Company {
         this.address = address;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getContact() {
+        return contact;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
     public String getInternetShop() {

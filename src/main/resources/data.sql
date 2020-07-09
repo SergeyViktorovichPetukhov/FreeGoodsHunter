@@ -28,4 +28,6 @@ INSERT INTO items(id,longitude,latitude, share_id) VALUES (3,41,39,1);
 INSERT INTO items(id,longitude,latitude, share_id) VALUES (4,40,38,2);
 INSERT INTO items(id,longitude,latitude, share_id) VALUES (5,46,32,2);
 
+INSERT INTO registrations(id,login,alexa_rank,contact,is_checked,user_id) VALUES(1,'market@magnetball.net',100500,'market@magnetball.net',true,1);
+
 COMMIT;

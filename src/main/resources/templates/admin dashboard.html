@@ -21,14 +21,14 @@
                         <th>login</th>
                         <th>contact</th>
                         <th>alexa rank</th>
-                        <th><a href="http://web.archive.org/">web-archive</a></th>
+                        <th><a href="http://web.archive.org/" target="_blank">web-archive</a></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr style="border: 2px"
                         th:each="registration : *{registrations}"
-                        th:object="registration"
-                        th:if="${registration.isChecked() == true}">
+                        th:if="${registration.isChecked() == true}"
+                    >
 
                         <td th:id="userLogin" th:text="${registration.login}" /></td>
                         <td th:id="userContact" th:text="${registration.getContact()}"/></td>
@@ -36,15 +36,18 @@
 
                         <td align="right" valign="center">
                         <form th:action="@{/admin/confirm}" th:object="${registration}" th:method="GET">
-                            <input type="hidden" name="id" th:value="${registration.userId}">
+                            <label><input type="checkbox" name="one" value="1"/>The site is unchanged for trading within 3 months</label>
+                            <label><input type="checkbox" name="two" value="2"/>the site is shop</label>
+                            <input type="hidden" name="userId" th:value="${registration.userId}">
+<!--                            <input type="hidden" name="id" th:value="${registration.id}">-->
                             <input type="submit" value="confirm"/>
                         </form>
 
-                        <form th:action="@{/admin/refuse}" th:object="${registration}" th:method="POST">
-                            <input type="text" th:placeholder="'enter reason'" name="reason" />
-                            <input type="hidden" name="id" th:value="${registration.userId}">
-                            <input type="submit" value="cancel" />
-                        </form>
+<!--                        <form th:action="@{/admin/refuse}" th:object="${registration}" th:method="POST">-->
+<!--                            <input type="text" th:placeholder="'enter reason'" name="reason" />-->
+<!--                            <input type="hidden" name="id" th:value="${registration.userId}">-->
+<!--                            <input type="submit" value="cancel" />-->
+<!--                        </form>-->
                         </td>
                     </tr>
                     </tbody>

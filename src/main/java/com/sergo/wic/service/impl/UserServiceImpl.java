@@ -1,8 +1,10 @@
 package com.sergo.wic.service.impl;
 
+import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.Registration;
 import com.sergo.wic.entities.User;
 import com.sergo.wic.repository.UserRepository;
+import com.sergo.wic.service.CompanyService;
 import com.sergo.wic.service.RegistrationService;
 import com.sergo.wic.service.UserService;
 import com.sergo.wic.service.email.EmailService;
@@ -24,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     RegistrationService registrationService;
+
+    @Autowired
+    CompanyService companyService;
 
     @Override
     public Optional<User> findById(long id) {
@@ -62,12 +67,15 @@ public class UserServiceImpl implements UserService {
         repository.save(user);
         Registration registration = registrationService.findByUserId(Long.valueOf(user.getId()));
         registration.setChecked(false);
+        registration.setConfirmed(true);
+        companyService.save(new Company(user.getLogin(),user.getContact(),user));
         registrationService.save(registration);
     }
 
     @Override
     public void refuseRegistration(@NotNull User user, String reason) {
         emailService.sendSimpleMessage(user.getLogin(),"registration refused",reason);
+
     }
 
     @Override

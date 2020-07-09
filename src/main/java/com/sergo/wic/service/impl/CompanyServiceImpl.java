@@ -26,7 +26,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public Company findByPhone(String phone){
-        return companyRepository.findByPhone(phone);
+        return companyRepository.findByContact(phone);
     }
 
     @Override

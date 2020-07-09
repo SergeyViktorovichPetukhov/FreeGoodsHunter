@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
     Company findByLogin(String login);
-    Company findByPhone(String phone);
+    Company findByContact(String contact);
   //  @Q(value = "SELECT EXISTS(SELECT 1 FROM users WHERE id = user.id)")
     @Query(value = "select exists(select 1 from users where id = ?)", nativeQuery = true)
     boolean isCompanyOwner(@Param("user_id")Long user_id);

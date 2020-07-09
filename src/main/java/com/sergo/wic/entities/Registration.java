@@ -44,10 +44,10 @@ public class Registration {
     private String code;
     @Column(name ="alexa_rank")
     private String alexaRank;
-    @Column(name = "is_new")
-    private boolean isChecked;
+    @Column(name = "is_checked")
+    private Boolean isChecked;
     @Column(name = "is_confirmed")
-    private boolean isConfirmed;
+    private Boolean isConfirmed;
     @Column(name = "reason_of_refuse")
     private String reasonOfRefuse;
     @Column(name = "user_id")

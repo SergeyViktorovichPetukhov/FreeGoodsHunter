@@ -240,9 +240,6 @@ public class UserFacadeImpl implements UserFacade {
             return new Response(false,1,"no such registration");
         }
         if (registration.getCode().equals(code) & user.getLogin().equals(login)){
-//            Company company = new Company(login,address,phone,code);
-//                company.setUser(user);
-//                companyService.save(company);
                 registration.setChecked(true);
                 registrationService.save(registration);
             return new Response(true,0);

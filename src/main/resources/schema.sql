@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS registrations
     contact             VARCHAR(30)   NOT NULL   UNIQUE,
     alexa_rank          VARCHAR(10),
     code                VARCHAR(30),
-    is_new              BOOLEAN,
+    is_checked          BOOLEAN,
     is_confirmed        BOOLEAN,
     reason_of_refuse    VARCHAR(50),
     user_id             INTEGER
@@ -121,9 +121,9 @@ CREATE TABLE IF NOT EXISTS companies
 (
     id            BIGSERIAL    NOT NULL,
     login         VARCHAR(50)  NOT NULL,
-    name          VARCHAR(50)  NOT NULL,
+    name          VARCHAR(50),
     address       VARCHAR(50),
-    contact         VARCHAR(50)  NOT NULL,
+    contact       VARCHAR(50)  NOT NULL,
     internet_shop VARCHAR(100),
     code          VARCHAR(40),
     label_path    VARCHAR(50),
