@@ -202,22 +202,34 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public Response registerCompany(final String login, final String contact) {
-        String code = RandomString.getAlphaNumericString(6);
-        System.out.println("random code: " + code);
-        registrationService.save(new Registration(login,code , contact, userService.findByLogin(login).get().getId()));
-        emailService.sendSimpleMessage(contact, "Registration code", "Your registration code: " + code);
-        return new Response(true, 0);
-    }
-
-    @Override
-    public Response registerCompany(final String login, final String contact, final String url) {
+    public Response registerCompanyApplication(final String login, final String contact, boolean isChecked, final String url) {
+        Optional<User> user = userService.findByLogin(login);
+        if (user.isPresent()){
+            user.get().setCompanyRegInProcess(true);
+            userService.save(user.get());
+        }
+        else return new Response(false,1,"no such user");
         String code = RandomString.getAlphaNumericString(6);
         System.out.println("random code: " + code);
         Registration registration = new Registration(login, code, contact, userService.findByLogin(login).get().getId());
+        registration.setChecked(isChecked);
         registration.setAlexaRank(awsapiChecker.getAlexaRank(url));
         registrationService.save(registration);
-        emailService.sendSimpleMessage(contact, "Registration code", "Your registration code: " + code);
+        return new Response(true, 0,"application submitted to moderator");
+    }
+
+    @Override
+    public Response registerCompanyApplication(String login, String phone) {
+        Optional<User> user = userService.findByLogin(login);
+        if (user.isPresent()){
+            user.get().setCompanyRegInProcess(true);
+            userService.save(user.get());
+        }else return new Response(false,1,"no such user");
+        String code = RandomString.getAlphaNumericString(6);
+        System.out.println("random code: " + code);
+        Registration registration = new Registration(login, code, phone, userService.findByLogin(login).get().getId());
+        registration.setChecked(true);
+        registrationService.save(registration);
         return new Response(true, 0,"application submitted to moderator");
     }
 
@@ -242,7 +254,7 @@ public class UserFacadeImpl implements UserFacade {
         if (registration.getCode().equals(code) & user.getLogin().equals(login)){
                 registration.setChecked(true);
                 registrationService.save(registration);
-            return new Response(true,0);
+            return new Response(true,0,"your company registered");
         }
         return new Response(false,2,"something wrong");
     }

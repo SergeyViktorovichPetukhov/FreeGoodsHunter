@@ -15,8 +15,8 @@ public interface UserFacade {
     public Boolean isLoginValid(final String login);
     NoticeResponse getNotices(String login);
     RatingResponse getRatingOfUsers(String country, String region, String city);
-    Response registerCompany(String login, String phone);
-    Response registerCompany(String login, String phone, String url);
+    Response registerCompanyApplication(String login, String phone, boolean isChecked, String url);
+    Response registerCompanyApplication(String login, String phone);
     Response verifyCode(String login, String code,String address, String phone);
     Response addContactToUser(String login, String typeContact, String contact);
     Response setPhotoToUser(String login, MultipartFile photo);

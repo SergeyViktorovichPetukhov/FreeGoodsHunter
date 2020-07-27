@@ -47,7 +47,7 @@ public class Registration {
     @Column(name = "is_checked")
     private Boolean isChecked;
     @Column(name = "is_confirmed")
-    private Boolean isConfirmed;
+    private Boolean isConfirmed = false;
     @Column(name = "reason_of_refuse")
     private String reasonOfRefuse;
     @Column(name = "user_id")

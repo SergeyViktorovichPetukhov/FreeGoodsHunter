@@ -2,6 +2,7 @@ package com.sergo.wic.controller;
 
 import com.sergo.wic.entities.*;
 import com.sergo.wic.service.*;
+import com.sergo.wic.service.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,10 +31,6 @@ public class AdminController {
     @Autowired
     private NotificationService notificationService;
 
-    @Autowired
-    private CompanyService companyService;
-
-
     @GetMapping
     public String showAdminDashboard(Model model){
         model.addAttribute("users", userService.findAll());
@@ -45,14 +42,18 @@ public class AdminController {
     public String confirmRegistration(
                                       @RequestParam String userId,
                                       @RequestParam(required = false) String one,
-                                      @RequestParam(required = false) String two){
+                                      @RequestParam(required = false) String two,
+                                      @RequestParam(required = false) String three){
         Optional<User> user = userService.findById(Long.valueOf(userId));
         if (user.isPresent()){
-            if (one == null || two == null){
-                registrationService.refuseRegistration(userId,"reason");
+            User u = user.get();
+            if (one == null || two == null || three == null){
+                registrationService.refuseRegistration(userId,"reason",user.get().getLogin());
+                u.setCompanyRegInProcess(false);
+                userService.save(u);
                 return "redirect:/admin/";
             }
-            userService.confirmRegistration(user.get());
+            userService.confirmRegistration(u);
         }
         return "redirect:/admin/";
     }
@@ -96,9 +97,12 @@ public class AdminController {
 
 
     @PostMapping("/refuse")
-    public String refuseRegistration(@RequestParam("id") String id
+    public String refuseRegistration(@RequestParam("id") String userId
                                    , @RequestBody String reason){
-        registrationService.refuseRegistration(id,reason);
+        User user = userService.findById(Long.valueOf(userId)).get();
+        user.setCompanyRegInProcess(false);
+        userService.save(user);
+        registrationService.refuseRegistration(userId,reason,user.getLogin());
         return "redirect:/admin/";
     }
 

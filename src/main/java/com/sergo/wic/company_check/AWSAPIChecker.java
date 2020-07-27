@@ -26,7 +26,7 @@ public class AWSAPIChecker {
     WebClient.Builder webClientBuilder;
 
     private static final String API_KEY = "YlG8cHVP8w86pu1VqgXM024YM4MAoiy75BfXpCWq";
-    private static final String URL_INFO = "https://awis.api.alexa.com/api?Action=urlInfo&ResponseGroup=LinksInCount&Output=json&Url=";
+    private static final String URL_INFO = "https://awis.api.alexa.com/api?Action=urlInfo&ResponseGroup=Rank&Output=json&Url=";
     private static final String TRAFFIC_HISTORY_BEGIN = "https://awis.api.alexa.com/api?Action=TrafficHistory&ResponseGroup=History";
     private static final String TRAFFIC_HISTORY_MIDDLE = "&TrafficHistory.%d.Start=%s";
     private static final String TRAFFIC_HISTORY_END = "&Output=json&Url=";
@@ -139,14 +139,22 @@ public class AWSAPIChecker {
     }
     public String getAlexaRank(String url){
         JSONObject object = getApiResponse(URL_INFO + url);
-        String rank = (String) object.getJSONObject("Awis")
+        if (object.getJSONObject("Awis")
                 .getJSONObject("Results")
                 .getJSONObject("Result")
                 .getJSONObject("Alexa")
-                .getJSONObject("ContentData")
-                .get("Rank");
-        System.out.println(rank + " alexa rank");
-        return rank;
+                .getJSONObject("TrafficData")
+                .isNull("Rank")){
+            return "0";
+        }
+        else {
+            return String.valueOf(object.getJSONObject("Awis")
+                    .getJSONObject("Results")
+                    .getJSONObject("Result")
+                    .getJSONObject("Alexa")
+                    .getJSONObject("TrafficData")
+                    .get("Rank"));
+        }
     }
 
     private JSONObject getApiResponse(String uri){
@@ -159,8 +167,8 @@ public class AWSAPIChecker {
                 .block()
                 .bodyToMono(String.class)
                 .block();
-        System.out.println(response);
-        System.out.println("response");
+//        System.out.println(response);
+//        System.out.println("response");
         return new JSONObject(response);
 
     }

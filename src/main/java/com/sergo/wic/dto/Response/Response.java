@@ -32,6 +32,13 @@ public class Response {
         this.isSuccess = isSuccess;
         this.errorCode = errorCode;
         this.content = content;
+        }
+
+    public Response(boolean isSuccess, int errorCode, String message, ResponseContent content) {
+        this.isSuccess = isSuccess;
+        this.errorCode = errorCode;
+        this.content = content;
+        this.message = message;
     }
 
 //    public List<String> getErrors() {

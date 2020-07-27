@@ -9,6 +9,7 @@ import com.sergo.wic.facade.ShareFacade;
 import com.sergo.wic.facade.UserFacade;
 import com.sergo.wic.company_check.AWSAPIChecker;
 import com.sergo.wic.company_check.GooglePlacesRequestor;
+import com.sergo.wic.service.SettlementService;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -43,6 +44,9 @@ public class MockController {
 
     @Autowired
     private ServletContext servletContext;
+
+    @Autowired
+    private SettlementService settlementService;
 
 
 
@@ -101,11 +105,11 @@ public class MockController {
         return userFacade.getAllItems(login);
     }
 
-//    @GetMapping("/test")
-//    public void test(){
-//        requestor.checkPhone();
-//        System.out.println("checkPhone");
-//    }
+    @GetMapping("/test")
+    public Integer test(){
+        settlementService.findByNameAndCountry("Moscow","Russia");
+        return settlementService.getMaxCountItems("Moscow","Russia");
+    }
 
     @GetMapping("/notices")
     public NoticeResponse getNotices(@RequestParam(value = "login", required = false) String login) {

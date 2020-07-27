@@ -21,6 +21,7 @@ public class WebSiteChecker {
 //    private static final String REGEX = "^((d|\\+d)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$";
 
 //    private static final Pattern PATTERN = Pattern.;
+    private StringBuffer baseUrl;
 
     public boolean checkHtmlPageByPhone(String url, String phone){
         System.out.println(phone);
@@ -72,12 +73,13 @@ public class WebSiteChecker {
     }
 
     public boolean checkHtmlPageByEmail(String url, String email){
-
+        baseUrl = new StringBuffer(url);
         Document doc = connect(url);
         System.out.println("1");
         if (doc == null)
             return false;
         Elements links = doc.select("a");
+    //    links.eachText().forEach(System.out::println);
         List<String> text = links.eachText();
         if (text.stream().filter(str -> EmailValidator.isValid(str.toCharArray())).anyMatch((str) -> str.equals(email)))
             return true;
@@ -93,13 +95,13 @@ public class WebSiteChecker {
             System.out.println("3 " + url + href);
             if (href.isEmpty()) {
                 // https://labsintez.com/kontakty/
-                String href2 = links.select("a[href*=/kontakty]").attr("href");
+                String href2 = links.select("a[href*=/kontakt]").attr("href");
                 if (!href2.isEmpty()) {
                     doc = connect(url + href2);
                 }
             }
             if (doc == null) {
-                String href2 = links.select("a[href*=/kontakts]").attr("href");
+                String href2 = links.select("a[href*=/Контакты]").attr("href");
                 if (href2 != null) {
                     doc = connect(url + href2);
                 }
@@ -115,6 +117,11 @@ public class WebSiteChecker {
     private Document connect(String url){
         try {
             System.out.println(url + " url ");
+            String newUrl;
+            if (!url.startsWith("https")){
+                newUrl = baseUrl.toString() + url;
+                return Jsoup.connect(newUrl).get();
+            }
             return Jsoup.connect(url).get();
         }catch (IOException e){
             e.printStackTrace();

@@ -64,11 +64,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void confirmRegistration(@NotNull User user) {
         user.setHasCompany(true);
+        user.setCompanyRegInProcess(false);
         repository.save(user);
         Registration registration = registrationService.findByUserId(Long.valueOf(user.getId()));
-        registration.setChecked(false);
+//        registration.setChecked(false);
         registration.setConfirmed(true);
         companyService.save(new Company(user.getLogin(),user.getContact(),user));
+        emailService.sendSimpleMessage(user.getLogin(),"registration is confirmed","your application is approved! Your verification code: " + registration.getCode());
         registrationService.save(registration);
     }
 

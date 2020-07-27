@@ -32,6 +32,8 @@ public class User {
     private String contact;
     @Column(name = "name")
     private String name;
+    @Column(name = "is_company_reg_in_process")
+    private boolean isCompanyRegInProcess;
     @Column(name = "hasCompany")
     private boolean hasCompany;     // if user is a company manager
 
@@ -43,6 +45,14 @@ public class User {
 
     @OneToOne(mappedBy = "user", fetch = FetchType.EAGER , cascade = CascadeType.ALL)
     private UserItem userItem;
+
+    public boolean isCompanyRegInProcess() {
+        return isCompanyRegInProcess;
+    }
+
+    public void setCompanyRegInProcess(boolean companyRegInProcess) {
+        isCompanyRegInProcess = companyRegInProcess;
+    }
 
     public List<Notification> getNotifications() {
         return notifications;

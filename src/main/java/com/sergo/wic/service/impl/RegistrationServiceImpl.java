@@ -3,6 +3,7 @@ package com.sergo.wic.service.impl;
 import com.sergo.wic.entities.Registration;
 import com.sergo.wic.repository.RegistrationRepository;
 import com.sergo.wic.service.RegistrationService;
+import com.sergo.wic.service.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,9 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Autowired
     RegistrationRepository repository;
+
+    @Autowired
+    EmailService emailService;
 
     @Override
     public Registration findByLogin(String login) {
@@ -59,10 +63,11 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public void refuseRegistration(String id, String reason) {
+    public void refuseRegistration(String id, String reason, String to) {
         Registration registration = repository.findByUserId(Long.valueOf(id));
         registration.setReasonOfRefuse(reason);
         registration.setChecked(false);
+        emailService.sendSimpleMessage(to,"refuse registration",reason);
         repository.save(registration);
     }
 

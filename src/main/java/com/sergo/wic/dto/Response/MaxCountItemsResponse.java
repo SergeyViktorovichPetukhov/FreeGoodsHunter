@@ -1,6 +1,8 @@
 package com.sergo.wic.dto.Response;
 
-public class MaxCountItemsResponse extends Response {
+import com.sergo.wic.dto.ResponseContent;
+
+public class MaxCountItemsResponse extends ResponseContent {
     private Integer maxCountItems;
 
     public MaxCountItemsResponse(Integer maxCountItems) {

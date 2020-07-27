@@ -10,8 +10,10 @@ import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.Response.ShowItemsResponse;
 import com.sergo.wic.dto.ResponseContent;
 import com.sergo.wic.entities.Item;
+import com.sergo.wic.entities.Settlement;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.service.ItemService;
+import com.sergo.wic.service.SettlementService;
 import com.sergo.wic.service.ShareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,13 +31,16 @@ public class ItemController {
     private ItemService itemService;
     private ShareService shareService;
     private ItemConverter itemConverter;
+    private SettlementService settlementService;
 
     public ItemController(@Autowired ItemService itemService,
                           @Autowired ShareService shareService,
-                          @Autowired ItemConverter itemConverter){
+                          @Autowired ItemConverter itemConverter,
+                          @Autowired SettlementService settlementService){
         this.itemService = itemService;
         this.shareService = shareService;
         this.itemConverter = itemConverter;
+        this.settlementService = settlementService;
     }
 
     @RequestMapping(value = "/getShareItems", method = RequestMethod.GET)
@@ -59,8 +64,13 @@ public class ItemController {
     }
 
     @PostMapping("/getMaxCountItems")
-    public Response getMaxCountItems(@RequestBody(required = false) MaxCountItemsDto dto){
-        return new MaxCountItemsResponse(itemService.getMaxCountItems("C:\\Users\\HP\\Desktop\\moscow qgis\\data.qgs","Moscow_utm_37n"));
+    public Response getMaxCountItems(@RequestBody MaxCountItemsDto dto){
+        Optional<Settlement> settlement = settlementService.findByNameAndCountry(dto.getSettlement(),dto.getCountry());
+        if (settlement.isPresent())
+            return new Response(true,0, new MaxCountItemsResponse(settlement.get().getMaxCountItems()));
+        else return new Response(false,1,"no such settlement in db");
     }
+
+
 
 }

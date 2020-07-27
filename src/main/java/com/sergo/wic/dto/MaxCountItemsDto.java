@@ -2,14 +2,16 @@ package com.sergo.wic.dto;
 
 public class MaxCountItemsDto {
     private String login;
-    private String locality;
+    private String country;
+    private String settlement;
 
     public MaxCountItemsDto() {
     }
 
-    public MaxCountItemsDto(String login, String locality) {
+    public MaxCountItemsDto(String login, String country, String settlement) {
         this.login = login;
-        this.locality = locality;
+        this.country = country;
+        this.settlement = settlement;
     }
 
     public String getLogin() {
@@ -20,11 +22,19 @@ public class MaxCountItemsDto {
         this.login = login;
     }
 
-    public String getLocality() {
-        return locality;
+    public String getCountry() {
+        return country;
     }
 
-    public void setLocality(String locality) {
-        this.locality = locality;
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getSettlement() {
+        return settlement;
+    }
+
+    public void setSettlement(String settlement) {
+        this.settlement = settlement;
     }
 }

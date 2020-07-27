@@ -49,9 +49,9 @@ public class UserController {
     public Response userInfo(@RequestBody LoginDto login){
         Optional<User> user = userService.findByLogin(login.getLogin());
         if (user.isPresent()){
-            return new UserResponse(user.get().isHasCompany());
+            return new Response(true,0, new UserResponse(user.get().isHasCompany(), user.get().isCompanyRegInProcess()));
         }
-        return new UserResponse(false,true);
+        return new Response(false,1,"no such user",new UserResponse(false,false));
     }
 
     @PostMapping(value = "/pickItem" ,

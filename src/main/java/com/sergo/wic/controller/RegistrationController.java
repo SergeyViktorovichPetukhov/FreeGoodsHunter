@@ -1,6 +1,5 @@
 package com.sergo.wic.controller;
 
-import com.sergo.wic.company_check.AWSAPIChecker;
 import com.sergo.wic.company_check.WebSiteChecker;
 import com.sergo.wic.dto.GoogleRegistrationDto;
 import com.sergo.wic.dto.Response.Response;
@@ -57,8 +56,8 @@ public class RegistrationController {
 //        }
 
         if (googlePlacesRequestor.checkPlaceByPhoneAndPlaceName(dto.getPhone(),dto.getPlaceName()))
-           return userFacade.registerCompany(dto.getLogin(), dto.getPhone());
-        else return new Response(false,2,"no");
+           return userFacade.registerCompanyApplication(dto.getLogin(), dto.getPhone());
+        else return new Response(false,1,"company not found");
     }
 
     @PostMapping(value = "/webRegistrationCompany", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -71,15 +70,17 @@ public class RegistrationController {
             // тут надо посмотреть как регистрировать компанию по имейл
             {
                 // smsSender.sendSms()
-                return userFacade.registerCompany(dto.getLogin(), dto.getUserContact(), dto.getUrl());
+                boolean isChecked = webSiteChecker.checkHtmlPageByPhone(dto.getUrl(),dto.getUserContact());
+                System.out.println(isChecked + " isChecked");
+                return userFacade.registerCompanyApplication(dto.getLogin(), dto.getUserContact(),isChecked, dto.getUrl());
             }
             else return new Response(false,2,"we dont see phone on your website");
         }
-        if (EmailValidator.isValid(dto.getUserContact().toCharArray())
-         && webSiteChecker.checkHtmlPageByEmail(dto.getUrl(),dto.getUserContact()))
+        if (EmailValidator.isValid(dto.getUserContact().toCharArray()))
         {
-            emailService.sendSimpleMessage(dto.getUserContact(),"web-site verification",Constants.WEB_SITE_VERIFICATION_MESSAGE);
-            return userFacade.registerCompany(dto.getLogin(),dto.getUserContact());
+            boolean isChecked = webSiteChecker.checkHtmlPageByEmail(dto.getUrl(),dto.getUserContact());
+            System.out.println(isChecked + " isChecked");
+            return userFacade.registerCompanyApplication(dto.getLogin(),dto.getUserContact(),isChecked, dto.getUrl());
         }
 
         else return new Response(false,2,Constants.VERIFICATION_UNSUCCESS);

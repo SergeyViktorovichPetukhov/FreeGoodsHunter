@@ -5,13 +5,14 @@ commit;
 
 CREATE TABLE IF NOT EXISTS users
 (
-    id                    BIGSERIAL     NOT NULL,
-    login                 VARCHAR(40)   NOT NULL      UNIQUE,
-    all_items_count       INTEGER,
-    picked_items_count    INTEGER,
-    contact               VARCHAR(25),
-    name                  VARCHAR(30),
-    has_company           BOOLEAN       DEFAULT FALSE
+    id                        BIGSERIAL     NOT NULL,
+    login                     VARCHAR(40)   NOT NULL      UNIQUE,
+    all_items_count           INTEGER,
+    picked_items_count        INTEGER,
+    contact                   VARCHAR(25),
+    name                      VARCHAR(30),
+    has_company               BOOLEAN       DEFAULT FALSE,
+    is_company_reg_in_process BOOLEAN       DEFAULT FALSE
 -- ,
 --     company_id            INTEGER
 );
@@ -132,6 +133,21 @@ CREATE TABLE IF NOT EXISTS companies
 
 ALTER TABLE companies
     ADD CONSTRAINT companies_PK PRIMARY KEY (id);
+
+CREATE TABLE IF NOT EXISTS settlements
+(
+    id                  BIGSERIAL       NOT NULL,
+    s_name              VARCHAR(50)     NOT NULL,
+    country             VARCHAR(50)     NOT NULL,
+    language            VARCHAR(50),
+    total_area          FLOAT           NOT NULL,
+    useful_area         FLOAT,
+    max_count_items     INTEGER         NOT NULL
+
+);
+
+ALTER TABLE settlements
+    ADD CONSTRAINT settlements_PK PRIMARY KEY (id);
 
 -- CREATE TABLE user_item
 -- (
