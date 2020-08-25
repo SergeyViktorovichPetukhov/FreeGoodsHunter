@@ -34,8 +34,4 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.findById(id).orElseGet(null);
     }
 
-    @Override
-    public boolean checkCompanyOwner(String companyLogin, String userLogin) {
-        return !companyLogin.equals(userLogin);
-    }
 }

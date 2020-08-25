@@ -1,6 +1,6 @@
 package com.sergo.wic.dto;
 
-import com.sergo.wic.entities.ShareState;
+import com.sergo.wic.entities.enums.ShareState;
 
 import javax.validation.Valid;
 import javax.validation.constraints.FutureOrPresent;

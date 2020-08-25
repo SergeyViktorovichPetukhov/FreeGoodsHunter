@@ -1,7 +1,9 @@
 package com.sergo.wic.controller;
 
 import com.sergo.wic.converter.ItemConverter;
+import com.sergo.wic.dto.ItemDto;
 import com.sergo.wic.dto.LoginDto;
+import com.sergo.wic.dto.Response.IsCompanyRegInProcessResponse;
 import com.sergo.wic.dto.Response.PickItemResponse;
 import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.Response.UserResponse;
@@ -17,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -49,27 +53,48 @@ public class UserController {
     public Response userInfo(@RequestBody LoginDto login){
         Optional<User> user = userService.findByLogin(login.getLogin());
         if (user.isPresent()){
-            return new Response(true,0, new UserResponse(user.get().isHasCompany(), user.get().isCompanyRegInProcess()));
+            return new Response(true,0, new UserResponse(user.get().isHasCompany()));
         }
-        return new Response(false,1,"no such user",new UserResponse(false,false));
+        return new Response(false,1,"no such user",new UserResponse(false));
+    }
+
+    @PostMapping(value = "/registerNewUser")
+    public Response registerUser(@RequestBody LoginDto dto){
+        Optional<User> user = userService.findByLogin(dto.getLogin());
+        if (user.isPresent()){
+            return new Response(false,1, "user with such login already exists");
+        }
+        User newUser = new User();
+        newUser.setLogin(dto.getLogin());
+        userService.save(newUser);
+        return new Response(true,0,"user registered");
+    }
+
+    @PostMapping(value = "/isCompanyRegInProcess")
+    public Response isCompanyRegInProcess(@RequestBody LoginDto login){
+        Optional<User> user = userService.findByLogin(login.getLogin());
+        if (user.isPresent()){
+            return new Response(true,0, new IsCompanyRegInProcessResponse( user.get().isCompanyRegInProcess()));
+        }
+        return new Response(false,1,"no such user",new UserResponse(false));
     }
 
     @PostMapping(value = "/pickItem" ,
                 produces = MediaType.APPLICATION_JSON_VALUE,
                 consumes = MediaType.APPLICATION_JSON_VALUE)
+
     public Response pickItem(@RequestBody PickedItemDto dto){
-        Optional<User> user = userService.findByLogin(dto.getUserLogin());
-        if (user.isPresent()){
-        Item item = itemConverter.convertToModel(dto);
+        Item item = itemService.findByItemId(dto.getItemId());
         Share share = item.getShare();
-        int pickedItemsCount = share.getPickedItemsCount();
-           if (companyService.checkCompanyOwner(share.getLogin(),user.get().getLogin())){
-                itemService.save(item,user.get());
-                return new PickItemResponse(true,0,pickedItemsCount);
-           }
-        return new Response(false,1,"you are the owner of this share");
+        if (! share.getLogin().equals(dto.getLogin())){
+            Optional<User> user = userService.findByLogin(dto.getLogin());
+            if (user.isPresent()){
+                itemService.save(item,user.get(), share.getShareId());
+                return new Response(true,0,"you picked this item");
+            }
+            return new Response(false,2,"no user with such login");
         }
-        return new Response(false,2,"no such user");
+        return new Response(false,1,"you are the owner of this share");
     }
 
 }

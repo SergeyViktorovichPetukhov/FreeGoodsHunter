@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrations</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="/static/css/styles.css" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div>
+    <table border="3" style="background-color: coral">
+        <thead>
+        <tr>
+            <th>registration ID</th>
+            <th>user ID</th>
+            <th>state</th>
+            <th>registered by</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr style="border: 2px;" th:each="registration : *{registrations}">
+            <td align="center"  th:text="${registration.regId}" /></td>
+            <td align="center"  th:text="${registration.userId}" /></td>
+            <td align="center"  th:text="${registration.state}"/></td>
+            <td align="center"  th:text="${registration.registeredBy}"/></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

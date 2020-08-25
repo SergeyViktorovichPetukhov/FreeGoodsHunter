@@ -24,19 +24,18 @@ public class ItemServiceImpl implements ItemService {
     private CompanyService companyService;
     private ItemConverter itemConverter;
     private UserItemService userItemService;
-
-    private static final String PYTHONPATH = "C:\\Program Files\\QGIS 3.12\\bin";
-    private static final String[] COMMANDS = {"python3" , "calculate_area.py"};
-
+    private ShareService shareService;
     public ItemServiceImpl(@Autowired ItemRepository repository,
                            @Autowired CompanyService companyService,
                            @Autowired ItemConverter itemConverter,
-                           @Autowired UserItemService userItemService
+                           @Autowired UserItemService userItemService,
+                           @Autowired ShareService shareService
                            ){
         this.repository = repository;
         this.companyService = companyService;
         this.userItemService = userItemService;
         this.itemConverter = itemConverter;
+        this.shareService = shareService;
     }
 
     @Override
@@ -53,14 +52,37 @@ public class ItemServiceImpl implements ItemService {
         else return null;
     }
 
+    @Override
+    public Item findByItemId(String itemId) {
+        return repository.findByItemId(itemId);
+    }
+
     @Transactional
     @Override
-    public Item save(Item item, User user) {
-        UserItem userItem = new UserItem(user,item);
-        item.setUserItem(userItem);
-        userItemService.save(userItem);
-    //    userService.save(user);
-        return repository.save(item);
+    public boolean save(Item item, User user, String shareId) {
+        Optional<Share> share = shareService.findByShareId(shareId);
+        Optional<UserItem> userItem;
+        if (share.isPresent()){
+            userItem = userItemService.findByUserAndShare(user, share.get());
+        }else
+            return false;
+        UserItem newUserItem;
+        if (userItem.isPresent()){
+            UserItem ui = userItem.get();
+            ui.setUser(user);
+            userItemService.save(userItem.get());
+            repository.saveAndFlush(item);
+            return true;
+       //     return repository.save(item);
+        }else{
+            newUserItem = new UserItem(user);
+            newUserItem.setUser(user);
+            item.setUserItem(newUserItem);
+            userItemService.save(newUserItem);
+            repository.saveAndFlush(item);
+            return true;
+        //    return repository.save(item);
+        }
     }
 
     @Override
@@ -85,26 +107,14 @@ public class ItemServiceImpl implements ItemService {
         return itemConverter.convertAllItems(result);
     }
 
+    public List<ItemDto> convertAllItems(List<Item> list){
+        return itemConverter.convertAllItems(list);
+    }
+
     @Override
     public Integer getMaxCountItems(String projectPath,String layerName){
-        String pythonResult = null;
-        Process p;
-        try{
-            p = Runtime.getRuntime()
-                    .exec(COMMANDS, null,new File(PYTHONPATH)
-                    //        + projectPath + " " + layerName, PYTHONPATH
-                    );
-            ByteArrayOutputStream result = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = p.getInputStream().read(buffer)) != -1) {
-                result.write(buffer, 0, length);
-            }
-            pythonResult = result.toString("UTF-8");
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        return Integer.valueOf(pythonResult);
+
+        return 20;
     }
 
     @Override

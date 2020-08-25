@@ -10,11 +10,13 @@ import java.util.Optional;
 
 public interface ItemService {
     Item save(Item item);
-    Item save(Item item, User user);
+    boolean save(Item item, User user, String shareId);
     Item findById(Long id);
     List<Item> findAllByShare(Share share);
     List<Item> findAllOrphaned();
     List<Item> findAll();
+    Item findByItemId(String itemId);
+    List<ItemDto> convertAllItems(List<Item> list);
     List<ItemDto> getShareItems(Share share);
     boolean isPickedFullItemsForOneProduct();
     Integer getMaxCountItems(String project,String layer);

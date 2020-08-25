@@ -23,10 +23,16 @@ public class AdminController {
     private UserService userService;
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private ShareService shareService;
 
     @Autowired
     private RegistrationService registrationService;
+
+    @Autowired
+    private ItemService itemService;
 
     @Autowired
     private NotificationService notificationService;
@@ -38,9 +44,22 @@ public class AdminController {
         return "admin dashboard";
     }
 
+    @GetMapping(value = "/showItems")
+    public String showItems(Model model){
+        model.addAttribute("items",itemService.findAll());
+        return "items";
+    }
+
+    @GetMapping(value = "/showRegistrations")
+    public String showRegistrations(Model model){
+        model.addAttribute("registrations",registrationService.findAll());
+        return "registrations";
+    }
+
     @RequestMapping(value = "/confirm", method = RequestMethod.GET)
     public String confirmRegistration(
                                       @RequestParam String userId,
+                                      @RequestParam String regId,
                                       @RequestParam(required = false) String one,
                                       @RequestParam(required = false) String two,
                                       @RequestParam(required = false) String three){
@@ -53,7 +72,7 @@ public class AdminController {
                 userService.save(u);
                 return "redirect:/admin/";
             }
-            userService.confirmRegistration(u);
+            userService.confirmRegistration(u, regId);
         }
         return "redirect:/admin/";
     }
@@ -62,12 +81,14 @@ public class AdminController {
     public String showUser(@PathVariable("id") Long id, Model model){
         Optional<User> user = userService.findById(Long.valueOf(id));
         List<Share> shares;
-        if (user.isPresent() && user.get().isHasCompany()){
+        if (user.isPresent()){
             model.addAttribute("user",user.get());
-            Company company = user.get().getCompany();
-            model.addAttribute("company",company);
-            shares = user.get().getCompany().getShares();
-            model.addAttribute("shares",shares);
+            if (user.get().isHasCompany()){
+                Company company = user.get().getCompany();
+                model.addAttribute("company",company);
+                shares = user.get().getCompany().getShares();
+                model.addAttribute("shares",shares);
+            }
         }
         return "user info";
     }
@@ -87,9 +108,7 @@ public class AdminController {
     public String confirmShare(@PathVariable("id") Long id,
                                @RequestParam("share_id") Long shareId,
                                @RequestParam("reason")  String reason,
-                               Model model
-    ){
-
+                               Model model){
         shareService.confirmShare(Long.valueOf(shareId), reason);
         notificationService.save(new Notification(reason, (User) model.getAttribute("user")));
         return "redirect:/admin/show/" + id;
@@ -97,16 +116,19 @@ public class AdminController {
 
 
     @PostMapping("/refuse")
-    public String refuseRegistration(@RequestParam("id") String userId
-                                   , @RequestBody String reason){
+    public String refuseRegistration(@RequestParam("userId") String userId,
+                                     @RequestParam("regId") String regId
+                                   , @RequestParam("reason") String reason){
+        System.out.println(userId + " userId");
+        System.out.println(regId + " id");
         User user = userService.findById(Long.valueOf(userId)).get();
         user.setCompanyRegInProcess(false);
         userService.save(user);
-        registrationService.refuseRegistration(userId,reason,user.getLogin());
+        registrationService.refuseRegistration(regId,reason,user.getLogin());
         return "redirect:/admin/";
     }
 
-    @DeleteMapping("/delete/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") Integer id){
         userService.deleteUser(Long.valueOf(id));
         return "redirect:/admin/";

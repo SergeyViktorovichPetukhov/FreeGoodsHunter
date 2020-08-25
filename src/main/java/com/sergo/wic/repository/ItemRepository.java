@@ -13,6 +13,8 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findAllByShare(Share share);
+    Item findByItemId(String itemId);
+
   //  @Query(value = "SELECT * FROM items WHERE ", nativeQuery = true)
   //  List<Item> findAllOrphaned( Long[] ids);
 //    @Query(value = "")

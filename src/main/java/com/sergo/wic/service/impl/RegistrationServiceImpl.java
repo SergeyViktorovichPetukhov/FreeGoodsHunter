@@ -1,6 +1,7 @@
 package com.sergo.wic.service.impl;
 
 import com.sergo.wic.entities.Registration;
+import com.sergo.wic.entities.enums.RegistrationState;
 import com.sergo.wic.repository.RegistrationRepository;
 import com.sergo.wic.service.RegistrationService;
 import com.sergo.wic.service.email.EmailService;
@@ -57,18 +58,26 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
+    public Optional<Registration> findByRegId(String regId) {
+        return repository.findByRegId(regId);
+    }
+
+    @Override
     @Transactional
     public Registration save(Registration registration) {
         return repository.save(registration);
     }
 
     @Override
-    public void refuseRegistration(String id, String reason, String to) {
-        Registration registration = repository.findByUserId(Long.valueOf(id));
-        registration.setReasonOfRefuse(reason);
-        registration.setChecked(false);
-        emailService.sendSimpleMessage(to,"refuse registration",reason);
-        repository.save(registration);
+    public void refuseRegistration(String regId, String reason, String to) {
+        Optional<Registration> registration = repository.findByRegId(regId);
+        if (registration.isPresent()){
+            Registration r = registration.get();
+            r.setReasonOfRefuse(reason);
+            r.setState(RegistrationState.REFUSED);
+            emailService.sendSimpleMessage(to,"refuse registration","reason : "+ reason);
+            repository.save(r);
+        }
     }
 
     @Override

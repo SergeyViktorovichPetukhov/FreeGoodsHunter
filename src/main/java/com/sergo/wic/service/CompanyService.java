@@ -5,7 +5,8 @@ import com.sergo.wic.entities.Share;
 
 public interface CompanyService {
     public Company save(Company company);
+
     public Company findByPhone(String phone);
+
     public Company findById(long id);
-    public boolean checkCompanyOwner(String companyLogin, String userLogin);
 }

@@ -8,11 +8,12 @@ import java.util.Optional;
 public interface RegistrationService {
     Registration findByLogin(String login);
     Registration findByPhone(String phone);
+    Optional<Registration> findByRegId(String regId);
     Registration findByUserId(Long id);
     Optional<Registration> findByCodeAndLogin(String code, String login);
     boolean deleteByLogin(String login);
     boolean deleteByPhone(String phone);
     Registration save(Registration registration);
-    void refuseRegistration(String id, String reason, String emailTo);
+    void refuseRegistration(String regId, String reason, String emailTo);
     List<Registration> findAll();
 }

@@ -5,7 +5,7 @@ import com.sergo.wic.dto.Response.CompanyResponse;
 import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.ShareForCompanyDto;
 import com.sergo.wic.entities.Company;
-import com.sergo.wic.entities.ShareState;
+import com.sergo.wic.entities.enums.ShareState;
 import com.sergo.wic.facade.CompanyFacade;
 import com.sergo.wic.facade.UserFacade;
 import com.sergo.wic.repository.CompanyRepository;

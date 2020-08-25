@@ -1,7 +1,7 @@
 package com.sergo.wic.service.impl;
 
 import com.sergo.wic.entities.Company;
-import com.sergo.wic.entities.CreateShareState;
+import com.sergo.wic.entities.enums.CreateShareState;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.entities.User;
 import com.sergo.wic.repository.ShareRepository;
@@ -12,16 +12,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.OneToOne;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.*;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;

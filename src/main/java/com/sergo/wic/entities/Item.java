@@ -8,11 +8,18 @@ import java.util.Objects;
        indexes = {
         @Index(name = "SHARE_INDEX",
                columnList = "share_id"),
-//        @Index(name = "USER_INDEX",
-//               columnList = "user_item_id")
+        @Index(name = "ITEM_INDEX",
+               columnList = "item_id")
 })
 
 public class Item {
+
+    public Item(){}
+
+    public Item(double lat, double lon){
+        this.latitude = lat;
+        this.longitude = lon;
+    }
 
     @Id
     @Column(name = "id")
@@ -29,11 +36,16 @@ public class Item {
     @Column(name = "latitude")
     private double latitude;
 
+    @Column(name = "item_id")
+    private String itemId;
+
     @ManyToOne
     @JoinColumn(name = "share_id", referencedColumnName = "id", nullable = false)
     private Share share;
 
-    @OneToOne(mappedBy = "item", orphanRemoval = true)
+//    @OneToOne(mappedBy = "item", orphanRemoval = true)
+    @ManyToOne
+    @JoinColumn(name = "user_item_id", referencedColumnName = "id" )
     private UserItem userItem;
 
     public Long getId() {
@@ -42,6 +54,14 @@ public class Item {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
     }
 
     public double getLongitude() {

@@ -1,6 +1,7 @@
 package com.sergo.wic.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Entity
@@ -8,9 +9,15 @@ import javax.persistence.*;
 public class UserItem {
     public UserItem(){}
 
-    public UserItem(User user, Item item){
-        this.item = item;
+    public UserItem(User user, List<Item> items){
+        this.items = items;
         this.user = user;
+    }
+    public UserItem(User user){
+        this.user = user;
+    }
+    public UserItem(List<Item> items){
+        this.items = items;
     }
 
     @Id
@@ -19,16 +26,24 @@ public class UserItem {
     @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "hibernateSeq")
     private Long id;
 
-
-
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
 
-    @OneToOne
-    @JoinColumn(name = "item_id",referencedColumnName = "id")
-    private Item item;
+    @OneToOne(cascade = CascadeType.ALL ,mappedBy = "userItem", fetch = FetchType.LAZY)
+    private Share share;
 
+    @OneToMany(mappedBy = "userItem", cascade = {CascadeType.MERGE})
+ //   @JoinColumn(name = "item_id",referencedColumnName = "id")
+    private List<Item> items;
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
 
     public User getUser() {
         return user;
@@ -38,12 +53,20 @@ public class UserItem {
         this.user = user;
     }
 
-    public Item getItem() {
-        return item;
+    public Share getShare() {
+        return share;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public void setShare(Share share) {
+        this.share = share;
+    }
+
+    public List<Item> getItem() {
+        return items;
+    }
+
+    public void setItem(List<Item> items) {
+        this.items = items;
     }
 
     public Long getId() {

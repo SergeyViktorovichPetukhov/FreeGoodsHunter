@@ -15,11 +15,12 @@ import java.util.*;
           )
 public class User {
 
-    public User(){}
+    public User(){
+    }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @SequenceGenerator(name = "hibernateSeq", sequenceName = "HIBERNATE_SEQUENCE")
+    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "hibernateSeq")
     private Long id;
     @Column(name = "login")
     private String login;
@@ -43,8 +44,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notification> notifications;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER , cascade = CascadeType.ALL)
-    private UserItem userItem;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER , cascade = CascadeType.ALL)
+    private List<UserItem> userItem;
 
     public boolean isCompanyRegInProcess() {
         return isCompanyRegInProcess;
@@ -98,11 +99,11 @@ public class User {
         return allItemsCount;
     }
 
-    public UserItem getUserItem() {
+    public List<UserItem> getUserItem() {
         return userItem;
     }
 
-    public void setUserItem(UserItem item) {
+    public void setUserItem(List<UserItem> item) {
         this.userItem = item;
     }
 

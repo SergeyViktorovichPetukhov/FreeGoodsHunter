@@ -12,7 +12,7 @@ public interface UserService {
     User getOne(Long id);
     void save(User user);
     List<User> findAll();
-    void confirmRegistration(User user);
+    void confirmRegistration(User user, String regId);
     void refuseRegistration(User user, String reason);
     void deleteUserCompany(Long userId);
     void deleteUser(Long userId);

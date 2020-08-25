@@ -1,7 +1,6 @@
 package com.sergo.wic.dto.Response;
 
 import com.sergo.wic.dto.*;
-import com.sergo.wic.entities.ShareState;
 
 import java.util.List;
 
@@ -125,11 +124,11 @@ public class CompanyResponse extends ResponseContent {
 //        this.city = city;
 //    }
 //
-//    public String getAddress() {
+//    public String getPlaceNameOrUrl() {
 //        return address;
 //    }
 //
-//    public void setAddress(String address) {
+//    public void setPlaceNameOrUrl(String address) {
 //        this.address = address;
 //    }
 //

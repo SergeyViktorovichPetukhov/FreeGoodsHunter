@@ -1,4 +1,4 @@
-package com.sergo.wic.entities;
+package com.sergo.wic.entities.enums;
 
 public enum CreateShareState {
 

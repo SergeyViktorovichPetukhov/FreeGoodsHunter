@@ -9,6 +9,11 @@ import java.util.List;
 public class Company {
     public Company(){}
 
+    public Company(String login, User user) {
+        this.login = login;
+        this.user = user;
+    }
+
     public Company(String login, String contact, User user) {
         this.login = login;
         this.contact = contact;

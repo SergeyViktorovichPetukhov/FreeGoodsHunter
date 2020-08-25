@@ -4,25 +4,25 @@ import com.sergo.wic.entities.Item;
 
 public class PickedItemDto {
 
-    private String userLogin;
-    private Item point;
+    private String login;
+    private ItemDto point;
     private String shareId;
-    private Long itemId;
+    private String itemId;
 
 
     public PickedItemDto() {
     }
 
-    public PickedItemDto(Item item) {
+    public PickedItemDto(ItemDto item) {
         this.point = item;
 
     }
 
-    public PickedItemDto(Item item, Long itemId, String shareId, String login) {
+    public PickedItemDto(ItemDto item, String itemId, String login) {
         this.point = item;
         this.itemId = itemId;
         this.shareId = shareId;
-        this.userLogin = login;
+        this.login = login;
     }
 
     public String getShareId() {
@@ -33,27 +33,27 @@ public class PickedItemDto {
         this.shareId = id;
     }
 
-    public String getUserLogin() {
-        return userLogin;
+    public String getLogin() {
+        return login;
     }
 
-    public void setUserLogin(String userLogin) {
-        this.userLogin = userLogin;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
-    public Item getPoint() {
+    public ItemDto getPoint() {
         return point;
     }
 
-    public Long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 
-    public void setPoint(Item point) {
+    public void setPoint(ItemDto point) {
         this.point = point;
     }
 }

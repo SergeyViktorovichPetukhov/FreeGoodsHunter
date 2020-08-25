@@ -23,13 +23,13 @@ public class ItemConverter {
     @Autowired
     private ShareService shareService;
 
-    @Autowired
-    private ItemService itemService;
 
     public Item convertToModel(final PickedItemDto source) {
         Optional<Share> share = shareService.findByShareId(source.getShareId());
         if (share.isPresent()){
-        Item item = itemService.findById(source.getItemId());
+        Item item = new Item();
+        item.setShare(share.get());
+          item.setItemId(source.getItemId());
           item.setLatitude(source.getPoint().getLatitude());
           item.setLongitude(source.getPoint().getLongitude());
           return item;
@@ -38,7 +38,7 @@ public class ItemConverter {
         return null;
     }
 
-    public PickedItemDto convertToDto(final Item source) {
+    public PickedItemDto convertToPickedItemsDto(final Item source) {
         final PickedItemDto pickedItemDto = new PickedItemDto();
         modelMapper.map(source, pickedItemDto);
         return pickedItemDto;

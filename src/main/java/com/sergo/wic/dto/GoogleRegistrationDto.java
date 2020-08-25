@@ -6,10 +6,10 @@ public class GoogleRegistrationDto {
     @JsonProperty("login")
     private String login;
     private String phone;
-    private String placeName;
+    private String placeID;
 
-    public GoogleRegistrationDto(String login, String phone, String placeName) {
-        this.placeName = placeName;
+    public GoogleRegistrationDto(String login, String phone, String placeID) {
+        this.placeID = placeID;
         this.login = login;
         this.phone = phone;
     }
@@ -22,7 +22,6 @@ public class GoogleRegistrationDto {
         this.login = login;
     }
 
-
     public String getPhone() {
         return phone;
     }
@@ -31,11 +30,11 @@ public class GoogleRegistrationDto {
         this.phone = phone;
     }
 
-    public String getPlaceName() {
-        return placeName;
+    public String getPlaceID() {
+        return placeID;
     }
 
-    public void setPlaceName(String placeName) {
-        this.placeName = placeName;
+    public void setPlaceID(String placeID) {
+        this.placeID = placeID;
     }
 }

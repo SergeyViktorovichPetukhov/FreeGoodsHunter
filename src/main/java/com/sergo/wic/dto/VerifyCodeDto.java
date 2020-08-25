@@ -1,30 +1,14 @@
 package com.sergo.wic.dto;
 
 public class VerifyCodeDto {
+    private String regId;
     private String login;
-    private String address;
     private String code;
-    private String phone;
 
-    public VerifyCodeDto(String code, String phone) {
+
+    public VerifyCodeDto(String regId, String code) {
         this.code = code;
-        this.phone = phone;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+        this.regId = regId;
     }
 
     public String getLogin() {
@@ -35,11 +19,21 @@ public class VerifyCodeDto {
         this.login = login;
     }
 
-    public String getAddress() {
-        return address;
+    public String getCode() {
+        return code;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setCode(String code) {
+        this.code = code;
     }
+
+
+    public String getRegId() {
+        return regId;
+    }
+
+    public void setRegId(String regId) {
+        this.regId = regId;
+    }
+
 }

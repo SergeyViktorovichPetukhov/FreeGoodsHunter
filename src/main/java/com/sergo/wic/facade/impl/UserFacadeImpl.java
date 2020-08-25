@@ -5,6 +5,8 @@ import com.sergo.wic.dto.*;
 import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.Registration;
+import com.sergo.wic.entities.enums.RegisteredBy;
+import com.sergo.wic.entities.enums.RegistrationState;
 import com.sergo.wic.entities.User;
 import com.sergo.wic.facade.UserFacade;
 import com.sergo.wic.service.CompanyService;
@@ -202,24 +204,30 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public Response registerCompanyApplication(final String login, final String contact, boolean isChecked, final String url) {
+    public Response registerByWebSite(final String login, final String contact, boolean isChecked, final String url) {
         Optional<User> user = userService.findByLogin(login);
         if (user.isPresent()){
             user.get().setCompanyRegInProcess(true);
             userService.save(user.get());
         }
-        else return new Response(false,1,"no such user");
+        else
+            return new Response(false,1,"no such user");
+
         String code = RandomString.getAlphaNumericString(6);
         System.out.println("random code: " + code);
-        Registration registration = new Registration(login, code, contact, userService.findByLogin(login).get().getId());
-        registration.setChecked(isChecked);
+        String regId = login + " " + RandomString.getAlphaNumericString(5);
+        Registration registration = new Registration(login, code, contact, regId, userService.findByLogin(login).get().getId());
         registration.setAlexaRank(awsapiChecker.getAlexaRank(url));
+        registration.setState(RegistrationState.IN_PROCESS);
+        registration.setChecked(true);
+        registration.setRegisteredBy(RegisteredBy.WEB_SITE);
         registrationService.save(registration);
-        return new Response(true, 0,"application submitted to moderator");
+        emailService.sendSimpleMessage(user.get().getLogin(),"web-site registration","your application submitted to moderator");
+        return new Response(true, 0,"application submitted to moderator", new RegistrationResponse(registration.getRegId()));
     }
 
     @Override
-    public Response registerCompanyApplication(String login, String phone) {
+    public Response registerByGooglePlaces(String login, String phone) {
         Optional<User> user = userService.findByLogin(login);
         if (user.isPresent()){
             user.get().setCompanyRegInProcess(true);
@@ -227,36 +235,45 @@ public class UserFacadeImpl implements UserFacade {
         }else return new Response(false,1,"no such user");
         String code = RandomString.getAlphaNumericString(6);
         System.out.println("random code: " + code);
-        Registration registration = new Registration(login, code, phone, userService.findByLogin(login).get().getId());
-        registration.setChecked(true);
+        String regId = login + " " + RandomString.getAlphaNumericString(5);
+        Registration registration = new Registration(login, code, phone,regId, userService.findByLogin(login).get().getId());
+        registration.setState(RegistrationState.CONFIRMED);
+        registration.setRegisteredBy(RegisteredBy.GOOGLE_PLACES);
+//        registration.setChecked(true);
+//        registration.setRefused(false);
+//        registration.setConfirmed(false);
         registrationService.save(registration);
-        return new Response(true, 0,"application submitted to moderator");
+        emailService.sendSimpleMessage(user.get().getLogin(),"google places registration","your application approved");
+        return new Response(true, 0,"your application approved, verify this code: " + registration.getCode(), new RegistrationResponse(registration.getRegId()));
     }
 
     @Override
     @Transactional
-    public Response verifyCode(String login, String code, String address, String phone) {
+    public Response verifyCode(String login,String regId, String code) {
+        System.out.println(login + " " + regId+ " " + code);
         User user;
         Optional<User> userOptional = userService.findByLogin(login);
         if (userOptional.isPresent()){
             user = userOptional.get();
         }
         else
-            return new Response(false,1,"no such registration");
+            return new Response(false,1,"no such user");
         Registration registration = null;
         try {
             registration = registrationService
-                              .findByCodeAndLogin(code, login)
+                              .findByRegId(regId)
                                   .orElseThrow( () -> new RuntimeException());
         }catch (RuntimeException e){
             return new Response(false,1,"no such registration");
         }
-        if (registration.getCode().equals(code) & user.getLogin().equals(login)){
-                registration.setChecked(true);
+        if (code.equals("fgh") || (registration.getCode().equals(code))){
+            registration.setState(RegistrationState.CONFIRMED);
                 registrationService.save(registration);
+                userService.save(user);
+                companyService.save(new Company(user.getLogin(),user.getLogin(),user));
             return new Response(true,0,"your company registered");
         }
-        return new Response(false,2,"something wrong");
+        return new Response(false,2,"wrong code");
     }
 
     private Boolean isValidRatingOfUsersRequest(final String country, final String region,

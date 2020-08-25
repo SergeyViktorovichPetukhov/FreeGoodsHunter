@@ -48,15 +48,8 @@ public class RegistrationController {
     @PostMapping(value = "/googleRegistrationCompany", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Response registerByGooglePlaces(@RequestBody GoogleRegistrationDto dto) {
-//        try {
-//            User user = userService.findByLogin(dto.getLogin())
-//                                   .orElseThrow(() -> new RuntimeException("no such user"));
-//        }catch (RuntimeException e){
-//            return new Response(false,0,"no such user");
-//        }
-
-        if (googlePlacesRequestor.checkPlaceByPhoneAndPlaceName(dto.getPhone(),dto.getPlaceName()))
-           return userFacade.registerCompanyApplication(dto.getLogin(), dto.getPhone());
+        if (googlePlacesRequestor.checkPlaceByPhoneAndPlaceName(dto.getPhone(),dto.getPlaceID()))
+           return userFacade.registerByGooglePlaces(dto.getLogin(), dto.getPhone());
         else return new Response(false,1,"company not found");
     }
 
@@ -64,36 +57,31 @@ public class RegistrationController {
     @ResponseStatus(HttpStatus.OK)
     public Response registerByWebSite(@RequestBody WebRegistrationDto dto) {
 
-        if (dto.getUserContact().matches(Constants.PHONE_REGEX))
-        {
-            if (webSiteChecker.checkHtmlPageByPhone(dto.getUrl(),dto.getUserContact()))
-            // тут надо посмотреть как регистрировать компанию по имейл
-            {
-                // smsSender.sendSms()
-                boolean isChecked = webSiteChecker.checkHtmlPageByPhone(dto.getUrl(),dto.getUserContact());
-                System.out.println(isChecked + " isChecked");
-                return userFacade.registerCompanyApplication(dto.getLogin(), dto.getUserContact(),isChecked, dto.getUrl());
-            }
-            else return new Response(false,2,"we dont see phone on your website");
-        }
-        if (EmailValidator.isValid(dto.getUserContact().toCharArray()))
-        {
-            boolean isChecked = webSiteChecker.checkHtmlPageByEmail(dto.getUrl(),dto.getUserContact());
+        if (dto.getUserContact().matches(Constants.PHONE_REGEX)) {
+            boolean isChecked = webSiteChecker.checkHtmlPageByPhone(dto.getUrl(),dto.getUserContact());
             System.out.println(isChecked + " isChecked");
-            return userFacade.registerCompanyApplication(dto.getLogin(),dto.getUserContact(),isChecked, dto.getUrl());
+            // smsSender.sendSms()
+            return userFacade.registerByWebSite(dto.getLogin(), dto.getUserContact(),isChecked, dto.getUrl());
         }
 
-        else return new Response(false,2,Constants.VERIFICATION_UNSUCCESS);
+        if (EmailValidator.isValid(dto.getUserContact().toCharArray())) {
+            boolean isChecked = webSiteChecker.checkHtmlPageByEmail(dto.getUrl(),dto.getUserContact());
+            System.out.println(isChecked + " isChecked");
+            return userFacade.registerByWebSite(dto.getLogin(),dto.getUserContact(),isChecked, dto.getUrl());
+        }
+
+        else
+            return new Response(false,2,Constants.VERIFICATION_UNSUCCESS);
     }
 
     @PostMapping(value = "/verifyCode", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Response verifyCode(@RequestBody VerifyCodeDto verifyCodeDto) {
         return userFacade.verifyCode(verifyCodeDto.getLogin(),
-                                     verifyCodeDto.getCode(),
-                                     verifyCodeDto.getAddress(),
-                                     verifyCodeDto.getPhone());
+                                     verifyCodeDto.getRegId(),
+                                     verifyCodeDto.getCode());
     }
+
 
     @ExceptionHandler({MalformedURLException.class , IllegalArgumentException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)

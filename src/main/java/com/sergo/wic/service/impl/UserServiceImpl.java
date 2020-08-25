@@ -2,6 +2,7 @@ package com.sergo.wic.service.impl;
 
 import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.Registration;
+import com.sergo.wic.entities.enums.RegistrationState;
 import com.sergo.wic.entities.User;
 import com.sergo.wic.repository.UserRepository;
 import com.sergo.wic.service.CompanyService;
@@ -62,14 +63,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void confirmRegistration(@NotNull User user) {
+    public void confirmRegistration(@NotNull User user, String regID) {
         user.setHasCompany(true);
         user.setCompanyRegInProcess(false);
         repository.save(user);
-        Registration registration = registrationService.findByUserId(Long.valueOf(user.getId()));
-//        registration.setChecked(false);
-        registration.setConfirmed(true);
-        companyService.save(new Company(user.getLogin(),user.getContact(),user));
+        Registration registration = registrationService.findByRegId(regID).get();
+        registration.setState(RegistrationState.CONFIRMED);
         emailService.sendSimpleMessage(user.getLogin(),"registration is confirmed","your application is approved! Your verification code: " + registration.getCode());
         registrationService.save(registration);
     }

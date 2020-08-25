@@ -24,55 +24,23 @@ public class WebSiteChecker {
     private StringBuffer baseUrl;
 
     public boolean checkHtmlPageByPhone(String url, String phone){
-        System.out.println(phone);
-      //  System.out.println(System.currentTimeMillis());
-        long a1 = System.currentTimeMillis();
-        Document doc = connect(url);
-        if (doc == null)
-            return false;
+        String formattedPhone = phone.replaceAll("[\\s-()]","");
+        String URL = "https://" + url;
+        System.out.println(formattedPhone);
+        Document doc = getContactsPage(URL,formattedPhone);
 
-        Elements links = doc.select("a");
-        if (links == null)
+        if (doc == null){
+            System.out.println("doc=null");
             return false;
-        List<String> text = links.eachText();
-        if (text.stream().filter(str -> str.matches(Constants.PHONE_REGEX)).anyMatch((str) -> str.equals(phone)))
-            return true;
-        else {
-            String href = links.select("a[href*=\"/contacts/\"]").attr("href");
-            System.out.println(href);
-            if (href != null) {
-                doc = connect(href);
-            }
-            if (doc == null) {
-                String href2 = links.select("a[href*=/kontakty]").attr("href");
-                if (href2 != null) {
-                    doc = connect(url + href2);
-                }
-            }
-            if (doc == null) {
-                String href2 = links.select("a[href*=/kontakts]").attr("href");
-                if (href2 != null) {
-                    doc = connect(url + href2);
-                }
-            }
-            Elements a = doc.select("a");
-            Elements p = doc.select("p");
-            List<String> text2 = a.eachText();
-//            text2.forEach(System.out::println);
-//            System.out.println("++++++++++");
-            List<String> text3 = p.eachText();
-          //  text3.forEach(System.out::println);
-            text3.stream().filter(str -> str.matches(Constants.PHONE_REGEX)).collect(Collectors.toList()).forEach(System.out::println);
-            if (text2.stream().filter(str -> str.matches(Constants.PHONE_REGEX)).anyMatch((str) -> str.equals(phone))
-             | text3.stream().filter(str -> str.matches(Constants.PHONE_REGEX)).anyMatch((str) -> str.equals(phone)))
-                return true;
         }
-        long b = System.currentTimeMillis();
-//        System.out.println(b - a1 + " delta");
-        return false;
+
+        return  (doc.select("a").eachText().stream().filter(str -> str.matches(Constants.PHONE_REGEX)).anyMatch((str) -> str.equals(formattedPhone))
+               | doc.select("p").eachText().stream().filter(str -> str.matches(Constants.PHONE_REGEX)).anyMatch((str) -> str.equals(formattedPhone))
+               | doc.select("em").eachText().stream().filter(str -> str.matches(Constants.PHONE_REGEX)).anyMatch((str) -> str.equals(formattedPhone)));
     }
 
-    public boolean checkHtmlPageByEmail(String url, String email){
+    public boolean checkHtmlPageByEmail(String URL, String email){
+        String url = "https://" + URL;
         baseUrl = new StringBuffer(url);
         Document doc = connect(url);
         System.out.println("1");
@@ -116,7 +84,7 @@ public class WebSiteChecker {
 
     private Document connect(String url){
         try {
-            System.out.println(url + " url ");
+            System.out.println(url + " current url ");
             String newUrl;
             if (!url.startsWith("https")){
                 newUrl = baseUrl.toString() + url;
@@ -129,4 +97,39 @@ public class WebSiteChecker {
         return null;
     }
 
+    private Document getContactsPage(String url, String formattedPhone){
+        Document doc;
+        doc = connect(url);
+        if (doc != null) {
+            Elements links = doc.select("a");
+            List<String> text = links.eachText();
+            if (text.stream().filter(str -> str.matches(Constants.PHONE_REGEX)).anyMatch((str) -> str.equals(formattedPhone))) {
+                System.out.println(1);
+                return doc;
+            }
+
+            String href = links.select("a[href*=\"/contacts/\"]").attr("href");
+            if (href != null) {
+                System.out.println(2);
+                doc = connect(url + href);
+            }
+            String href2 = null;
+            if (href == null) {
+                href2 = links.select("a[href*=/kontakt]").attr("href");
+                if (href2 != null) {
+                    System.out.println(3);
+                    doc = connect(url + href2);
+                }
+            }
+            String href3;
+            if (href2 == null) {
+                href3 = links.select("a[href*=/Контакты]").attr("href");
+                if (href3 != null) {
+                    System.out.println(4);
+                    doc = connect(url + href3);
+                }
+            }
+        }
+        return doc;
+    }
 }

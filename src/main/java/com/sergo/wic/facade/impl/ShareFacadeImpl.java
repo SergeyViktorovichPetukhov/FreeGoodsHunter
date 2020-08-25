@@ -8,7 +8,7 @@ import com.sergo.wic.dto.CreateShareDto;
 import com.sergo.wic.dto.ShareDto;
 import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.Share;
-import com.sergo.wic.entities.ShareState;
+import com.sergo.wic.entities.enums.ShareState;
 import com.sergo.wic.entities.User;
 import com.sergo.wic.facade.ShareFacade;
 //import com.sergo.wic.repository.AddressRepository;

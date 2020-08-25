@@ -1,5 +1,8 @@
 package com.sergo.wic.entities;
 
+import com.sergo.wic.entities.enums.RegisteredBy;
+import com.sergo.wic.entities.enums.RegistrationState;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -7,7 +10,9 @@ import java.util.Objects;
 @Table(name = "registrations")
 public class Registration {
 
-    public Registration(){}
+    public Registration(){
+//        this.state = RegistrationState.CREATED;
+    }
 
     public Registration(String login, String contact, String code) {
         this.login = login;
@@ -22,18 +27,20 @@ public class Registration {
         this.userId = userId;
     }
 
-    public Registration(String login, String code, String contact, Long userId, boolean isChecked) {
+    public Registration(String login, String code, String contact,String regId, Long userId) {
         this.login = login;
         this.code = code;
         this.contact = contact;
         this.userId = userId;
-        this.isChecked = isChecked;
+        this.regId = regId;
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @SequenceGenerator(name = "hibernateSeq", sequenceName = "HIBERNATE_SEQUENCE")
+    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "hibernateSeq")
     private long id;
+    @Column(name = "reg_id")
+    private String regId;
     @Column(name = "login")
     private String login;
     @Column(name = "address")
@@ -44,21 +51,44 @@ public class Registration {
     private String code;
     @Column(name ="alexa_rank")
     private String alexaRank;
-    @Column(name = "is_checked")
-    private Boolean isChecked;
-    @Column(name = "is_confirmed")
-    private Boolean isConfirmed = false;
     @Column(name = "reason_of_refuse")
     private String reasonOfRefuse;
     @Column(name = "user_id")
     private Long userId;
+//, nullable = false, columnDefinition = "REGISTRATION_STATE DEFAULT 'CREATED'"
+//    @Column(name = "state")
+    @Enumerated(EnumType.STRING)
+    private RegistrationState state;
 
-    public boolean isChecked() {
-        return isChecked;
+    @Enumerated(EnumType.STRING)
+    private RegisteredBy registeredBy;
+
+    @Column(name = "is_checked")
+    private Boolean isChecked;
+
+    public RegistrationState getState() {
+        return state;
     }
 
-    public void setChecked(boolean checked) {
-        isChecked = checked;
+    public void setState(RegistrationState state) {
+
+        this.state = state;
+    }
+
+    public String getRegId() {
+        return regId;
+    }
+
+    public void setRegId(String regId) {
+        this.regId = regId;
+    }
+
+    public RegisteredBy getRegisteredBy() {
+        return registeredBy;
+    }
+
+    public void setRegisteredBy(RegisteredBy registeredBy) {
+        this.registeredBy = registeredBy;
     }
 
     public String getReasonOfRefuse() {
@@ -77,6 +107,14 @@ public class Registration {
         this.id = id;
     }
 
+    public Boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(Boolean checked) {
+        isChecked = checked;
+    }
+
     public String getAlexaRank() {
         return alexaRank;
     }
@@ -89,13 +127,6 @@ public class Registration {
         return login;
     }
 
-    public boolean isConfirmed() {
-        return isConfirmed;
-    }
-
-    public void setConfirmed(boolean confirmed) {
-        isConfirmed = confirmed;
-    }
 
     public void setLogin(String login) {
         this.login = login;

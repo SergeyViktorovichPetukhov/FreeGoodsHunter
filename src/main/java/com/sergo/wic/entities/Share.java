@@ -1,6 +1,8 @@
 package com.sergo.wic.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sergo.wic.entities.enums.CreateShareState;
+import com.sergo.wic.entities.enums.ShareState;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -102,8 +104,12 @@ public class Share {
     @Column(name = "message_for_user")
     private String messageForUser;
     @JsonIgnore
-    @OneToMany(mappedBy = "share",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "share",fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
     private List<Item> items;
+
+    @OneToOne
+    @JoinColumn(name="user_item_id", referencedColumnName = "id")
+    private UserItem userItem;
 
 //    @OneToMany(mappedBy = "sharesId",fetch = FetchType.EAGER)
 //    private List<Item> items;
@@ -116,6 +122,10 @@ public class Share {
 
     @Column (name = "place_city")
     private String placeCity;
+
+    public boolean addItem(Item item){
+        return items.add(item);
+    }
 
 
 //    @ManyToOne
@@ -130,6 +140,14 @@ public class Share {
 //        this.user = user;
 //    }
 
+
+    public UserItem getUserItem() {
+        return userItem;
+    }
+
+    public void setUserItem(UserItem userItem) {
+        this.userItem = userItem;
+    }
 
     public void setProductCount(Integer productCount) {
         this.productCount = productCount;

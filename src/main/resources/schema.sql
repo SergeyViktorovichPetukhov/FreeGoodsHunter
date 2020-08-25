@@ -3,6 +3,8 @@ commit;
 CREATE SCHEMA public;
 commit;
 
+--CREATE TYPE REGISTRATION_STATE AS ENUM ('CREATED', 'IN_PROCESS', 'CONFIRMED', 'REFUSED' );
+
 CREATE TABLE IF NOT EXISTS users
 (
     id                        BIGSERIAL     NOT NULL,
@@ -58,15 +60,17 @@ ALTER TABLE shares
 CREATE TABLE IF NOT EXISTS registrations
 (
     id                  BIGSERIAL     NOT NULL,
-    login               VARCHAR(30)   NOT NULL   UNIQUE,
-    address             VARCHAR(30),
-    contact             VARCHAR(30)   NOT NULL   UNIQUE,
+    login               VARCHAR(30)   NOT NULL,
+    reg_id              VARCHAR(40)   NOT NULL    UNIQUE,
+    placeNameOrUrl      VARCHAR(30),
+    contact             VARCHAR(30)   NOT NULL,
     alexa_rank          VARCHAR(10),
     code                VARCHAR(30),
-    is_checked          BOOLEAN,
-    is_confirmed        BOOLEAN,
     reason_of_refuse    VARCHAR(50),
-    user_id             INTEGER
+    is_checked          BOOLEAN,
+    user_id             INTEGER,
+    state               VARCHAR(10)   DEFAULT   'CREATED',
+    registered_by       VARCHAR(14)
 );
 
 ALTER TABLE registrations
@@ -100,13 +104,14 @@ CREATE TABLE  items
     id              BIGSERIAL       NOT NULL,
     longitude       FLOAT           NOT NULL,
     latitude        FLOAT           NOT NULL,
-    share_id        BIGSERIAL       NOT NULL
+    share_id        BIGSERIAL       NOT NULL,
+    item_id         VARCHAR(10)     NOT NULL   UNIQUE
 );
 
 ALTER TABLE items
   ADD CONSTRAINT items_PK PRIMARY KEY (id);
 
-CREATE TABLE address
+CREATE TABLE placeNameOrUrl
 (
     id            BIGSERIAL    NOT NULL,
     country       VARCHAR(50)  NOT NULL,
@@ -115,7 +120,7 @@ CREATE TABLE address
     address_line  VARCHAR(200)
 );
 
-ALTER TABLE address
+ALTER TABLE placeNameOrUrl
   ADD CONSTRAINT address_PK PRIMARY KEY (id);
 
 CREATE TABLE IF NOT EXISTS companies
@@ -123,8 +128,8 @@ CREATE TABLE IF NOT EXISTS companies
     id            BIGSERIAL    NOT NULL,
     login         VARCHAR(50)  NOT NULL,
     name          VARCHAR(50),
-    address       VARCHAR(50),
-    contact       VARCHAR(50)  NOT NULL,
+    placeNameOrUrl       VARCHAR(50),
+    contact       VARCHAR(50) ,
     internet_shop VARCHAR(100),
     code          VARCHAR(40),
     label_path    VARCHAR(50),
