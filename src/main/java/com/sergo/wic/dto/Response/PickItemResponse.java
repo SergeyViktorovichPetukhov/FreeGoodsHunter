@@ -1,8 +1,6 @@
 package com.sergo.wic.dto.Response;
 
-import com.sergo.wic.dto.ItemDto;
 import com.sergo.wic.dto.PickedItemDto;
-import com.sergo.wic.dto.ResponseContent;
 
 import java.util.List;
 

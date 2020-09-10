@@ -1,7 +1,5 @@
 package com.sergo.wic.dto.Response;
 
-import com.sergo.wic.dto.ResponseContent;
-
 public class RegistrationResponse extends ResponseContent {
 
     private String regID;

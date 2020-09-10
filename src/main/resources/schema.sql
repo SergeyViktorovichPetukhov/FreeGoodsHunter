@@ -1,7 +1,7 @@
-DROP SCHEMA IF EXISTS public CASCADE;
-commit;
-CREATE SCHEMA public;
-commit;
+-- DROP SCHEMA IF EXISTS public CASCADE;
+-- commit;
+-- CREATE SCHEMA public;
+-- commit;
 
 --CREATE TYPE REGISTRATION_STATE AS ENUM ('CREATED', 'IN_PROCESS', 'CONFIRMED', 'REFUSED' );
 
@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS users
 --     company_id            INTEGER
 );
 
-ALTER TABLE users
-    ADD CONSTRAINT users_PK PRIMARY KEY (id);
+-- ALTER TABLE users
+--     ADD CONSTRAINT users_PK PRIMARY KEY (id);
 
 
 CREATE TABLE IF NOT EXISTS shares
@@ -53,8 +53,8 @@ CREATE TABLE IF NOT EXISTS shares
 );
 
 
-ALTER TABLE shares
-    ADD CONSTRAINT shares_PK PRIMARY KEY (id);
+-- ALTER TABLE shares
+--     ADD CONSTRAINT shares_PK PRIMARY KEY (id);
 
 
 CREATE TABLE IF NOT EXISTS registrations
@@ -73,45 +73,46 @@ CREATE TABLE IF NOT EXISTS registrations
     registered_by       VARCHAR(14)
 );
 
-ALTER TABLE registrations
-    ADD CONSTRAINT registrations_PK PRIMARY KEY (id);
+-- ALTER TABLE registrations
+--     ADD CONSTRAINT registrations_PK PRIMARY KEY (id);
 
 
-CREATE TABLE images
+CREATE TABLE IF NOT EXISTS images
 (
     id      BIGSERIAL,
     format  VARCHAR(40),
     image   BYTEA
 );
 
-ALTER TABLE images
-  ADD CONSTRAINT images_PK PRIMARY KEY (id);
+-- ALTER TABLE images
+--   ADD CONSTRAINT images_PK PRIMARY KEY (id);
 
-CREATE TABLE share_statuses
-(
-    id      SERIAL        NOT NULL,
-    name    VARCHAR(50)   NOT NULL
-);
+-- CREATE TABLE share_statuses
+-- (
+--     id      SERIAL        NOT NULL,
+--     name    VARCHAR(50)   NOT NULL
+-- );
+--
+-- ALTER TABLE share_statuses
+--   ADD CONSTRAINT share_statuses_PK PRIMARY KEY (id);
 
-ALTER TABLE share_statuses
-  ADD CONSTRAINT share_statuses_PK PRIMARY KEY (id);
+-- ALTER TABLE share_statuses
+--   ADD CONSTRAINT share_statuses_UN UNIQUE (name);
 
-ALTER TABLE share_statuses
-  ADD CONSTRAINT share_statuses_UN UNIQUE (name);
-
-CREATE TABLE  items
+CREATE TABLE IF NOT EXISTS  items
 (
     id              BIGSERIAL       NOT NULL,
+    state           VARCHAR(10)     DEFAULT   'FREE',
     longitude       FLOAT           NOT NULL,
     latitude        FLOAT           NOT NULL,
     share_id        BIGSERIAL       NOT NULL,
     item_id         VARCHAR(10)     NOT NULL   UNIQUE
 );
 
-ALTER TABLE items
-  ADD CONSTRAINT items_PK PRIMARY KEY (id);
+-- ALTER TABLE items
+-- --   ADD CONSTRAINT items_PK PRIMARY KEY (id);
 
-CREATE TABLE placeNameOrUrl
+CREATE TABLE IF NOT EXISTS placeNameOrUrl
 (
     id            BIGSERIAL    NOT NULL,
     country       VARCHAR(50)  NOT NULL,
@@ -120,8 +121,8 @@ CREATE TABLE placeNameOrUrl
     address_line  VARCHAR(200)
 );
 
-ALTER TABLE placeNameOrUrl
-  ADD CONSTRAINT address_PK PRIMARY KEY (id);
+-- ALTER TABLE placeNameOrUrl
+--   ADD CONSTRAINT address_PK PRIMARY KEY (id);
 
 CREATE TABLE IF NOT EXISTS companies
 (
@@ -136,8 +137,8 @@ CREATE TABLE IF NOT EXISTS companies
     user_id       INTEGER
 );
 
-ALTER TABLE companies
-    ADD CONSTRAINT companies_PK PRIMARY KEY (id);
+-- ALTER TABLE companies
+--     ADD CONSTRAINT companies_PK PRIMARY KEY (id);
 
 CREATE TABLE IF NOT EXISTS settlements
 (
@@ -151,8 +152,8 @@ CREATE TABLE IF NOT EXISTS settlements
 
 );
 
-ALTER TABLE settlements
-    ADD CONSTRAINT settlements_PK PRIMARY KEY (id);
+-- ALTER TABLE settlements
+--     ADD CONSTRAINT settlements_PK PRIMARY KEY (id);
 
 -- CREATE TABLE user_item
 -- (
@@ -177,29 +178,32 @@ ALTER TABLE settlements
 --         REFERENCES users(id);
 --
 
-ALTER TABLE shares
-    ADD CONSTRAINT company_share_FK FOREIGN KEY (company_id)
-        REFERENCES companies(id);
+-- ALTER TABLE shares
+--     ADD CONSTRAINT company_share_FK FOREIGN KEY (company_id)
+--         REFERENCES companies(id);
+--
+-- ALTER TABLE shares
+--   ADD CONSTRAINT shares_image_FK FOREIGN KEY
+--   (
+--     product_image_id
+--   )
+-- REFERENCES images
+--   (
+--     id
+--   );
+--
+-- ALTER TABLE items
+--   ADD CONSTRAINT items_share_FK FOREIGN KEY
+--   (
+--     share_id
+--   )
+-- REFERENCES shares
+--   (
+--     id
+--   ) ON UPDATE CASCADE;
 
-ALTER TABLE shares
-  ADD CONSTRAINT shares_image_FK FOREIGN KEY
-  (
-    product_image_id
-  )
-REFERENCES images
-  (
-    id
-  );
 
-ALTER TABLE items
-  ADD CONSTRAINT items_share_FK FOREIGN KEY
-  (
-    share_id
-  )
-REFERENCES shares
-  (
-    id
-  ) ON UPDATE CASCADE;
+
 
 -- ALTER TABLE items
 --     ADD CONSTRAINT items_user_FK FOREIGN KEY
@@ -211,8 +215,11 @@ REFERENCES shares
 --              id
 --                 ) ON DELETE CASCADE;
 
-ALTER TABLE registrations
-    ADD CONSTRAINT registrations_FK FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+
+-- ALTER TABLE registrations
+--     ADD CONSTRAINT registrations_FK FOREIGN KEY (user_id) REFERENCES users(id);
 
 COMMIT;
 
@@ -221,10 +228,10 @@ COMMIT;
 ------------------------------------------------------------------------
 --------------       SEQUENCES    --------------------------------------
 
-CREATE SEQUENCE HIBERNATE_SEQUENCE START WITH 100 INCREMENT BY 1;
+CREATE SEQUENCE IF NOT EXISTS HIBERNATE_SEQUENCE START WITH 100 INCREMENT BY 1;
 
 
 ------------------ EXTENSIONS  --------------------------
 
 
--- CREATE EXTENSION postgis;
+CREATE EXTENSION IF NOT EXISTS postgis;

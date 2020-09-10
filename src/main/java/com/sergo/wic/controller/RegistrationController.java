@@ -5,11 +5,8 @@ import com.sergo.wic.dto.GoogleRegistrationDto;
 import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.VerifyCodeDto;
 import com.sergo.wic.dto.WebRegistrationDto;
-import com.sergo.wic.facade.CompanyFacade;
 import com.sergo.wic.facade.UserFacade;
 import com.sergo.wic.company_check.GooglePlacesRequestor;
-import com.sergo.wic.service.RegistrationService;
-import com.sergo.wic.service.UserService;
 import com.sergo.wic.service.email.EmailService;
 import com.sergo.wic.utils.Constants;
 import com.sergo.wic.utils.EmailValidator;
@@ -28,15 +25,6 @@ public class RegistrationController {
     private UserFacade userFacade;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private CompanyFacade companyFacade;
-
-    @Autowired
-    private RegistrationService registrationService;
-
-    @Autowired
     private GooglePlacesRequestor googlePlacesRequestor;
 
     @Autowired
@@ -48,7 +36,7 @@ public class RegistrationController {
     @PostMapping(value = "/googleRegistrationCompany", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Response registerByGooglePlaces(@RequestBody GoogleRegistrationDto dto) {
-        if (googlePlacesRequestor.checkPlaceByPhoneAndPlaceName(dto.getPhone(),dto.getPlaceID()))
+        if (googlePlacesRequestor.checkPlaceByPhoneAndPlaceName(dto.getPhone(),dto.getPlaceID(),dto.getCountryCode()))
            return userFacade.registerByGooglePlaces(dto.getLogin(), dto.getPhone());
         else return new Response(false,1,"company not found");
     }

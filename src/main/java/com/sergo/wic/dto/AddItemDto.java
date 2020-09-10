@@ -4,9 +4,9 @@ public class AddItemDto {
     public AddItemDto() {
     }
 
-    public AddItemDto( ItemDto coordinates) {
+    public AddItemDto( ItemDto latLng) {
     //    this.login = login;
-        this.coordinates = coordinates;
+        this.coordinates = latLng;
     }
 
 //    private String login;

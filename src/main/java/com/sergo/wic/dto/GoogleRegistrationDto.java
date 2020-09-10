@@ -7,11 +7,13 @@ public class GoogleRegistrationDto {
     private String login;
     private String phone;
     private String placeID;
+    private String countryCode;
 
-    public GoogleRegistrationDto(String login, String phone, String placeID) {
+    public GoogleRegistrationDto(String login, String phone, String placeID, String countryCode) {
         this.placeID = placeID;
         this.login = login;
         this.phone = phone;
+        this.countryCode = countryCode;
     }
 
     public String getLogin() {
@@ -24,6 +26,14 @@ public class GoogleRegistrationDto {
 
     public String getPhone() {
         return phone;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     public void setPhone(String phone) {

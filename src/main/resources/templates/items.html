@@ -14,7 +14,8 @@
             <th>itemID</th>
             <th>shareID</th>
             <th>lat</th>
-            <th>lon</th>
+            <th>longitude</th>
+            <th>state</th>
             <th>user</th>
         </tr>
         </thead>
@@ -24,7 +25,8 @@
             <td align="center"  th:text="${item.share.shareId}" /></td>
             <td align="center"  th:text="${item.latitude}"/></td>
             <td align="center"  th:text="${item.longitude}"/></td>
-            <td align="center" th:if="${item.userItem != null}"  th:text="${item.userItem.user.login}"/></td>
+            <td align="center"  th:text="${item.state}"/></td>
+            <td align="center"  th:if="${item.userItem != null}"  th:text="${item.userItem.user.login}"/></td>
         </tr>
         </tbody>
     </table>

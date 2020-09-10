@@ -7,12 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.postgis.PGgeometry;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    List<Item> findAllByShare(Share share);
+    Optional<List<Item>> findAllByShare(Share share);
     Item findByItemId(String itemId);
 
   //  @Query(value = "SELECT * FROM items WHERE ", nativeQuery = true)

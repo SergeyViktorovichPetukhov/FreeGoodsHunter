@@ -1,5 +1,6 @@
 package com.sergo.wic.converter;
 
+import com.sergo.wic.dto.CoordinatesDto;
 import com.sergo.wic.dto.ItemDto;
 import com.sergo.wic.dto.PickedItemDto;
 import com.sergo.wic.entities.Item;
@@ -24,19 +25,19 @@ public class ItemConverter {
     private ShareService shareService;
 
 
-    public Item convertToModel(final PickedItemDto source) {
-        Optional<Share> share = shareService.findByShareId(source.getShareId());
-        if (share.isPresent()){
-        Item item = new Item();
-        item.setShare(share.get());
-          item.setItemId(source.getItemId());
-          item.setLatitude(source.getPoint().getLatitude());
-          item.setLongitude(source.getPoint().getLongitude());
-          return item;
-        }
-       //     share.ifPresent((sh) -> item.setShare(sh));
-        return null;
-    }
+//    public Item convertToModel(final PickedItemDto source) {
+//        Optional<Share> share = shareService.findByShareId(source.getShareId());
+//        if (share.isPresent()){
+//        Item item = new Item();
+//        item.setShare(share.get());
+//          item.setItemId(source.getItemId());
+//          item.setLatitude(source.getPoint().getLatitude());
+//          item.setLongitude(source.getPoint().getLongitude());
+//          return item;
+//        }
+//       //     share.ifPresent((sh) -> item.setShare(sh));
+//        return null;
+//    }
 
     public PickedItemDto convertToPickedItemsDto(final Item source) {
         final PickedItemDto pickedItemDto = new PickedItemDto();
@@ -53,7 +54,10 @@ public class ItemConverter {
     public List<ItemDto> convertAllItems(List<Item> items){
         List<ItemDto> result = new ArrayList<>(items.size());
         for(int i = 0; i < items.size(); i ++){
-            result.add(new ItemDto());
+            ItemDto itemDto = new ItemDto();
+            CoordinatesDto coordinatesDto = new CoordinatesDto(items.get(i).getLatitude(),items.get(i).getLongitude());
+            itemDto.setCoordinates(coordinatesDto);
+            result.add(itemDto);
             modelMapper.map(items.get(i),result.get(i));
         }
         return result;

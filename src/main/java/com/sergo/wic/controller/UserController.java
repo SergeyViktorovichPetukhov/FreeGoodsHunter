@@ -1,16 +1,15 @@
 package com.sergo.wic.controller;
 
 import com.sergo.wic.converter.ItemConverter;
-import com.sergo.wic.dto.ItemDto;
 import com.sergo.wic.dto.LoginDto;
 import com.sergo.wic.dto.Response.IsCompanyRegInProcessResponse;
-import com.sergo.wic.dto.Response.PickItemResponse;
 import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.Response.UserResponse;
 import com.sergo.wic.dto.PickedItemDto;
 import com.sergo.wic.entities.Item;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.entities.User;
+import com.sergo.wic.entities.enums.ItemState;
 import com.sergo.wic.service.CompanyService;
 import com.sergo.wic.service.ItemService;
 import com.sergo.wic.service.ShareService;
@@ -19,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -85,6 +82,8 @@ public class UserController {
 
     public Response pickItem(@RequestBody PickedItemDto dto){
         Item item = itemService.findByItemId(dto.getItemId());
+        if (item.getState() != ItemState.FREE)
+            return new Response(false,1, "this item is already picked");
         Share share = item.getShare();
         if (! share.getLogin().equals(dto.getLogin())){
             Optional<User> user = userService.findByLogin(dto.getLogin());

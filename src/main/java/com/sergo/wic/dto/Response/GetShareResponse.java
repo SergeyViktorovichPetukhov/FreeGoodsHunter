@@ -1,6 +1,5 @@
 package com.sergo.wic.dto.Response;
 
-import com.sergo.wic.dto.ResponseContent;
 import com.sergo.wic.dto.UserDto;
 import com.sergo.wic.dto.PickedItemDto;
 

@@ -7,7 +7,6 @@ import com.sergo.wic.dto.Response.GetShareResponse;
 import com.sergo.wic.dto.Response.Response;
 import com.sergo.wic.dto.RequestGetShareDto;
 import com.sergo.wic.dto.LoginDto;
-import com.sergo.wic.dto.Response.ShareResponse;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.facade.CompanyFacade;
 import com.sergo.wic.facade.UserFacade;

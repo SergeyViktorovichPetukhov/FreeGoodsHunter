@@ -1,18 +1,24 @@
 package com.sergo.wic.service.impl;
 
 import com.sergo.wic.converter.ItemConverter;
+import com.sergo.wic.dto.CoordinatesDto;
 import com.sergo.wic.dto.ItemDto;
 import com.sergo.wic.entities.Item;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.entities.User;
 import com.sergo.wic.entities.UserItem;
+import com.sergo.wic.entities.enums.ItemState;
 import com.sergo.wic.repository.ItemRepository;
+import com.sergo.wic.repository.RandomPointsRepository;
 import com.sergo.wic.service.*;
+import com.sergo.wic.utils.RandomString;
+import org.postgresql.util.PGobject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.postgis.PGgeometry;
 
 import javax.transaction.Transactional;
-import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,18 +27,18 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private ItemRepository repository;
-    private CompanyService companyService;
+    private RandomPointsRepository randomPointsRepository;
     private ItemConverter itemConverter;
     private UserItemService userItemService;
     private ShareService shareService;
     public ItemServiceImpl(@Autowired ItemRepository repository,
-                           @Autowired CompanyService companyService,
                            @Autowired ItemConverter itemConverter,
                            @Autowired UserItemService userItemService,
-                           @Autowired ShareService shareService
+                           @Autowired ShareService shareService,
+                           @Autowired RandomPointsRepository randomPointsRepository
                            ){
         this.repository = repository;
-        this.companyService = companyService;
+        this.randomPointsRepository = randomPointsRepository;
         this.userItemService = userItemService;
         this.itemConverter = itemConverter;
         this.shareService = shareService;
@@ -70,30 +76,19 @@ public class ItemServiceImpl implements ItemService {
         if (userItem.isPresent()){
             UserItem ui = userItem.get();
             ui.setUser(user);
+            item.setUserItem(ui);
             userItemService.save(userItem.get());
-            repository.saveAndFlush(item);
-            return true;
-       //     return repository.save(item);
         }else{
             newUserItem = new UserItem(user);
             newUserItem.setUser(user);
             item.setUserItem(newUserItem);
             userItemService.save(newUserItem);
-            repository.saveAndFlush(item);
-            return true;
-        //    return repository.save(item);
         }
+        item.setState(ItemState.PICKED);
+        repository.saveAndFlush(item);
+        return true;
     }
 
-    @Override
-    public boolean isPickedFullItemsForOneProduct() {
-        return false;
-    }
-
-    @Override
-    public List<Item> findAllOrphaned() {
-        return null;
-    }
 
     @Override
     public List<Item> findAll() {
@@ -102,9 +97,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getShareItems(Share share) {
-        List<Item> items = repository.findAllByShare(share);
-        List<Item> result = items.stream().filter((item) -> item.getUserItem() == null).collect(Collectors.toList());
-        return itemConverter.convertAllItems(result);
+        Optional<List<Item>> items = repository.findAllByShare(share);
+        List<Item> result = null;
+        if (items.isPresent()){
+            result = items.get().stream().filter((item) -> item.getUserItem() == null).collect(Collectors.toList());
+            return itemConverter.convertAllItems(result);
+        }
+        else return null;
     }
 
     public List<ItemDto> convertAllItems(List<Item> list){
@@ -113,12 +112,26 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Integer getMaxCountItems(String projectPath,String layerName){
-
         return 20;
     }
 
+
     @Override
-    public List<Item> findAllByShare(Share share) {
-        return repository.findAllByShare(share);
+    public List<ItemDto> getRandomCoordinates(String table, int quantity, int seed) {
+        List<PGgeometry> points = randomPointsRepository.getRandomCoordinates(table,quantity,seed);
+        List<ItemDto> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++) {
+            String itemId = RandomString.getAlphaNumericString(8);
+            CoordinatesDto coordinates = new CoordinatesDto(
+                    points
+                            .get(i)
+                            .getGeometry()
+                            .getPoint(0)
+                            .y,
+                    points.get(i).getGeometry().getPoint(0).x);
+            ItemDto item = new ItemDto(coordinates,itemId);
+            result.add(item);
+        }
+        return result;
     }
 }

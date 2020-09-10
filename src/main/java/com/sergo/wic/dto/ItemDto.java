@@ -4,48 +4,32 @@ public class ItemDto {
 
     public ItemDto(){}
 
-    public ItemDto(double longitude, double latitude) {
-        this.longitude = longitude;
-        this.latitude = latitude;
+    public ItemDto(CoordinatesDto dto, String itemId) {
+        this.itemId = itemId;
+        this.coordinates = dto;
     }
 
-    private double longitude;
+   private CoordinatesDto coordinates;
 
-    private double latitude;
+//    private String shareId;
+//
+//    private String userId;
 
-    private String shareId;
+    private String itemId;
 
-    private String userId;
-
-    public String getShareId() {
-        return shareId;
+    public String getItemId() {
+        return itemId;
     }
 
-    public void setShareId(String shareId) {
-        this.shareId = shareId;
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
     }
 
-    public String getUserId() {
-        return userId;
+    public CoordinatesDto getCoordinates() {
+        return coordinates;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setCoordinates(CoordinatesDto coordinates) {
+        this.coordinates = coordinates;
     }
 }

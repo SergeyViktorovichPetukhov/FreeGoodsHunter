@@ -1,30 +1,22 @@
 package com.sergo.wic.controller;
 
-import com.sergo.wic.converter.ItemConverter;
 import com.sergo.wic.dto.*;
-import com.sergo.wic.dto.Response.GetShareItemsResponse;
-import com.sergo.wic.dto.Response.MaxCountItemsResponse;
-import com.sergo.wic.dto.Response.Response;
-import com.sergo.wic.dto.Response.ShowItemsResponse;
+import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.entities.Item;
 import com.sergo.wic.entities.Settlement;
 import com.sergo.wic.entities.Share;
-import com.sergo.wic.entities.User;
+import com.sergo.wic.entities.enums.ItemState;
 import com.sergo.wic.service.ItemService;
 import com.sergo.wic.service.SettlementService;
 import com.sergo.wic.service.ShareService;
 import com.sergo.wic.service.UserService;
 import com.sergo.wic.utils.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @RestController
@@ -55,25 +47,33 @@ public class ItemController {
         return new Response(false,1,"no such share");
     }
 
-
+    @RequestMapping(value = "/getRandomCoordinates", method = RequestMethod.GET)
+    public Response getRandomCoordinates(@RequestParam (required = false) String region,
+                                         @RequestParam Integer quantity,
+                                         @RequestParam Integer seed){
+        String table = "moscow_mkad_polygons";
+        List<ItemDto> items = itemService.getRandomCoordinates(table,quantity,seed);
+        return new Response(true,0,new RandomItemsDto(items));
+    }
 
     @RequestMapping(value = "/addItemForDatabase", method = RequestMethod.POST)
     public Response addItem(@RequestBody AddItemDto dto) throws IOException {
             Item item = new Item();
-            item.setLatitude(dto.getCoordinates().getLatitude());
-            item.setLongitude(dto.getCoordinates().getLongitude());
+            item.setLatitude(dto.getCoordinates().getCoordinates().getLatitude());
+            item.setLongitude(dto.getCoordinates().getCoordinates().getLongitude());
             Share share = shareService.findByShareId(dto.getShareId()).orElse(shareService.findById(1));
+            share.addItem(item);
             item.setShare(share);
             String randomItemId = RandomString.getAlphaNumericString(9);
             item.setItemId(randomItemId);
             item.setUserItem(null);
-            share.addItem(item);
-            shareService.saveShare1(share);
+            item.setState(ItemState.FREE);
+          //  shareService.saveShare1(share);
             itemService.save(item);
             return new Response(true,
                     0,
-                    "point lat:" + dto.getCoordinates().getLatitude()
-                                                                 + ", lon: " + dto.getCoordinates().getLongitude()
+                    "point lat:" + dto.getCoordinates().getCoordinates().getLatitude()
+                                                                 + ", lon: " + dto.getCoordinates().getCoordinates().getLongitude()
                                                                  + " added to db"   );
     }
 

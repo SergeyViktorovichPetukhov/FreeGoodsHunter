@@ -1,5 +1,7 @@
 package com.sergo.wic.entities;
 
+import com.sergo.wic.entities.enums.ItemState;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -27,8 +29,9 @@ public class Item {
     @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "hibernateSeq")
     private Long id;
 
-//    @Column(name = "item_id")
-//    private Long itemId;
+    @Column(name = "state")
+    @Enumerated(EnumType.STRING)
+    private ItemState state;
 
     @Column(name = "longitude")
     private double longitude;
@@ -79,7 +82,16 @@ public class Item {
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
-//
+
+    public ItemState getState() {
+        return state;
+    }
+
+    public void setState(ItemState state) {
+        this.state = state;
+    }
+
+    //
 //    public Long getItemId() {
 //        return itemId;
 //    }

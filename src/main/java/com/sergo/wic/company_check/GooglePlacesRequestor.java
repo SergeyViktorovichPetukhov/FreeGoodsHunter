@@ -16,34 +16,54 @@ public class GooglePlacesRequestor {
     @Autowired
     private GeoApiContext geoApiContext;
 
-    public boolean checkPlaceByPhoneAndPlaceName(String phone, String placeID) {
-        FindPlaceFromTextRequest req = PlacesApi.findPlaceFromText(
-                                       geoApiContext,
-                                       phone,
-                                       FindPlaceFromTextRequest.InputType.PHONE_NUMBER);
+    public boolean checkPlaceByPhoneAndPlaceName(String phone1, String placeID, String countryCode) {
 
-                                 req.fields(FindPlaceFromTextRequest.FieldMask.PLACE_ID,
-                                            FindPlaceFromTextRequest.FieldMask.NAME);
-
+        StringBuffer sb = new StringBuffer(phone1);
+        sb.insert(0," (");
+        sb.insert(5,")");
+        String phone = new String(sb);
+        FindPlaceFromTextRequest req;
+        FindPlaceFromTextRequest req2 = null;
             FindPlaceFromText place = null;
-        try {
-            place = req.await();
-        }catch (ApiException | InterruptedException | IOException e){
-            e.printStackTrace();
-            return false;
-        }
+        if (countryCode.equals("RU")){
+             req = PlacesApi.findPlaceFromText(
+                    geoApiContext,
+                    "+7"+phone,
+                    FindPlaceFromTextRequest.InputType.PHONE_NUMBER);
+            try {
+                place = req.await();
+            }catch (ApiException | InterruptedException | IOException e){
+                req2 = PlacesApi.findPlaceFromText(
+                        geoApiContext,
+                        "8"+phone,
+                        FindPlaceFromTextRequest.InputType.PHONE_NUMBER);
 
-        PlacesSearchResult[] candidates = place.candidates;
-        for(PlacesSearchResult res : candidates){
-            System.out.println(res.placeId + " -id, name: " + res.name);
-            if (res.placeId.equals(placeID)) {
-                System.out.println(res.placeId + " equals " + placeID);
-                PlaceDetailsRequest placeReq = PlacesApi.placeDetails(geoApiContext,res.placeId);
+                req2.fields(FindPlaceFromTextRequest.FieldMask.PLACE_ID,
+                        FindPlaceFromTextRequest.FieldMask.NAME);
+                try {
+                    place = req2.await();
+                }catch (ApiException | InterruptedException | IOException ex){
+                    ex.printStackTrace();
+                    return false;
+                }
+            }
+
+
+            PlacesSearchResult[] candidates = place.candidates;
+            for(PlacesSearchResult res : candidates){
+                System.out.println(res.placeId + " -id, name: " + res.name);
+                if (res.placeId.equals(placeID)) {
+                    System.out.println(res.placeId + " equals " + placeID);
+                    PlaceDetailsRequest placeReq = PlacesApi.placeDetails(geoApiContext,res.placeId);
                     try{
                         PlaceDetails placeDetails = placeReq.await();
+                        System.out.println(placeDetails.internationalPhoneNumber + " placeDetails.internationalPhoneNumber");
+                        System.out.println(placeDetails.formattedPhoneNumber + " placeDetails.formattedPhoneNumber");
+                        String formattedPhoneClient = phone.replaceAll("[\\s-()\\.]","");
+                        String formattedPhoneGoogle = placeDetails.internationalPhoneNumber.replaceAll("(\\+7)?[\\s-()\\.]","");
                         System.out.println(phone + " -requested phone number, placeDetails phone number: " + placeDetails.internationalPhoneNumber);
-                    //    String formattedPhNum = placeDetails.internationalPhoneNumber.replaceAll("[/s | /-]","")
-                        if (placeDetails.internationalPhoneNumber.equals(phone)){
+                        System.out.println(formattedPhoneClient + " -formattedPhoneClient, formattedPhoneGoogle: " + formattedPhoneGoogle);
+                        if (formattedPhoneClient.equals(formattedPhoneGoogle)){
                             System.out.println("phone checked!");
                             return true;
                         }
@@ -52,8 +72,46 @@ public class GooglePlacesRequestor {
                         e.printStackTrace();
                         return false;
                     }
+                }
             }
+            return false;
         }
+
+
+//
+//
+//        try {
+//            place = req.await();
+//        }catch (ApiException | InterruptedException | IOException e){
+//            e.printStackTrace();
+//            return false;
+//        }
+//
+//        PlacesSearchResult[] candidates = place.candidates;
+//        for(PlacesSearchResult res : candidates){
+//            System.out.println(res.placeId + " -id, name: " + res.name);
+//            if (res.placeId.equals(placeID)) {
+//                System.out.println(res.placeId + " equals " + placeID);
+//                PlaceDetailsRequest placeReq = PlacesApi.placeDetails(geoApiContext,res.placeId);
+//                    try{
+//                        PlaceDetails placeDetails = placeReq.await();
+//                        System.out.println(placeDetails.internationalPhoneNumber + " placeDetails.internationalPhoneNumber");
+//                        System.out.println(placeDetails.formattedPhoneNumber + " placeDetails.formattedPhoneNumber");
+//                        String formattedPhoneClient = phone.replaceAll("[\\s-()\\.]","");
+//                        String formattedPhoneGoogle = placeDetails.internationalPhoneNumber.replaceAll("[\\s-()\\.]","");
+//                        System.out.println(phone + " -requested phone number, placeDetails phone number: " + placeDetails.internationalPhoneNumber);
+//                        System.out.println(formattedPhoneClient + " -formattedPhoneClient, formattedPhoneGoogle: " + formattedPhoneGoogle);
+//                        if (formattedPhoneClient.equals(formattedPhoneGoogle)){
+//                            System.out.println("phone checked!");
+//                            return true;
+//                        }
+//                    }
+//                    catch (ApiException | InterruptedException | IOException e){
+//                        e.printStackTrace();
+//                        return false;
+//                    }
+//            }
+//        }
         return false;
     }
 }

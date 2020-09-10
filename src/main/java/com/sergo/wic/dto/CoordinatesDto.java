@@ -1,26 +1,26 @@
 package com.sergo.wic.dto;
 
 public class CoordinatesDto {
-    private Double lat;
-    private Double lon;
-    public CoordinatesDto(double lat, double lon){
-        this.lat = lat;
-        this.lon = lon;
+    private Double latitude;
+    private Double longitude;
+    public CoordinatesDto(double lat, double longitude){
+        this.latitude = lat;
+        this.longitude = longitude;
     }
 
-    public Double getLat() {
-        return lat;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public void setLat(Double lat) {
-        this.lat = lat;
+    public void setLatitude(Double lat) {
+        this.latitude = lat;
     }
 
-    public Double getLon() {
-        return lon;
+    public Double getLongitude() {
+        return longitude;
     }
 
-    public void setLon(Double lon) {
-        this.lon = lon;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

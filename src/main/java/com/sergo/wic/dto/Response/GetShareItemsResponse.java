@@ -1,22 +1,21 @@
 package com.sergo.wic.dto.Response;
 
 import com.sergo.wic.dto.ItemDto;
-import com.sergo.wic.dto.ResponseContent;
 
 import java.util.List;
 
 public class GetShareItemsResponse extends ResponseContent {
-    private List<ItemDto> itemDtos;
+    private List<ItemDto> items;
     public GetShareItemsResponse(List<ItemDto> dtos){
-        this.itemDtos = dtos;
+        this.items = dtos;
     }
     public GetShareItemsResponse(){}
 
-    public List<ItemDto> getItemDtos() {
-        return itemDtos;
+    public List<ItemDto> getItems() {
+        return items;
     }
 
-    public void setItemDtos(List<ItemDto> itemDtos) {
-        this.itemDtos = itemDtos;
+    public void setItems(List<ItemDto> items) {
+        this.items = items;
     }
 }
