@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 @Service
 public class ItemServiceImpl implements ItemService {
 
-    private ItemRepository repository;
     private RandomPointsRepository randomPointsRepository;
+    private ItemRepository repository;
     private ItemConverter itemConverter;
     private UserItemService userItemService;
     private ShareService shareService;
@@ -122,16 +122,24 @@ public class ItemServiceImpl implements ItemService {
         List<ItemDto> result = new ArrayList<>();
         for (int i = 0; i < quantity; i++) {
             String itemId = RandomString.getAlphaNumericString(8);
-            CoordinatesDto coordinates = new CoordinatesDto(
-                    points
-                            .get(i)
-                            .getGeometry()
-                            .getPoint(0)
-                            .y,
-                    points.get(i).getGeometry().getPoint(0).x);
-            ItemDto item = new ItemDto(coordinates,itemId);
-            result.add(item);
+            try {
+                CoordinatesDto coordinates = new CoordinatesDto(
+                        points.get(i).getGeometry().getPoint(0).y,
+                        points.get(i).getGeometry().getPoint(0).x);
+                ItemDto item = new ItemDto(coordinates,itemId);
+                result.add(item);
+            } catch (IndexOutOfBoundsException | NullPointerException e) {
+                System.out.println(i + " exception number, " + e.getMessage());
+                PGgeometry point = randomPointsRepository.getRandomPoint(table,seed);
+                CoordinatesDto coordinates = new CoordinatesDto(
+                        point.getGeometry().getPoint(0).y,
+                        point.getGeometry().getPoint(0).x);
+                ItemDto item = new ItemDto(coordinates,itemId);
+                result.add(item);
+                System.out.println(" additional item added!!!!");
+            }
         }
+        System.out.println(result.size() + " result size");
         return result;
     }
 }

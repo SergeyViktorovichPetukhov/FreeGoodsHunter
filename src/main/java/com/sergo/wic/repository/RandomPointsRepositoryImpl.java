@@ -13,12 +13,11 @@ import java.util.List;
 @Repository
 public class RandomPointsRepositoryImpl implements RandomPointsRepository {
 
+    private JdbcTemplate jdbcTemplate;
 
-        private JdbcTemplate jdbcTemplate;
-
-        public RandomPointsRepositoryImpl(@Autowired JdbcTemplate jdbcTemplate){
-            this.jdbcTemplate = jdbcTemplate;
-        }
+    public RandomPointsRepositoryImpl(@Autowired JdbcTemplate jdbcTemplate){
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public List<PGgeometry> getRandomCoordinates(String table, int quantity, int seed){
@@ -28,12 +27,6 @@ public class RandomPointsRepositoryImpl implements RandomPointsRepository {
         for (int i = 0; i < randomNums.length; i++) {
             randomNums[i] = (int) Math.round(rawsCount * Math.random());
         }
-//        String query = "SELECT ST_GeomFromWKB"
-//                + "(ST_GeneratePoints(the_geom,"
-//                + "? ,"
-//                + seed + "))"
-//                + " FROM " + table
-//                + " WHERE gid= ? ;";
         StringBuilder sb = new StringBuilder("SELECT ST_GeomFromWKB (ST_GeneratePoints(the_geom , 1 , ?)) FROM " + table + " WHERE gid IN ( ? ");
         while (quantity > 1){
             sb.append(", ? ");
@@ -57,4 +50,16 @@ public class RandomPointsRepositoryImpl implements RandomPointsRepository {
         });
     }
 
+    @Override
+    public PGgeometry getRandomPoint(String table, int seed) {
+        String rowsQuery = "select count(*) FROM " + table + " ;";
+        Integer rawsCount = jdbcTemplate.queryForObject(rowsQuery,Integer.class);
+        int randomRow = (int) Math.round(rawsCount * Math.random());
+        String query = "SELECT ST_GeomFromWKB (ST_GeneratePoints(the_geom , 1 ," + seed + ")) FROM " + table + " WHERE gid=" + randomRow + ";";
+        PGgeometry point = jdbcTemplate.queryForObject(query,PGgeometry.class);
+        if (point.getGeometry() == null){
+            point = jdbcTemplate.queryForObject(query,PGgeometry.class);
+        }
+        return point;
+    }
 }
