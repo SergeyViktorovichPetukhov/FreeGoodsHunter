@@ -9,10 +9,9 @@ import com.sergo.wic.entities.User;
 import com.sergo.wic.entities.UserItem;
 import com.sergo.wic.entities.enums.ItemState;
 import com.sergo.wic.repository.ItemRepository;
-import com.sergo.wic.repository.RandomPointsRepository;
+import com.sergo.wic.repository.PointsRepository;
 import com.sergo.wic.service.*;
 import com.sergo.wic.utils.RandomString;
-import org.postgresql.util.PGobject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.postgis.PGgeometry;
@@ -26,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 public class ItemServiceImpl implements ItemService {
 
-    private RandomPointsRepository randomPointsRepository;
+    private PointsRepository pointsRepository;
     private ItemRepository repository;
     private ItemConverter itemConverter;
     private UserItemService userItemService;
@@ -35,10 +34,10 @@ public class ItemServiceImpl implements ItemService {
                            @Autowired ItemConverter itemConverter,
                            @Autowired UserItemService userItemService,
                            @Autowired ShareService shareService,
-                           @Autowired RandomPointsRepository randomPointsRepository
+                           @Autowired PointsRepository pointsRepository
                            ){
         this.repository = repository;
-        this.randomPointsRepository = randomPointsRepository;
+        this.pointsRepository = pointsRepository;
         this.userItemService = userItemService;
         this.itemConverter = itemConverter;
         this.shareService = shareService;
@@ -51,11 +50,22 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Item save(Item item, Share share) {
+        item.setShare(share);
+        return repository.save(item);
+    }
+
+    @Override
     public Item findById(Long itemId) {
         Optional<Item> item = repository.findById(itemId);
         if (item.isPresent())
            return repository.findById(itemId).get();
         else return null;
+    }
+
+    @Override
+    public boolean existsByCoordinates(double lon, double lat) {
+        return repository.existsByLongitudeAndLatitude(lon,lat);
     }
 
     @Override
@@ -98,7 +108,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getShareItems(Share share) {
         Optional<List<Item>> items = repository.findAllByShare(share);
-        List<Item> result = null;
+        List<Item> result;
         if (items.isPresent()){
             result = items.get().stream().filter((item) -> item.getUserItem() == null).collect(Collectors.toList());
             return itemConverter.convertAllItems(result);
@@ -118,7 +128,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getRandomCoordinates(String table, int quantity, int seed) {
-        List<PGgeometry> points = randomPointsRepository.getRandomCoordinates(table,quantity,seed);
+        List<PGgeometry> points = pointsRepository.getRandomCoordinates(table,quantity,seed);
         List<ItemDto> result = new ArrayList<>();
         for (int i = 0; i < quantity; i++) {
             String itemId = RandomString.getAlphaNumericString(8);
@@ -130,7 +140,7 @@ public class ItemServiceImpl implements ItemService {
                 result.add(item);
             } catch (IndexOutOfBoundsException | NullPointerException e) {
                 System.out.println(i + " exception number, " + e.getMessage());
-                PGgeometry point = randomPointsRepository.getRandomPoint(table,seed);
+                PGgeometry point = pointsRepository.getRandomPoint(table,seed);
                 CoordinatesDto coordinates = new CoordinatesDto(
                         point.getGeometry().getPoint(0).y,
                         point.getGeometry().getPoint(0).x);
@@ -141,5 +151,10 @@ public class ItemServiceImpl implements ItemService {
         }
         System.out.println(result.size() + " result size");
         return result;
+    }
+
+    @Override
+    public List<Item> addNewShareItems(List<ItemDto> items) {
+        return null;
     }
 }

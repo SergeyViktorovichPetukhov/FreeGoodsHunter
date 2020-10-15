@@ -42,13 +42,7 @@ public class WicRestController {
 ////        return new ShareResponse(shareFacade.saveShare(createShareDto).getId());
 ////    }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/shares/productPhoto/{shareId}")
-    public Response setPhotoForShareProduct(@RequestParam(value = "photo") MultipartFile photo,
-                                            @PathVariable Long shareId) {
-        shareFacade.uploadPhotoForShareProduct(photo, shareId);
-        return new Response();
-    }
+
 
     @GetMapping("/productImage/{id}")
     public void getProductImageAsResource(HttpServletResponse response, @PathVariable("id") long id) throws IOException {

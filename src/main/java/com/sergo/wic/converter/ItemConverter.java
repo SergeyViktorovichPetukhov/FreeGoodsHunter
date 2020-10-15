@@ -1,28 +1,23 @@
 package com.sergo.wic.converter;
 
-import com.sergo.wic.dto.CoordinatesDto;
-import com.sergo.wic.dto.ItemDto;
-import com.sergo.wic.dto.PickedItemDto;
+import com.sergo.wic.dto.*;
 import com.sergo.wic.entities.Item;
-import com.sergo.wic.entities.Share;
-import com.sergo.wic.service.ItemService;
-import com.sergo.wic.service.ShareService;
+import com.sergo.wic.entities.enums.ItemState;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class ItemConverter {
 
     @Autowired
     private ModelMapper modelMapper;
-
     @Autowired
-    private ShareService shareService;
+    private TypeMap<ItemDto,Item> typeMap;
 
 
 //    public Item convertToModel(final PickedItemDto source) {
@@ -47,7 +42,19 @@ public class ItemConverter {
 
     public List<Item> convertAllDtos(List<ItemDto> dtos){
         List<Item> result = new ArrayList<>();
-        dtos.stream().forEach(((itemDto) -> modelMapper.map(itemDto,result.add(new Item()))));
+        dtos.forEach( itemDto -> {
+            Item item = new Item();
+            item.setState(ItemState.FREE);
+//            modelMapper.typeMap(ItemDto.class, Item.class)
+//                    .addMappings(mapper -> mapper.map(ItemDto::getItemId,Item::setItemId));
+//            modelMapper.map(itemDto,item);
+//            modelMapper.validate();
+            item.setItemId(itemDto.getItemId());
+            item.setLongitude(itemDto.getCoordinates().getLongitude());
+            item.setLatitude(itemDto.getCoordinates().getLatitude());
+            result.add(item);
+
+        });
         return result;
     }
 

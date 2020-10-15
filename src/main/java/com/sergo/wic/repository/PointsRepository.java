@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface RandomPointsRepository {
+public interface PointsRepository {
    List<PGgeometry> getRandomCoordinates(String table, int quantity, int seed);
    PGgeometry getRandomPoint(String table, int seed);
 }

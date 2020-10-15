@@ -88,7 +88,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="share : ${shares}"
-                    th:if="${share.createStatus == T(com.sergo.wic.entities.CreateShareState).CREATED }">
+                    th:if="${share.createStatus == T(com.sergo.wic.entities.enums.CreateShareState).CREATED }">
                     <td class="td_share_id" th:text="${share.getId()}" /></td>
                     <td th:text="${share.getLogin()}" /></td>
                     <td th:text="${share.getProductName()}"/></td>

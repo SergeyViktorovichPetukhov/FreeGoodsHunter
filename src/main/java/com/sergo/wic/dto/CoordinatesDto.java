@@ -3,6 +3,7 @@ package com.sergo.wic.dto;
 public class CoordinatesDto {
     private Double latitude;
     private Double longitude;
+
     public CoordinatesDto(double lat, double longitude){
         this.latitude = lat;
         this.longitude = longitude;

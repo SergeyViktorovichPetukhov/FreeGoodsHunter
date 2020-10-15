@@ -16,6 +16,7 @@ import java.util.Optional;
 public interface ItemRepository extends JpaRepository<Item, Long> {
     Optional<List<Item>> findAllByShare(Share share);
     Item findByItemId(String itemId);
+    boolean existsByLongitudeAndLatitude(double lon, double lat);
 
   //  @Query(value = "SELECT * FROM items WHERE ", nativeQuery = true)
   //  List<Item> findAllOrphaned( Long[] ids);

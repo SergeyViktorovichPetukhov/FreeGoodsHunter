@@ -14,6 +14,7 @@ import com.sergo.wic.utils.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -56,6 +57,34 @@ public class ItemController {
         return new Response(true,0,new RandomItemsDto(items));
     }
 
+    @RequestMapping(value = "/addItem", method = RequestMethod.POST)
+    public void addItem(HttpServletResponse response,
+                        @RequestParam String lon,
+                        @RequestParam String lat)
+    {
+        String shareId = "company_owner@mail.ru 2020-04-20 #1";
+        Optional<Share> share = shareService.findByShareId(shareId);
+        if (share.isPresent()){
+            if (itemService.existsByCoordinates(
+                    Double.valueOf(lon),
+                    Double.valueOf(lat)))
+                return;
+
+            String itemId = RandomString.getAlphaNumericString(7);
+            Item item = new Item(Double.valueOf(lat), Double.valueOf(lon), itemId);
+            item.setShare(share.get());
+            item.setState(ItemState.FREE);
+            itemService.save(item);
+            try {
+                response.sendRedirect("/fgh/admin/showItems");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    // temporary
     @RequestMapping(value = "/addItemForDatabase", method = RequestMethod.POST)
     public Response addItem(@RequestBody AddItemDto dto) throws IOException {
             Item item = new Item();

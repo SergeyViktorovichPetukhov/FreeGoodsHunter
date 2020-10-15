@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class RandomPointsRepositoryImpl implements RandomPointsRepository {
+public class PointsRepositoryImpl implements PointsRepository {
 
     private JdbcTemplate jdbcTemplate;
 
-    public RandomPointsRepositoryImpl(@Autowired JdbcTemplate jdbcTemplate){
+    public PointsRepositoryImpl(@Autowired JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
     }
 

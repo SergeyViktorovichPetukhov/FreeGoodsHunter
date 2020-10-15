@@ -11,7 +11,7 @@
     <table border="3" style="background-color: coral">
         <thead>
         <tr>
-            <th>itemID</th>
+            <th>itemId</th>
             <th>shareID</th>
             <th>lat</th>
             <th>longitude</th>
@@ -30,6 +30,18 @@
         </tr>
         </tbody>
     </table>
+</div>
+
+<div>
+    <div>
+        <h2>Введите координаты в формате XX.XX , YY.YY:</h2>
+    </div>
+    <form th:action="@{/items/addItem}" th:method="POST">
+        <input type="text" name="lon" placeholder="longitute"/>
+        <input type="text" name="lat" placeholder="latitude"/>
+<!--        <input type="text" name="shareId" placeholder="shareId"/>-->
+        <input type="submit" value="add item"/>
+    </form>
 </div>
 
 </body>

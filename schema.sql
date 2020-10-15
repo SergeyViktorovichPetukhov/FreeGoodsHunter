@@ -1,7 +1,7 @@
--- DROP SCHEMA IF EXISTS public CASCADE;
--- commit;
--- CREATE SCHEMA public;
--- commit;
+ DROP SCHEMA IF EXISTS public CASCADE;
+ commit;
+ CREATE SCHEMA public;
+ commit;
 
 --CREATE TYPE REGISTRATION_STATE AS ENUM ('CREATED', 'IN_PROCESS', 'CONFIRMED', 'REFUSED' );
 

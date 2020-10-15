@@ -18,11 +18,10 @@ public interface ShareService {
     List<Share> findAll();
     List<Share> findNewShares(Long maxOldId,Long companyId);
     Share saveShare(Share share, MultipartFile productPhoto) throws IOException;
-    Share saveShare1(final Share share) throws IOException;
     boolean deleteShare(String shareId);
     void deleteById(Long id);
     boolean confirmShare(Long id, String reason);
     boolean cancelShare(Long id ,String reason);
-    Share savePhotoForShareProduct(MultipartFile photo, Long shareId);
+    Share savePhotoForShareProduct(MultipartFile photo, String shareId);
     List<Share> findAllByCompany(Company company);
 }

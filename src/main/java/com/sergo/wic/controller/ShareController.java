@@ -25,56 +25,42 @@ import java.sql.SQLException;
 @RequestMapping("/shares")
 public class ShareController {
 
-    @Autowired
     private ShareFacade shareFacade;
 
-    @Autowired
     private ShareConverter shareConverter;
 
-    @Autowired
-    private ShareValidator shareValidator;
+    private ShareService shareService;
 
-    @Autowired
-    ShareService shareService;
-
-    @Autowired
     private ImageFacade imageFacade;
+
+    public ShareController(@Autowired ShareFacade shareFacade,
+                           @Autowired ShareConverter shareConverter,
+                           @Autowired ShareService shareService,
+                           @Autowired ImageFacade imageFacade){
+        this.shareFacade = shareFacade;
+        this.shareService = shareService;
+        this.shareConverter = shareConverter;
+        this.imageFacade = imageFacade;
+    }
 
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/publish" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
                                       produces = MediaType.APPLICATION_JSON_VALUE)
-                                   // @Valid
-    public ShareResponse publicShare( @RequestPart(value = "сreateShareDto", required = false) final CreateShareDto createShareDto
-                                     ,@RequestPart(value = "productPhoto", required = false) MultipartFile productPhoto) {
+    public Response publicShare( @RequestPart(value = "сreateShareDto")CreateShareDto createShareDto
+                                ,@RequestPart(value = "productPhoto") MultipartFile productPhoto) {
 
         String shareId;
         try{
            shareId = shareService.saveShare(
-                        shareConverter.convertToModel(createShareDto), productPhoto).getShareId();
+                     shareConverter.convertToModel(createShareDto), productPhoto)
+                     .getShareId();
         }catch (IOException | NullPointerException e){
             e.printStackTrace();
-            return new ShareResponse(false,e.getMessage());
+            return new Response(false, 1,e.getMessage());
         }
-        return new ShareResponse(shareId);
+        return new Response(true,0,"share published", new ShareResponse(shareId));
     }
-
-//@ResponseStatus(HttpStatus.CREATED)
-//@PostMapping(value = "/publish" , consumes = MediaType.APPLICATION_JSON_VALUE,
-//        produces = MediaType.APPLICATION_JSON_VALUE)
-//
-//public ShareResponse publicShare( @RequestBody final CreateShareDto createShareDto) {
-//
-//    String shareId;
-//    try{
-//        shareId = shareService.saveShare1(
-//                shareConverter.convertToModel(createShareDto)).getShareId();
-//    }catch (IOException | NullPointerException e){
-//        e.printStackTrace();
-//        return new ShareResponse(false,e.getMessage());
-//    }
-//    return new ShareResponse(shareId);
-//}
 
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping(value = "/cancel", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -83,7 +69,17 @@ public class ShareController {
             return shareFacade.deleteShare(dto.getShareId());
         else return new Response(false,1,"share does not exists");
     }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/productPhoto/{shareId}")
+    public Response setPhotoForShareProduct(@RequestParam(value = "photo") MultipartFile photo,
+                                            @PathVariable String shareId) {
+        shareFacade.uploadPhotoForShareProduct(photo, shareId);
+        return new Response(true,0,"photo uploaded");
+    }
 }
+
+
 
 
 

@@ -18,10 +18,14 @@ public class Item {
 
     public Item(){}
 
-    public Item(double lat, double lon){
+    public Item(double lat, double lon, String itemId){
         this.latitude = lat;
         this.longitude = lon;
+        this.itemId = itemId;
     }
+
+    @Column(name = "item_id")
+    private String itemId;
 
     @Id
     @Column(name = "id")
@@ -38,9 +42,6 @@ public class Item {
 
     @Column(name = "latitude")
     private double latitude;
-
-    @Column(name = "item_id")
-    private String itemId;
 
     @ManyToOne
     @JoinColumn(name = "share_id", referencedColumnName = "id", nullable = false)
@@ -129,7 +130,7 @@ public class Item {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Item that = (Item) o;
-        return id == that.id &&
+        return id.equals(that.id) &&
                 Double.compare(that.longitude, longitude) == 0 &&
                 Double.compare(that.latitude, latitude) == 0;
     }

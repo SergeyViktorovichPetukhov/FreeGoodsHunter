@@ -1,5 +1,7 @@
 package com.sergo.wic.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -51,16 +53,10 @@ public class CreateShareDto {
     @NotBlank(message = "city must not be blank")
     private String placeCity;
 
-
-//    @Valid
-//    @NotNull
-//    private AddressDto placeAddress;
-
     @Valid
     @NotEmpty(message = "items must not be empty")
- //   @JsonProperty
-    private List<CreateItemDto> items;
-
+    @JsonProperty(value = "items")
+    private List<ItemDto> items;
 
     public CreateShareDto() {
     }
@@ -189,11 +185,11 @@ public class CreateShareDto {
         this.placeCity = placeCity;
     }
 
-    public List<CreateItemDto> getItems() {
+    public List<ItemDto> getItems() {
         return items;
     }
 
-    public void setItems(List<CreateItemDto> items) {
+    public void setItems(List<ItemDto> items) {
         this.items = items;
     }
 }

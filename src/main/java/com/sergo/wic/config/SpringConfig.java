@@ -1,7 +1,12 @@
 package com.sergo.wic.config;
 
 import com.google.maps.GeoApiContext;
+import com.sergo.wic.dto.ItemDto;
+import com.sergo.wic.dto.ShareDto;
+import com.sergo.wic.entities.Item;
+import com.sergo.wic.entities.Share;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -86,6 +91,16 @@ public class SpringConfig implements WebMvcConfigurer {
     }
 
     @Bean
+    public TypeMap<ItemDto, Item> typeMapItem(){
+        return modelMapper().createTypeMap(ItemDto.class, Item.class);
+    }
+
+    @Bean
+    public TypeMap<ShareDto, Share> typeMapShare(){
+        return modelMapper().createTypeMap(ShareDto.class, Share.class);
+    }
+
+    @Bean
     public WebClient.Builder webClient(){
         return WebClient.builder();
     }
@@ -115,7 +130,7 @@ public class SpringConfig implements WebMvcConfigurer {
     public DataSource postgresqlDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5433/fgh?currentSchema=public");
+        dataSource.setUrl("jdbc:postgresql://localhost:5432/fgh?currentSchema=public");
         dataSource.setUsername("postgres");
         dataSource.setPassword("admin");
         return dataSource;

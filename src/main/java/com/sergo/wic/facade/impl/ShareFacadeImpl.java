@@ -89,16 +89,15 @@ public class ShareFacadeImpl implements ShareFacade {
     }
 
     @Override
-    public ShareDto uploadPhotoForShareProduct(final MultipartFile photo, final Long shareId) {
+    public ShareDto uploadPhotoForShareProduct(MultipartFile photo, String shareId) {
         return shareConverter.convertToDto(shareService.savePhotoForShareProduct(photo, shareId));
     }
 
-    public SharesResponse getShares(final String login, final String country, final String region, final String city) {
+    public SharesResponse getShares(String login, String country, String region,String city) {
         return getShareRequestTestData(isValidGetShareRequest(login, country, region, city));
     }
 
-    private Boolean isValidGetShareRequest(final String login, final String country, final String region,
-                                         final String city) {
+    private Boolean isValidGetShareRequest(String login, String country, String region, String city) {
         return !StringUtils.isEmpty(login) && !StringUtils.isEmpty(country) &&
                 !StringUtils.isEmpty(region) && !StringUtils.isEmpty(city) &&
                 "user@gmail.com".equals(login) && ("all".equals(country) || "Ukraine".equals(country)) &&

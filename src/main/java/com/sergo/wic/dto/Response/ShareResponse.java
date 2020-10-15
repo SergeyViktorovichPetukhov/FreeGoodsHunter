@@ -1,6 +1,6 @@
 package com.sergo.wic.dto.Response;
 
-public class ShareResponse extends Response {
+public class ShareResponse extends ResponseContent {
 
     private String share_id;
 
@@ -8,14 +8,6 @@ public class ShareResponse extends Response {
         this.share_id = share_id;
     }
 
-    public ShareResponse(boolean success, String reason){
-        if (!success) {
-            setSuccess(success);
-            setId(null);
-            setErrorCode(1);
-            setMessage(reason);
-        }
-    }
 
     public String getId() {
         return share_id;
