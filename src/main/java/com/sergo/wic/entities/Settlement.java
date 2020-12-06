@@ -22,6 +22,8 @@ public class Settlement {
     private String sName;
     @Column(name = "country")
     private String country;
+    @Column(name = "region")
+    private String region;
     @Column(name = "language")
     private String language;
     @Column(name = "total_area")
@@ -85,5 +87,17 @@ public class Settlement {
 
     public void setMaxCountItems(Integer maxCountItems) {
         this.maxCountItems = maxCountItems;
+    }
+
+    public void setsName(String sName) {
+        this.sName = sName;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 }

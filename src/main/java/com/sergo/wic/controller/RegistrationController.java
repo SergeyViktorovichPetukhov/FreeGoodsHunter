@@ -47,19 +47,16 @@ public class RegistrationController {
 
         if (dto.getUserContact().matches(Constants.PHONE_REGEX)) {
             boolean isChecked = webSiteChecker.checkHtmlPageByPhone(dto.getUrl(),dto.getUserContact());
-            System.out.println(isChecked + " isChecked");
             // smsSender.sendSms()
             return userFacade.registerByWebSite(dto.getLogin(), dto.getUserContact(),isChecked, dto.getUrl());
         }
 
         if (EmailValidator.isValid(dto.getUserContact().toCharArray())) {
             boolean isChecked = webSiteChecker.checkHtmlPageByEmail(dto.getUrl(),dto.getUserContact());
-            System.out.println(isChecked + " isChecked");
             return userFacade.registerByWebSite(dto.getLogin(),dto.getUserContact(),isChecked, dto.getUrl());
         }
 
-        else
-            return new Response(false,2,Constants.VERIFICATION_UNSUCCESS);
+        else return new Response(false,2,Constants.VERIFICATION_UNSUCCESS);
     }
 
     @PostMapping(value = "/verifyCode", produces = MediaType.APPLICATION_JSON_VALUE)

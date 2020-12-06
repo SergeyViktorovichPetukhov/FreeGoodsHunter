@@ -35,7 +35,9 @@ public class PointsRepositoryImpl implements PointsRepository {
         sb.append(");");
         String query = sb.toString();
         List<PGgeometry> points = new ArrayList<>();
-        return jdbcTemplate.execute(query,(PreparedStatementCallback<List<PGgeometry>>) ps -> {
+        return jdbcTemplate.execute(
+                query,
+                (PreparedStatementCallback<List<PGgeometry>>) ps -> {
             ResultSet rs;
             ps.setInt(1,seed);
             for (int i = 2 , j = 0; i < randomNums.length + 2; i++ , j++) {

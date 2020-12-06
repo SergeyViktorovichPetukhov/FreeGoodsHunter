@@ -2,16 +2,14 @@ package com.sergo.wic.dto;
 
 public class MaxCountItemsDto {
     private String login;
-    private String country;
-    private String settlement;
+    private GeoLocationData geoLocationData;
 
     public MaxCountItemsDto() {
     }
 
-    public MaxCountItemsDto(String login, String country, String settlement) {
+    public MaxCountItemsDto(String login, GeoLocationData geoLocationData) {
         this.login = login;
-        this.country = country;
-        this.settlement = settlement;
+        this.geoLocationData = geoLocationData;
     }
 
     public String getLogin() {
@@ -22,19 +20,11 @@ public class MaxCountItemsDto {
         this.login = login;
     }
 
-    public String getCountry() {
-        return country;
+    public GeoLocationData getGeoLocationData() {
+        return geoLocationData;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getSettlement() {
-        return settlement;
-    }
-
-    public void setSettlement(String settlement) {
-        this.settlement = settlement;
+    public void setGeoLocationData(GeoLocationData geoLocationData) {
+        this.geoLocationData = geoLocationData;
     }
 }

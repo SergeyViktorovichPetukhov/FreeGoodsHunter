@@ -144,6 +144,7 @@ CREATE TABLE IF NOT EXISTS settlements
 (
     id                  BIGSERIAL       NOT NULL,
     s_name              VARCHAR(50)     NOT NULL,
+    region              VARCHAR(50)     NOT NULL,
     country             VARCHAR(50)     NOT NULL,
     language            VARCHAR(50),
     total_area          FLOAT           NOT NULL,

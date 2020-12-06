@@ -10,12 +10,14 @@ import com.sergo.wic.service.ItemService;
 import com.sergo.wic.service.SettlementService;
 import com.sergo.wic.service.ShareService;
 import com.sergo.wic.service.UserService;
+import com.sergo.wic.utils.Constants;
 import com.sergo.wic.utils.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,12 +50,16 @@ public class ItemController {
         return new Response(false,1,"no such share");
     }
 
-    @RequestMapping(value = "/getRandomCoordinates", method = RequestMethod.GET)
-    public Response getRandomCoordinates(@RequestParam (required = false) String region,
-                                         @RequestParam Integer quantity,
-                                         @RequestParam Integer seed){
+    @RequestMapping(value = "/getRandomCoordinates", method = RequestMethod.POST)
+    public Response getRandomCoordinates(@RequestBody RandomCoordinatesRequest request){
         String table = "moscow_mkad_polygons";
-        List<ItemDto> items = itemService.getRandomCoordinates(table,quantity,seed);
+
+        if (request.getGeoLocationData().getSettlement().equals("Bryansk")){
+            return new Response(true,0, new RandomItemsDto(Constants.BRYANSK_ITEMS));
+        }
+
+        int seed = (int)(Math.random()*1000);
+        List<ItemDto> items = itemService.getRandomCoordinates(table,request.getQuantity(),seed);
         return new Response(true,0,new RandomItemsDto(items));
     }
 
@@ -67,8 +73,16 @@ public class ItemController {
         if (share.isPresent()){
             if (itemService.existsByCoordinates(
                     Double.valueOf(lon),
-                    Double.valueOf(lat)))
+                    Double.valueOf(lat))){
+                try {
+                    response.sendRedirect("/fgh/admin/showItems");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return;
+                }
                 return;
+            }
+
 
             String itemId = RandomString.getAlphaNumericString(7);
             Item item = new Item(Double.valueOf(lat), Double.valueOf(lon), itemId);
@@ -120,7 +134,18 @@ public class ItemController {
 
     @PostMapping("/getMaxCountItems")
     public Response getMaxCountItems(@RequestBody MaxCountItemsDto dto){
-        Optional<Settlement> settlement = settlementService.findByNameAndCountry(dto.getSettlement(),dto.getCountry());
+    //    System.out.println(dto.getLogin() + " " + dto.getGeoLocationData().getRegion() + " " + dto.getGeoLocationData().getCountry() + " " + dto.getGeoLocationData().getSettlement());
+        Optional<Settlement> settlement;
+        if (dto.getGeoLocationData().getRegion() == null) {
+            settlement = settlementService.findByNameAndCountry(
+                    dto.getGeoLocationData().getSettlement(),
+                    dto.getGeoLocationData().getCountry());
+        }else
+            settlement = settlementService.findByNameAndRegionAndCountry(
+                    dto.getGeoLocationData().getSettlement(),
+                    dto.getGeoLocationData().getRegion(),
+                    dto.getGeoLocationData().getCountry());
+
         if (settlement.isPresent())
             return new Response(true,0, new MaxCountItemsResponse(settlement.get().getMaxCountItems()));
         else return new Response(false,1,"no such settlement in db");

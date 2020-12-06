@@ -7,41 +7,49 @@
           href="/static/css/styles.css" th:href="@{/css/styles.css}" />
 </head>
 <body>
-<div>
+<div
+    style=" border: 5px black;
+    /*background: lightcoral;*/
+    padding: 10px;
+    width: 490px;">
+    <div align="center">
+        <h3>Введите координаты в формате :          XX.XXXXXX , YY.YYYYYY:</h3>
+        <p> <a href="https://www.google.ru/maps">Здесь</a> вы можете
+        посмотреть координаты нужных вам точек.<br/>
+        Для этого нажмите на нужную вам точку на гугл картах.<br/>
+        Точность координат - <b> 6 знаков после точки</b></p>
+    </div>
+    <form th:action="@{/items/addItem}" th:method="POST">
+        <input type="text" name="lat" placeholder="latitude XX.XXXXXX"/>
+        <input type="text" name="lon" placeholder="longitude YY.YYYYYY"/>
+        <!--        <input type="text" name="shareId" placeholder="shareId"/>-->
+        <input type="submit" value="добавить"/>
+    </form>
+</div>
+<br/><br/>
+<div align="center">
     <table border="3" style="background-color: coral">
         <thead>
         <tr>
             <th>itemId</th>
-            <th>shareID</th>
+<!--            <th>shareID</th>-->
             <th>lat</th>
             <th>longitude</th>
-            <th>state</th>
-            <th>user</th>
+<!--            <th>state</th>-->
+<!--            <th>user</th>-->
         </tr>
         </thead>
         <tbody>
-        <tr style="border: 2px;" th:each="item : *{items}">
+        <tr style="border: 2px;" th:each="item : *{items}" th:if="${item.state == T(com.sergo.wic.entities.enums.ItemState).FREE}">
             <td align="center"  th:text="${item.itemId}" /></td>
-            <td align="center"  th:text="${item.share.shareId}" /></td>
+<!--            <td align="center"  th:text="${item.share.shareId}" /></td>-->
             <td align="center"  th:text="${item.latitude}"/></td>
             <td align="center"  th:text="${item.longitude}"/></td>
-            <td align="center"  th:text="${item.state}"/></td>
-            <td align="center"  th:if="${item.userItem != null}"  th:text="${item.userItem.user.login}"/></td>
+<!--            <td align="center"  th:text="${item.state}"/></td>-->
+<!--            <td align="center"  th:if="${item.userItem != null}"  th:text="${item.userItem.user.login}"/></td>-->
         </tr>
         </tbody>
     </table>
-</div>
-
-<div>
-    <div>
-        <h2>Введите координаты в формате XX.XX , YY.YY:</h2>
-    </div>
-    <form th:action="@{/items/addItem}" th:method="POST">
-        <input type="text" name="lon" placeholder="longitute"/>
-        <input type="text" name="lat" placeholder="latitude"/>
-<!--        <input type="text" name="shareId" placeholder="shareId"/>-->
-        <input type="submit" value="add item"/>
-    </form>
 </div>
 
 </body>

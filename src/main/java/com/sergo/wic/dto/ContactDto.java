@@ -4,6 +4,8 @@ public class ContactDto {
     private TypeContact typeContact;
     private String contact;
 
+    public ContactDto(){}
+
     public ContactDto(final TypeContact typeContact, final String contact) {
         this.typeContact = typeContact;
         this.contact = contact;

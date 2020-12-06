@@ -9,7 +9,6 @@ import com.sergo.wic.entities.Share;
 import com.sergo.wic.facade.ImageFacade;
 import com.sergo.wic.facade.ShareFacade;
 import com.sergo.wic.service.ShareService;
-import com.sergo.wic.validation.ShareValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -79,21 +78,3 @@ public class ShareController {
     }
 }
 
-
-
-
-
-//        System.out.println(createShareDto.getLogin());
-//                System.out.println(createShareDto.getProductName());
-//                System.out.println(createShareDto.getProductDescription());
-//                System.out.println(createShareDto.getLinkOnProductUrl());
-//                System.out.println(createShareDto.getProductPrice());
-//                System.out.println(createShareDto.getProductCount());
-//                System.out.println(createShareDto.getAnnouncementDuration());
-//                System.out.println(createShareDto.getShareDuration());
-//                System.out.println(createShareDto.getAfterShareDuration());
-//                System.out.println(createShareDto.getPlaceCountry());
-//                System.out.println(createShareDto.getPlaceRegion());
-//                System.out.println(createShareDto.getPlaceCity());
-//                System.out.println(createShareDto.getItems().get(0).getLatitude() + " " + createShareDto.getItems().get(0).getLongitude());
-//                System.out.println(createShareDto.getColor());

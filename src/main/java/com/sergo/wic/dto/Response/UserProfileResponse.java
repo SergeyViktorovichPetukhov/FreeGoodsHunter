@@ -1,17 +1,35 @@
 package com.sergo.wic.dto.Response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sergo.wic.dto.ContactDto;
 
 import java.util.List;
 
-public class UserProfileResponse extends Response {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UserProfileResponse extends ResponseContent {
+
+    public UserProfileResponse(){}
+
+    public UserProfileResponse(String userName, String photoUrl, ContactDto contact){
+        this.userName = userName;
+        this.photoUrl = photoUrl;
+        this.contact = contact;
+    }
 
     private String userName;
     private String photoUrl;
     private Integer winCount;
     private Float range;
-    private List<Integer> pointsCount;
     private List<ContactDto> contacts;
+    private ContactDto contact;
+
+    public ContactDto getContact() {
+        return contact;
+    }
+
+    public void setContact(ContactDto contact) {
+        this.contact = contact;
+    }
 
     public String getUserName() {
         return userName;
@@ -45,19 +63,19 @@ public class UserProfileResponse extends Response {
         this.range = range;
     }
 
-    public List<Integer> getPointsCount() {
-        return pointsCount;
-    }
-
-    public void setPointsCount(final List<Integer> pointsCount) {
-        this.pointsCount = pointsCount;
-    }
-
     public List<ContactDto> getContacts() {
         return contacts;
     }
 
     public void setContacts(final List<ContactDto> contacts) {
+        this.contacts = contacts;
+    }
+
+    public UserProfileResponse(String userName, String photoUrl, Integer winCount, Float range, List<ContactDto> contacts){
+        this.userName = userName;
+        this.photoUrl = photoUrl;
+        this.winCount = winCount;
+        this.range = range;
         this.contacts = contacts;
     }
 }

@@ -57,8 +57,7 @@ public class Company {
     @Column(name = "label_path")
     private String label_path;
 
-
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", referencedColumnName = "id")
     private User user;
 

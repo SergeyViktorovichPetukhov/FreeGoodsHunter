@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface UserFacade {
     boolean hasUserCompany(String login);
-    UserProfileResponse getUserProfile(String login);
+    ResponseContent getUserProfile(String login, boolean isRequestedFromMenu);
     FriendListResponce getFriends(String login);
     AllItemsResponse getAllItems(String login);
     public Boolean isLoginValid(final String login);

@@ -19,12 +19,20 @@ public class SettlementServiceImpl implements SettlementService {
     }
 
     @Override
+    public Optional<Settlement> findByNameAndRegionAndCountry(String sName,String region, String country) {
+//        System.out.println(region + " " + country + " " + sName);
+//        Optional<Settlement> s = repository.findBysNameAndRegionAndCountry(sName,region,country);
+//        System.out.println(s.get().getMaxCountItems());
+        return repository.findBysNameAndRegionAndCountry(sName,region,country);
+    }
+
+    @Override
     public Optional<Settlement> findByNameAndCountry(String sName, String country) {
         return repository.findBysNameAndCountry(sName,country);
     }
 
     @Override
-    public Integer getMaxCountItems(String sName, String country) {
-        return repository.getMaxCountItems(sName,country);
+    public Integer getMaxCountItems(String sName ,String region, String country) {
+        return repository.getMaxCountItems(sName,region,country);
     }
 }

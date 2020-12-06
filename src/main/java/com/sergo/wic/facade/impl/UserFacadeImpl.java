@@ -5,15 +5,21 @@ import com.sergo.wic.dto.*;
 import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.Registration;
+import com.sergo.wic.entities.UserProfile;
 import com.sergo.wic.entities.enums.RegisteredBy;
 import com.sergo.wic.entities.enums.RegistrationState;
 import com.sergo.wic.entities.User;
 import com.sergo.wic.facade.UserFacade;
 import com.sergo.wic.service.CompanyService;
 import com.sergo.wic.service.RegistrationService;
+import com.sergo.wic.service.UserProfileService;
 import com.sergo.wic.service.UserService;
 import com.sergo.wic.service.email.EmailService;
+import com.sergo.wic.utils.ObjectMapperUtils;
 import com.sergo.wic.utils.RandomString;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
+import org.modelmapper.spi.MatchingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +64,9 @@ public class UserFacadeImpl implements UserFacade {
     private UserService userService;
 
     @Autowired
+    private UserProfileService userProfileService;
+
+    @Autowired
     private CompanyService companyService;
 
     @Autowired
@@ -65,6 +74,9 @@ public class UserFacadeImpl implements UserFacade {
 
     @Autowired
     private AWSAPIChecker awsapiChecker;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     {
        byte[] photo = null;
@@ -89,17 +101,38 @@ public class UserFacadeImpl implements UserFacade {
         userContacts.put("user@gmail.com", contacts);
     }
 
-    public UserFacadeImpl() {
-    }
 
     @Override
     public boolean hasUserCompany(String login){
         return checkCompanyOwner(login);
     }
 
+    @Transactional
     @Override
-    public UserProfileResponse getUserProfile(final String login) {
-        return getUserProfileTestData(isLoginValid(login));
+    public ResponseContent getUserProfile(String login, boolean isRequestedFromMenu) {
+        Optional<User> user = userService.findByLogin(login);
+        if (user.isPresent()) {
+            User u = user.get();
+            if (!isRequestedFromMenu) {
+                UserProfileResponse response = new UserProfileResponse();
+                u.getUserProfile().getContacts().forEach(contact -> System.out.println(contact.getContact()));
+                List<ContactDto> contacts = ObjectMapperUtils.mapAll(
+                        u.getUserProfile().getContacts(), ContactDto.class);
+                contacts.forEach(contactDto -> System.out.println(contactDto.getContact()));
+                modelMapper.map(userProfileService.findByUser(u), response);
+                response.setContacts(contacts);
+                return response;
+            } else {
+                UserProfile userProfile = u.getUserProfile();
+                return new UserProfileResponse(
+                        userProfile.getUserName(),
+                        userProfile.getPhotoUrl(),
+                        new ContactDto(
+                                TypeContact.PHONE_NUMBER,
+                                userProfile.getContact(TypeContact.PHONE_NUMBER).getContact())
+                        );
+            }
+        }return null;
     }
 
     @Override
@@ -131,23 +164,23 @@ public class UserFacadeImpl implements UserFacade {
         return userService.findByLogin(login).get().isHasCompany();
     }
 
-    private UserProfileResponse getUserProfileTestData(final Boolean valid) {
-        UserProfileResponse userProfileResponse = new UserProfileResponse();
-        if (valid) {
-            userProfileResponse.setUserName("Yarik&Dima");
-            userProfileResponse.setPhotoUrl("/images/mcdonalds-logo.png");
-            userProfileResponse.setWinCount(10);
-            userProfileResponse.setRange(2.3F);
-            userProfileResponse.setPointsCount(Arrays.asList(5, 0, 0, 9, 0, 3, 0, 6, 23, 0, 9, 13));
-            userProfileResponse.setContacts(userContacts.get("user@gmail.com"));
-            userProfileResponse.setSuccess(true);
-            userProfileResponse.setErrorCode(0);
-        } else {
-            userProfileResponse.setSuccess(false);
-            userProfileResponse.setErrorCode(1);
-        }
-        return userProfileResponse;
-    }
+//    private UserProfileResponse getUserProfileTestData(final Boolean valid) {
+//        UserProfileResponse userProfileResponse = new UserProfileResponse();
+//        if (valid) {
+//            userProfileResponse.setUserName("Yarik&Dima");
+//            userProfileResponse.setPhotoUrl("/images/mcdonalds-logo.png");
+//            userProfileResponse.setWinCount(10);
+//            userProfileResponse.setRange(2.3F);
+//            userProfileResponse.setPointsCount(Arrays.asList(5, 0, 0, 9, 0, 3, 0, 6, 23, 0, 9, 13));
+//            userProfileResponse.setContacts(userContacts.get("user@gmail.com"));
+//            userProfileResponse.setSuccess(true);
+//            userProfileResponse.setErrorCode(0);
+//        } else {
+//            userProfileResponse.setSuccess(false);
+//            userProfileResponse.setErrorCode(1);
+//        }
+//        return userProfileResponse;
+//    }
 
     private FriendListResponce getFriendListResponceTestData(final Boolean valid) {
         FriendListResponce friendListResponce = new FriendListResponce();

@@ -90,10 +90,7 @@ public class MockController {
         return shareFacade.getShares(login, country, region, city);
     }
 
-    @GetMapping("/profile")
-    public UserProfileResponse getUserProfile(@RequestParam(value = "login", required = false) String login) {
-        return userFacade.getUserProfile(login);
-    }
+
 
 //    @GetMapping("/company")
 //    public CompanyResponse getCompany(@RequestParam(value = "login", required = false) String login) {
@@ -107,8 +104,8 @@ public class MockController {
 
     @GetMapping("/test")
     public Integer test(){
-        settlementService.findByNameAndCountry("Moscow","Russia");
-        return settlementService.getMaxCountItems("Moscow","Russia");
+        settlementService.findByNameAndRegionAndCountry("Moscow","Moscow region","Russia");
+        return settlementService.getMaxCountItems("Moscow","Bryansk region","Russia");
     }
 
     @GetMapping("/notices")

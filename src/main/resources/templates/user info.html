@@ -105,8 +105,8 @@
                     <td th:text="${share.getColor()}"/></td>
 
                     <td>
-                        <div class="messages_forms" data-th-id="${share.id}">
-                            <button class="confirm_button" data-th-id="${share.id}"  value="confirm"> confirm </button>
+                        <div class="messages_forms" geoLocationData-th-id="${share.id}">
+                            <button class="confirm_button" geoLocationData-th-id="${share.id}"  value="confirm"> confirm </button>
                             <div class="confirm_messages" >
                                 <form th:action="@{'/admin/show/'+ ${user.id} + '/confirm'}" method="post">
                                     <select name="reason" class="confirm_select" required size="4">
@@ -123,8 +123,8 @@
                                 </form>
                             </div>
                             <div class="messages_forms">
-                                <button class="cancel_button" data-th-id="${share.id}"  value="cancel"> cancel </button>
-                                <div class="cancel_messages" data-th-id="${share.id}">
+                                <button class="cancel_button" geoLocationData-th-id="${share.id}"  value="cancel"> cancel </button>
+                                <div class="cancel_messages" geoLocationData-th-id="${share.id}">
 
                                 <form th:action="@{'/admin/show/' + ${user.id} + '/cancel'}" method="post">
                                     <select id="cancel_select" name="reason" required size="4">
@@ -167,7 +167,7 @@
             type: "GET",
             url: "/ajax/getNewShares",
             dataType: "json",
-            data: {
+            geoLocationData: {
                 'max_share_id' : maxShareId,
                 'company_id' : company_id
             },

@@ -44,8 +44,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notification> notifications;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserItem> userItem;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    private UserProfile userProfile;
 
     public boolean isCompanyRegInProcess() {
         return isCompanyRegInProcess;
@@ -127,18 +129,24 @@ public class User {
         this.name = name;
     }
 
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
 
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
 
     public long getSharesCount(final Share currentShare){
         for (Share share : this.company.getShares()){
         System.out.println(share.getId());
         }
-        return this.company
-           .getShares()
-              .stream()
-                 .filter(share -> (LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)
-                                          .isEqual(share.getDate().toLocalDateTime().truncatedTo(ChronoUnit.DAYS))))
-                     .count() + 1;
+        return this.company.getShares().stream()
+                 .filter(share ->
+                         (LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)
+                         .isEqual(share.getDate().toLocalDateTime().truncatedTo(ChronoUnit.DAYS)))
+                 )
+                 .count() + 1;
     }
 
     @Override

@@ -22,12 +22,11 @@ public class EmailValidator {
         while (index <= input.length && state != -1) {
 
             if (index == input.length) {
-                ch = '\0'; // Так мы обозначаем конец нашей работы
+                ch = '\0';
             }
             else {
                 ch = input[index];
                 if (ch == '\0') {
-                    // символ, которым мы кодируем конец работы, не может быть частью ввода
                     return false;
                 }
             }
@@ -35,20 +34,17 @@ public class EmailValidator {
             switch (state) {
 
                 case 0: {
-                    // Первый символ {atext} -- текстовой части локального имени
                     if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')
                             || (ch >= '0' && ch <= '9') || ch == '_' || ch == '-'
                             || ch == '+') {
                         state = 1;
                         break;
                     }
-                    // Если встретили неправильный символ -> отмечаемся в state об ошибке
                     state = -1;
                     break;
                 }
 
                 case 1: {
-                    // Остальные символы {atext} -- текстовой части локального имени
                     if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')
                             || (ch >= '0' && ch <= '9') || ch == '_' || ch == '-'
                             || ch == '+') {
@@ -58,44 +54,44 @@ public class EmailValidator {
                         state = 2;
                         break;
                     }
-                    if (ch == '@') { // Конец локальной части
+                    if (ch == '@') {
                         local = new String(input, 0, index - mark);
                         mark = index + 1;
                         state = 3;
                         break;
                     }
-                    // Если встретили неправильный символ -> отмечаемся в state об ошибке
+
                     state = -1;
                     break;
                 }
 
                 case 2: {
-                    // Переход к {atext} (текстовой части) после точки
+
                     if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')
                             || (ch >= '0' && ch <= '9') || ch == '_' || ch == '-'
                             || ch == '+') {
                         state = 1;
                         break;
                     }
-                    // Если встретили неправильный символ -> отмечаемся в state об ошибке
+
                     state = -1;
                     break;
                 }
 
                 case 3: {
-                    // Переходим {alnum} (домену), проверяем первый символ
+
                     if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9')
                             || (ch >= 'A' && ch <= 'Z')) {
                         state = 4;
                         break;
                     }
-                    // Если встретили неправильный символ -> отмечаемся в state об ошибке
+
                     state = -1;
                     break;
                 }
 
                 case 4: {
-                    // Собираем {alnum} --- домен
+
                     if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9')
                             || (ch >= 'A' && ch <= 'Z')) {
                         break;
@@ -110,13 +106,13 @@ public class EmailValidator {
                         state = 5;
                         break;
                     }
-                    // Проверка на конец строки
+
                     if (ch == '\0') {
                         domain.add(new String(input, mark, index - mark));
                         state = 6;
-                        break; // Дошли до конца строки -> заканчиваем работу
+                        break;
                     }
-                    // Если встретили неправильный символ -> отмечаемся в state об ошибке
+
                     state = -1;
                     break;
                 }
@@ -130,38 +126,31 @@ public class EmailValidator {
                     if (ch == '-') {
                         break;
                     }
-                    // Если встретили неправильный символ -> отмечаемся в state об ошибке
+
                     state = -1;
                     break;
                 }
 
                 case 6: {
-                    // Успех! (На самом деле, мы сюда никогда не попадём)
+
                     break;
                 }
             }
             index++;
         }
 
-        // Остальные проверки
-
-        // Не прошли проверку выше? Возвращаем false!
         if (state != 6)
             return false;
 
-        // Нам нужен домен как минимум второго уровня
         if (domain.size() < 2)
             return false;
 
-        // Ограничения длины по спецификации RFC 5321
         if (local.length() > 64)
             return false;
 
-        // Ограничения длины по спецификации RFC 5321
         if (input.length > 254)
             return false;
 
-        // Домен верхнего уровня должен состоять только из букв и быть не короче двух символов
         index = input.length - 1;
         while (index > 0) {
             ch = input[index];
