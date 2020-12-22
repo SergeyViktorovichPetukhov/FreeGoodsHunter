@@ -1,11 +1,10 @@
 package com.sergo.wic.entities;
 
-import com.sergo.wic.dto.TypeContact;
+import com.sergo.wic.entities.enums.TypeContact;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "user_profiles")
@@ -26,7 +25,7 @@ public class UserProfile {
     private Integer winCount;
     @Column(name = "range")
     private Double range;
-    @OneToMany(mappedBy = "userProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "userProfile", cascade = CascadeType.ALL)
     private List<Contact> contacts;
     @OneToOne
     private User user;

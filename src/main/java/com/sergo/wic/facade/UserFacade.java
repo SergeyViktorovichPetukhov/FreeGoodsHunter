@@ -10,6 +10,7 @@ import java.util.Map;
 public interface UserFacade {
     boolean hasUserCompany(String login);
     ResponseContent getUserProfile(String login, boolean isRequestedFromMenu);
+    boolean addUserNameInfo(String login, String firstNameAndLastName);
     FriendListResponce getFriends(String login);
     AllItemsResponse getAllItems(String login);
     public Boolean isLoginValid(final String login);

@@ -9,6 +9,7 @@ import com.sergo.wic.entities.UserProfile;
 import com.sergo.wic.entities.enums.RegisteredBy;
 import com.sergo.wic.entities.enums.RegistrationState;
 import com.sergo.wic.entities.User;
+import com.sergo.wic.entities.enums.TypeContact;
 import com.sergo.wic.facade.UserFacade;
 import com.sergo.wic.service.CompanyService;
 import com.sergo.wic.service.RegistrationService;
@@ -18,8 +19,6 @@ import com.sergo.wic.service.email.EmailService;
 import com.sergo.wic.utils.ObjectMapperUtils;
 import com.sergo.wic.utils.RandomString;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MatchingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,13 +84,13 @@ public class UserFacadeImpl implements UserFacade {
        }catch (IOException e){
 
        }
-        users = Arrays.asList(
-                new UserDto("sergeyp3d@rambler.ru",photo, 4, 6),
-                new UserDto("yarus@gmail.com",photo, 6, 8),
-                new UserDto("sergiy@gmail.com",photo, 10, 12),
-                new UserDto("sasha@gmail.com",photo, 15, 17),
-                new UserDto("user@gmail.com",photo, 16, 25)
-        );
+//        users = Arrays.asList(
+//                new UserDto("sergeyp3d@rambler.ru",photo, 4, 6),
+//                new UserDto("yarus@gmail.com",photo, 6, 8),
+//                new UserDto("sergiy@gmail.com",photo, 10, 12),
+//                new UserDto("sasha@gmail.com",photo, 15, 17),
+//                new UserDto("user@gmail.com",photo, 16, 25)
+//        );
         contacts = Arrays.asList(
                 new ContactDto(TypeContact.PHONE_NUMBER, "+38415426785"),
                 new ContactDto(TypeContact.SKYPE, "dimas"),
@@ -115,10 +114,8 @@ public class UserFacadeImpl implements UserFacade {
             User u = user.get();
             if (!isRequestedFromMenu) {
                 UserProfileResponse response = new UserProfileResponse();
-                u.getUserProfile().getContacts().forEach(contact -> System.out.println(contact.getContact()));
                 List<ContactDto> contacts = ObjectMapperUtils.mapAll(
                         u.getUserProfile().getContacts(), ContactDto.class);
-                contacts.forEach(contactDto -> System.out.println(contactDto.getContact()));
                 modelMapper.map(userProfileService.findByUser(u), response);
                 response.setContacts(contacts);
                 return response;
@@ -133,6 +130,20 @@ public class UserFacadeImpl implements UserFacade {
                         );
             }
         }return null;
+    }
+
+    @Transactional
+    @Override
+    public boolean addUserNameInfo(String login, String firstNameAndLastName) {
+        Optional<User> user = userService.findByLogin(login);
+        if (user.isPresent()){
+            User u = user.get();
+            UserProfile profile = u.getUserProfile();
+            profile.setUserName(firstNameAndLastName);
+            u.setUserProfile(profile);
+            return true;
+        }
+        return false;
     }
 
     @Override

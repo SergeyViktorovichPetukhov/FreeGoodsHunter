@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,11 +40,13 @@ public class ShareServiceImpl implements ShareService {
             @Autowired ShareRepository shareRepository,
             @Autowired ImageService imageService,
             @Autowired UserService userService ,
-            @Autowired ItemRepository itemRepository){
+            @Autowired ItemRepository itemRepository,
+            @Autowired JdbcTemplate jdbcTemplate){
        this.imageService = imageService;
        this.shareRepository = shareRepository;
        this.userService = userService;
        this.itemRepository = itemRepository;
+       this.jdbcTemplate = jdbcTemplate;
     }
 
     private ShareRepository shareRepository;
@@ -51,7 +54,7 @@ public class ShareServiceImpl implements ShareService {
     private UserService userService;
     private ItemRepository itemRepository;
     private PointsRepository pointsRepository;
-
+    private JdbcTemplate jdbcTemplate;
 
     private static final String PRODUCT_PHOTO_PATH = "product.photo.path";
     private static final Logger LOG = LoggerFactory.getLogger(ShareServiceImpl.class);
@@ -94,7 +97,7 @@ public class ShareServiceImpl implements ShareService {
 
             share.setProductPhotoUrl(photoUrl);
             share.setCompany(user.get().getCompany());
-            share.setCreateStatus(CreateShareState.CREATED);
+            share.setCreationStatus(CreateShareState.CREATED);
             shareRepository.save(share);
             itemRepository.saveAll(share.getItems());
         //    companyService.save(user.get().getCompany());
@@ -108,6 +111,16 @@ public class ShareServiceImpl implements ShareService {
     @Override
     public Optional<Share> findByShareId(String shareId) {
         return shareRepository.findByShareId(shareId);
+    }
+
+    @Override
+    public Optional<Share> findShareWithCompany(String shareId) {
+        return shareRepository.findShareWithCompany(shareId);
+    }
+
+    @Override
+    public List<Item> findShareUserItems(String shareId) {
+        return shareRepository.findShareUserItems(shareId);
     }
 
     @Override
@@ -150,7 +163,7 @@ public class ShareServiceImpl implements ShareService {
     @Override
     public boolean confirmShare(Long id, String reason) {
         Share share = findById(id);
-        share.setCreateStatus(CreateShareState.CONFIRMED);
+        share.setCreationStatus(CreateShareState.CONFIRMED);
         share.setMessageForUser(reason);
         shareRepository.save(share);
         return true;
@@ -159,7 +172,7 @@ public class ShareServiceImpl implements ShareService {
     @Override
     public boolean cancelShare(Long id , String reason) {
         Share share = findById(id);
-        share.setCreateStatus(CreateShareState.REFUSED);
+        share.setCreationStatus(CreateShareState.REFUSED);
         share.setMessageForUser(reason);
         shareRepository.save(share);
         return true;

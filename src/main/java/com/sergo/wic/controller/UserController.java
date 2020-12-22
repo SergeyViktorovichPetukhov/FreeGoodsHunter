@@ -52,7 +52,9 @@ public class UserController {
         if (user.isPresent()){
             return new Response(true,0, new UserResponse(user.get().isHasCompany()));
         }
-        return new Response(false,1,"no such user",new UserResponse(false));
+        User newUser = new User(login.getLogin());
+        userService.save(newUser);
+        return new Response(false,0,"new user created", new UserResponse(false, true));
     }
 
     @PostMapping(value = "/registerNewUser")
@@ -85,10 +87,10 @@ public class UserController {
         if (item.getState() != ItemState.FREE)
             return new Response(false,1, "this item is already picked");
         Share share = item.getShare();
-        if (! share.getLogin().equals(dto.getLogin())){
+        if ( ! share.getLogin().equals(dto.getLogin()) ){
             Optional<User> user = userService.findByLogin(dto.getLogin());
             if (user.isPresent()){
-                itemService.save(item,user.get(), share.getShareId());
+                itemService.save(item, user.get(), share.getShareId());
                 return new Response(true,0,"you picked this item");
             }
             return new Response(false,2,"no user with such login");

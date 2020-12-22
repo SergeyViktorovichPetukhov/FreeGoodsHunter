@@ -1,6 +1,6 @@
 package com.sergo.wic.entities;
 
-import com.sergo.wic.dto.TypeContact;
+import com.sergo.wic.entities.enums.TypeContact;
 
 import javax.persistence.*;
 import java.util.Objects;

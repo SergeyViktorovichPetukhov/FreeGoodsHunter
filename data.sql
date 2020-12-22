@@ -21,11 +21,11 @@
 --                     color, picked_items_count, all_items_count, code,date, creation_status,place_country, place_region, place_city)
 --             VALUES (2, 'company_owner@mail.ru 2020-04-20 #2', 1,'company_owner@mail.ru','url','NAME2','descrip',3,'link/link2',
 --                     25,23,56,45,2,45,57,'5Sxvui','2020-04-20 10:50:28.437','CREATED','USA','California','Los-Angeles');
-TRUNCATE TABLE items;
-  INSERT INTO items(id,longitude,latitude, share_id, item_id) VALUES (1,43,25,1,'sfgsg');
-  INSERT INTO items(id,longitude,latitude, share_id, item_id) VALUES (2,34,32,1,'sfgs1');
-  INSERT INTO items(id,longitude,latitude, share_id, item_id) VALUES (3,41,39,1,'sf4sg');
-  INSERT INTO items(id,longitude,latitude, share_id, item_id) VALUES (4,40,38,2,'sf6sg');
+-- TRUNCATE TABLE items;
+--   INSERT INTO items(id,longitude,latitude, share_id, item_id) VALUES (1,43,25,1,'sfgsg');
+--   INSERT INTO items(id,longitude,latitude, share_id, item_id) VALUES (2,34,32,1,'sfgs1');
+--   INSERT INTO items(id,longitude,latitude, share_id, item_id) VALUES (3,41,39,1,'sf4sg');
+--   INSERT INTO items(id,longitude,latitude, share_id, item_id) VALUES (4,40,38,2,'sf6sg');
 
 -- --INSERT INTO items(id,longitude,latitude, share_id, item_id) VALUES (1,46,32,2,'uixops00');
 -- --

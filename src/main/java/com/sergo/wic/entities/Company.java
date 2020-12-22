@@ -4,7 +4,6 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-
 @Table(name = "companies")
 public class Company {
     public Company(){}
@@ -45,24 +44,32 @@ public class Company {
     private String address;
     @Column(name = "contact")
     private String contact;
-    @Column(name = "internetShop")
+    @Column(name = "internet_shop")
     private String internetShop;
     @Column(name = "code")
     private String code;
     @Column(name = "name")
     private String name;
+    @Column(name = "info")
+    private String info;
 
- //   private byte[] label;
+    @Column(name = "logo_url")
+    private String logoUrl;
 
-    @Column(name = "label_path")
-    private String label_path;
-
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name="user_id", referencedColumnName = "id")
     private User user;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Share> shares;
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
 
     public User getUser() {
         return user;
@@ -108,12 +115,12 @@ public class Company {
         return code;
     }
 
-    public String getLabel_path() {
-        return label_path;
+    public String getLogoUrl() {
+        return logoUrl;
     }
 
-    public void setLabel_path(String label_path) {
-        this.label_path = label_path;
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
     }
 
     public void setCode(String code) {

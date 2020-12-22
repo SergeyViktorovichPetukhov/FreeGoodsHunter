@@ -1,5 +1,7 @@
 package com.sergo.wic.dto;
 
+import com.sergo.wic.entities.enums.TypeContact;
+
 public class ContactDto {
     private TypeContact typeContact;
     private String contact;

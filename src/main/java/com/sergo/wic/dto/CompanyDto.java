@@ -1,13 +1,21 @@
 package com.sergo.wic.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CompanyDto {
     private String login;
     private String address;
     private String phone;
     private String internetShop;
     private Integer code;
+    private String name;
+    private String info;
+    private String contact;
+
+    public CompanyDto() { }
 
     public CompanyDto(String login, String address, String phone, Integer code) {
         this.login = login;
@@ -21,6 +29,30 @@ public class CompanyDto {
         this.phone = phone;
         this.internetShop = internetShop;
         this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
     public String getInternetShop() {

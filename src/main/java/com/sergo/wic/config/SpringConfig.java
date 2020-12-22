@@ -5,6 +5,7 @@ import com.sergo.wic.dto.ItemDto;
 import com.sergo.wic.dto.ShareDto;
 import com.sergo.wic.entities.Item;
 import com.sergo.wic.entities.Share;
+import org.hibernate.Session;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
@@ -155,6 +156,11 @@ public class SpringConfig implements WebMvcConfigurer {
         messageSource.setUseCodeAsDefaultMessage(true);
         return messageSource;
     }
+
+//    @Bean
+//    public Session session(){
+//
+//    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

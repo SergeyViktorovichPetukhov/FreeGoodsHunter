@@ -1,12 +1,10 @@
 package com.sergo.wic.converter;
 
-import com.sergo.wic.dto.CreateShareDto;
-import com.sergo.wic.dto.ItemDto;
+import com.sergo.wic.dto.*;
 import com.sergo.wic.dto.Response.GetShareResponse;
-import com.sergo.wic.dto.PickedItemDto;
-import com.sergo.wic.dto.ShareDto;
-import com.sergo.wic.entities.Item;
-import com.sergo.wic.entities.Share;
+import com.sergo.wic.dto.Response.ShareInfoResponse;
+import com.sergo.wic.dto.Response.ShareUserItemsResponse;
+import com.sergo.wic.entities.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeMap;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class ShareConverter {
@@ -89,5 +88,37 @@ public class ShareConverter {
             response.setPoints(pickedItemDtos);
 //            response.setUsersWithShareItems(userDtoList);
         return response;
+    }
+
+    public ShareInfoResponse convertToShareInfoResponse(Share share){
+        Company company = share.getCompany();
+        CompanyDto companyDto = new CompanyDto();
+        ProductDto productDto = new ProductDto();
+        modelMapper.map(company,companyDto);
+        companyDto.setLogin(null);
+        productDto.setProductName(share.getProductName());
+        productDto.setDescription(share.getProductDescription());
+        productDto.setLogo(share.getProductPhotoUrl());
+        productDto.setPrice(share.getProductPrice());
+        productDto.setWebSite(share.getProductWebsite());
+        return new ShareInfoResponse(companyDto,productDto);
+    }
+
+    public ShareUserItemsResponse convertToShareItemsResponse(List<Item> shareItems){
+        List<UserItem> userItems = shareItems.stream()
+                .filter(item -> item.getUserItem() != null)
+                .map(item -> new UserItem(item.getUserItem()))
+                .collect(Collectors.toList());
+        List<UserDto> users = userItems.stream()
+                .map(userItem -> {
+                    UserDto dto = new UserDto();
+                    User user = userItem.getUser();
+                    dto.setLogin(user.getLogin());
+                    dto.setPickedItemsCount(user.getPickedItemsCount());
+                    dto.setPhotoUrl(user.getUserProfile().getPhotoUrl());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        return new ShareUserItemsResponse(users);
     }
 }

@@ -1,10 +1,15 @@
 package com.sergo.wic.entities;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "users"
         ,
@@ -12,10 +17,11 @@ import java.util.*;
        @Index(name = "LOGIN_INDEX",
               columnList = "login")
           }
-          )
+       )
 public class User {
 
-    public User(){
+    public User(String login){
+        this.login = login;
     }
 
     @Id
@@ -46,96 +52,8 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserItem> userItem;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
     private UserProfile userProfile;
-
-    public boolean isCompanyRegInProcess() {
-        return isCompanyRegInProcess;
-    }
-
-    public void setCompanyRegInProcess(boolean companyRegInProcess) {
-        isCompanyRegInProcess = companyRegInProcess;
-    }
-
-    public List<Notification> getNotifications() {
-        return notifications;
-    }
-
-    public void setNotifications(List<Notification> notifications) {
-        this.notifications = notifications;
-    }
-
-    public Company getCompany() { return company; }
-
-    public void setCompany(Company userCompany) { this.company = userCompany; }
-
-    public boolean isHasCompany() { return hasCompany; }
-
-    public void setHasCompany(boolean hasCompany) { this.hasCompany = hasCompany; }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public Integer getAllItemsCount() {
-        return allItemsCount;
-    }
-
-    public List<UserItem> getUserItem() {
-        return userItem;
-    }
-
-    public void setUserItem(List<UserItem> item) {
-        this.userItem = item;
-    }
-
-    public void setAllItemsCount(Integer allItemsCount) {
-        this.allItemsCount = allItemsCount;
-    }
-
-    public Integer getPickedItemsCount() {
-        return pickedItemsCount;
-    }
-
-    public void setPickedItemsCount(Integer pickedItemsCount) {
-        this.pickedItemsCount = pickedItemsCount;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public UserProfile getUserProfile() {
-        return userProfile;
-    }
-
-    public void setUserProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
-    }
 
     public long getSharesCount(final Share currentShare){
         for (Share share : this.company.getShares()){

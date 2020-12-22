@@ -1,6 +1,7 @@
 package com.sergo.wic.service;
 
 import com.sergo.wic.entities.Company;
+import com.sergo.wic.entities.Item;
 import com.sergo.wic.entities.Share;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +16,8 @@ public interface ShareService {
     boolean checkShare( String shareId);
     boolean existsByShareId(String shareId);
     Optional<Share> findByShareId(String shareId);
+    Optional<Share> findShareWithCompany(String shareId);
+    List<Item> findShareUserItems(String shareId);
     List<Share> findAll();
     List<Share> findNewShares(Long maxOldId,Long companyId);
     Share saveShare(Share share, MultipartFile productPhoto) throws IOException;

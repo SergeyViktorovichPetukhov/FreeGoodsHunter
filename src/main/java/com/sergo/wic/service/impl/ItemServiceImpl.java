@@ -24,11 +24,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.postgis.PGgeometry;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -91,17 +92,33 @@ public class ItemServiceImpl implements ItemService {
         Optional<Share> share = shareService.findByShareId(shareId);
         Optional<UserItem> userItem;
         if (share.isPresent()){
-            userItem = userItemService.findByUserAndShare(user, share.get());
+        //    userItem = user ItemService.findByUserAndShare(user, share.get());
+            userItem = share.get().getItems().stream()
+                    .filter(item1 ->
+                            item1.getUserItem() != null &&
+                            item1.getUserItem().getUser().getLogin().equals(user.getLogin()))
+                    .map(item2 -> new UserItem(user, item2))
+                    .findFirst();
         }else
             return false;
         UserItem newUserItem;
         if (userItem.isPresent()){
             UserItem ui = userItem.get();
+            if (user.getPickedItemsCount() != null){
+                user.setPickedItemsCount(user.getPickedItemsCount() + 1);
+            }else {
+                user.setPickedItemsCount(1);
+            }
             ui.setUser(user);
             item.setUserItem(ui);
             userItemService.save(userItem.get());
         }else{
             newUserItem = new UserItem(user);
+            if (user.getPickedItemsCount() != null){
+                user.setPickedItemsCount(user.getPickedItemsCount() + 1);
+            }else {
+                user.setPickedItemsCount(1);
+            }
             newUserItem.setUser(user);
             item.setUserItem(newUserItem);
             userItemService.save(newUserItem);
@@ -182,24 +199,27 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private List<Point> getAcceptablePoints(double radius, CoordinateReferenceSystem crs, List<Point> points, String table){
-        int randomPointIndex = (int) (Math.random()*points.size());
+        int randomPointIndex = (int) (Math.random() * points.size());
         Point initialPoint = points.get(randomPointIndex);
         List<Point> acceptablePoints = points.stream()
                 .filter(point -> isPointInAcceptableRadius(crs, radius, point,initialPoint))
                 .collect(Collectors.toList());
 
         int necessaryPointsNumber = points.size() - acceptablePoints.size();
-        List<Point> necessaryPoints;
+        List<Point> necessaryPoints = null;
         while(acceptablePoints.size() < points.size()){
-            necessaryPoints = pointsRepository.getRandomCoordinates(table, necessaryPointsNumber, 30).stream()
-                    .map(geometry -> new Point(
-                            geometry.getGeometry().getPoint(0).x,
-                            geometry.getGeometry().getPoint(0).y))
-                    .filter(point -> isPointInAcceptableRadius(crs, radius, point,initialPoint))
-                    .collect(Collectors.toList());
-            acceptablePoints.addAll(necessaryPoints);
-            necessaryPointsNumber = points.size() - acceptablePoints.size();
-
+            try {
+                necessaryPoints = pointsRepository.getRandomCoordinates(table, necessaryPointsNumber, 30).stream()
+                        .map(geometry -> new Point(
+                                geometry.getGeometry().getPoint(0).x,
+                                geometry.getGeometry().getPoint(0).y))
+                        .filter(point -> isPointInAcceptableRadius(crs, radius, point,initialPoint))
+                        .collect(Collectors.toList());
+            } catch (NullPointerException e) { }
+            if (necessaryPoints != null){
+                acceptablePoints.addAll(necessaryPoints);
+                necessaryPointsNumber = points.size() - acceptablePoints.size();
+            }
         }
         return acceptablePoints;
     }
@@ -208,6 +228,8 @@ public class ItemServiceImpl implements ItemService {
         GeodeticCalculator gc = new GeodeticCalculator(crs);
         Coordinate initial = new Coordinate(initialPoint.x, initialPoint.y);
         Coordinate current = new Coordinate(point.x, point.y);
+        Map<String, Integer> map = new HashMap<>();
+        Stream.of(map);
         try {
             gc.setStartingPosition(JTS.toDirectPosition(initial, crs));
             gc.setDestinationPosition(JTS.toDirectPosition(current, crs));

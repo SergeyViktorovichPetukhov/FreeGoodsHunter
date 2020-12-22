@@ -27,10 +27,10 @@ public class UserItemServiceImpl implements UserItemService {
         else return false;
     }
 
-    @Override
-    public Optional<UserItem> findByUserAndShare(User user, Share share) {
-        return repository.findByUserAndShare(user,share);
-    }
+//    @Override
+//    public Optional<UserItem> findByUserAndShare(User user, Share share) {
+//        return repository.findByUserAndShare(user,share);
+//    }
 
     @Override
     public Optional<UserItem> findByUser(User user) {

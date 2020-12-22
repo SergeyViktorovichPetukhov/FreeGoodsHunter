@@ -3,8 +3,11 @@ package com.sergo.wic.controller;
 import com.sergo.wic.converter.ShareConverter;
 import com.sergo.wic.dto.LoginAndShareDto;
 import com.sergo.wic.dto.Response.Response;
+import com.sergo.wic.dto.Response.ShareInfoResponse;
 import com.sergo.wic.dto.Response.ShareResponse;
 import com.sergo.wic.dto.CreateShareDto;
+import com.sergo.wic.entities.Company;
+import com.sergo.wic.entities.Item;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.facade.ImageFacade;
 import com.sergo.wic.facade.ShareFacade;
@@ -19,9 +22,11 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/shares")
+@RequestMapping("/share")
 public class ShareController {
 
     private ShareFacade shareFacade;
@@ -42,6 +47,25 @@ public class ShareController {
         this.imageFacade = imageFacade;
     }
 
+    @GetMapping
+    public Response shareInfo(@RequestParam(value = "login", required = false) String login,
+                              @RequestParam("shareId") String shareId){
+        Optional<Share> share = shareService.findShareWithCompany(shareId);
+        if (share.isPresent()){
+            return new Response(true, 0, shareConverter.convertToShareInfoResponse(share.get()));
+        }
+        return new Response(false, 1,"no such share");
+    }
+
+    @GetMapping("/shareItemsInfo")
+    public Response shareItemsInfo(@RequestParam(value = "login", required = false) String login,
+                                   @RequestParam("shareId") String shareId){
+        List<Item> items = shareService.findShareUserItems(shareId);
+        if (items != null){
+            return new Response(true, 0, shareConverter.convertToShareItemsResponse(items));
+        }
+        return new Response(false, 1,"no such share");
+    }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/publish" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -76,5 +100,7 @@ public class ShareController {
         shareFacade.uploadPhotoForShareProduct(photo, shareId);
         return new Response(true,0,"photo uploaded");
     }
+
+
 }
 

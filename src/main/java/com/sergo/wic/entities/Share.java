@@ -1,14 +1,20 @@
 package com.sergo.wic.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sergo.wic.entities.enums.CreateShareState;
 import com.sergo.wic.entities.enums.ShareState;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
+@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "shares",
        indexes = {
@@ -16,6 +22,7 @@ import java.util.Objects;
               columnList = "share_id")
           }
 )
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class Share {
 
     public Share(){
@@ -42,14 +49,17 @@ public class Share {
     @Column(name = "login")
     private String login;
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Column(name = "product_photo_url")
     private String productPhotoUrl;
+
+    @Column(name = "product_website")
+    private String productWebsite;
 
     @Column(name = "product_name")
     private String productName;
 
-    @Column(name = "productDescription")
+    @Column(name = "product_description")
     private String productDescription;
 
     @Column(name = "link_on_product")
@@ -104,15 +114,12 @@ public class Share {
     @Column(name = "message_for_user")
     private String messageForUser;
     @JsonIgnore
-    @OneToMany(mappedBy = "share",fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
+    @OneToMany(mappedBy = "share", cascade = {CascadeType.ALL})
     private List<Item> items;
 
-    @OneToOne
-    @JoinColumn(name="user_item_id", referencedColumnName = "id")
-    private UserItem userItem;
-
-//    @OneToMany(mappedBy = "sharesId",fetch = FetchType.EAGER)
-//    private List<Item> items;
+//    @OneToMany
+//    @JoinColumn(name="user_item_id", referencedColumnName = "id")
+//    private UserItem userItem;
 
     @Column(name = "place_country")
     private String placeCountry;
@@ -124,6 +131,7 @@ public class Share {
     private String placeCity;
 
     public boolean addItem(Item item){
+
         return items.add(item);
     }
 
@@ -131,263 +139,6 @@ public class Share {
 //    @ManyToOne
 //    @JoinColumn(name = "place_address_id", referencedColumnName = "id")
 //    private Address placeAddress;
-
-//    public User getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
-
-
-    public UserItem getUserItem() {
-        return userItem;
-    }
-
-    public void setUserItem(UserItem userItem) {
-        this.userItem = userItem;
-    }
-
-    public void setProductCount(Integer productCount) {
-        this.productCount = productCount;
-    }
-
-    public void setPickedItemsCount(Integer pickedItemsCount) {
-        this.pickedItemsCount = pickedItemsCount;
-    }
-
-    public void setAllItemsCount(Integer allItemsCount) {
-        this.allItemsCount = allItemsCount;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getProductPhotoUrl() {
-        return productPhotoUrl;
-    }
-
-    public void setProductPhotoUrl(String productPhotoUrl) {
-        this.productPhotoUrl = productPhotoUrl;
-    }
-
-    public String getPlaceCountry() {
-        return placeCountry;
-    }
-
-    public void setPlaceCountry(String placeCountry) {
-        this.placeCountry = placeCountry;
-    }
-
-    public String getPlaceRegion() {
-        return placeRegion;
-    }
-
-    public void setPlaceRegion(String placeRegion) {
-        this.placeRegion = placeRegion;
-    }
-
-    public String getPlaceCity() {
-        return placeCity;
-    }
-
-    public CreateShareState getCreateStatus() {
-        return creationStatus;
-    }
-
-    public void setCreateStatus(CreateShareState createStatus) {
-        this.creationStatus = createStatus;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
-    public void setPlaceCity(String placeCity) {
-        this.placeCity = placeCity;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public CreateShareState getCreationStatus() {
-        return creationStatus;
-    }
-
-    public void setCreationStatus(CreateShareState creationStatus) {
-        this.creationStatus = creationStatus;
-    }
-
-    public String getMessageForUser() {
-        return messageForUser;
-    }
-
-    public void setMessageForUser(String messageForUser) {
-        this.messageForUser = messageForUser;
-    }
-
-    public String getShareId() {
-        return shareId;
-    }
-
-    public void setShareId(String shareId) {
-        this.shareId = shareId;
-    }
-
-    public String getProductDescription() {
-        return productDescription;
-    }
-
-    public void setProductDescription(String productDescription) {
-        this.productDescription = productDescription;
-    }
-
-    public Integer getProductCount() {
-        return productCount;
-    }
-
-    public Long getProductImageId() {
-        return productImageId;
-    }
-
-    public void setProductImageId(Long productImageId) {
-        this.productImageId = productImageId;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getLinkOnProduct() {
-        return linkOnProduct;
-    }
-
-    public void setLinkOnProduct(String linkOnProduct) {
-        this.linkOnProduct = linkOnProduct;
-    }
-
-    public double getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(double productPrice) {
-        this.productPrice = productPrice;
-    }
-
-    public Integer getAnnouncementDuration() {
-        return announcementDuration;
-    }
-
-    public void setAnnouncementDuration(Integer announcementDuration) {
-        this.announcementDuration = announcementDuration;
-    }
-
-    public Integer getShareDuration() {
-        return shareDuration;
-    }
-
-    public void setShareDuration(Integer shareDuration) {
-        this.shareDuration = shareDuration;
-    }
-
-    public Integer getAfterShareDuration() {
-        return afterShareDuration;
-    }
-
-    public void setAfterShareDuration(Integer afterShareDuration) {
-        this.afterShareDuration = afterShareDuration;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public int getPickedItemsCount() {
-        return pickedItemsCount;
-    }
-
-    public void setPickedItemsCount(int pickedItemsCount) {
-        this.pickedItemsCount = pickedItemsCount;
-    }
-
-    public int getAllItemsCount() {
-        return allItemsCount;
-    }
-
-    public void setAllItemsCount(int allItemsCount) {
-        this.allItemsCount = allItemsCount;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public Timestamp getDate() {
-        return date;
-    }
-
-    public void setDate(Timestamp date) {
-        this.date = date;
-    }
-
-    public ShareState getStatus() {
-        return status;
-    }
-
-    public void setStatus(ShareState status) {
-        this.status = status;
-    }
-
-//    public Integer getCompanyId() {
-//        return companyId;
-//    }
-//
-//    public void setCompanyId(Integer companyId) {
-//        this.companyId = companyId;
-//    }
-
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
-
-//    public Address getPlaceAddress() {
-//        return placeAddress;
-//    }
-//
-//    public void setPlaceAddress(Address placeAddress) {
-//        this.placeAddress = placeAddress;
-//    }
 
     @Override
     public boolean equals(Object o) {

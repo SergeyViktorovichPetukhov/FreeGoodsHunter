@@ -1,4 +1,4 @@
-package com.sergo.wic.dto;
+package com.sergo.wic.entities.enums;
 
 public enum TypeContact {
     VIBER(0, "VIBER"), VK(1, "VK"), FACEBOOK(2, "FACEBOOK"),

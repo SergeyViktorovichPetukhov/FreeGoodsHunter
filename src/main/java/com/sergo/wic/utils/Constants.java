@@ -11,7 +11,7 @@ public class Constants {
     public static final String WEB_SITE_VERIFICATION_MESSAGE = "";
     public static final String VERIFICATION_UNSUCCESS = "could not verify data from website";
     public static final List<ItemDto> BRYANSK_ITEMS = new ArrayList<>();
-    public static final double ACCEPTABLE_RADIUS = 0.7;
+    public static final double ACCEPTABLE_RADIUS = 0.1;
     static {
         BRYANSK_ITEMS.add(new ItemDto(new CoordinatesDto(53.307040, 34.298223),RandomString.getAlphaNumericString(6)));
         BRYANSK_ITEMS.add(new ItemDto(new CoordinatesDto(53.307055, 34.299081),RandomString.getAlphaNumericString(6)));

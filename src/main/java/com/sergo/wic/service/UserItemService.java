@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface UserItemService {
     boolean save(UserItem userItem);
     Optional<UserItem> findByUser(User user);
-    Optional<UserItem> findByUserAndShare(User user, Share share);
+//    Optional<UserItem> findByUserAndShare(User user, Share share);
     List<UserItem> findAll();
 }

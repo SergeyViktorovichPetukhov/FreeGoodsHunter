@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS companies
     contact       VARCHAR(50) ,
     internet_shop VARCHAR(100),
     code          VARCHAR(40),
-    label_path    VARCHAR(50),
+    logoUrl    VARCHAR(50),
     user_id       INTEGER
 );
 
