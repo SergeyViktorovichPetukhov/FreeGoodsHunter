@@ -47,9 +47,9 @@ public class ShareController {
         this.imageFacade = imageFacade;
     }
 
-    @GetMapping
+    @GetMapping("/{shareId}")
     public Response shareInfo(@RequestParam(value = "login", required = false) String login,
-                              @RequestParam("shareId") String shareId){
+                              @PathVariable("shareId") String shareId){
         Optional<Share> share = shareService.findShareWithCompany(shareId);
         if (share.isPresent()){
             return new Response(true, 0, shareConverter.convertToShareInfoResponse(share.get()));
@@ -57,9 +57,9 @@ public class ShareController {
         return new Response(false, 1,"no such share");
     }
 
-    @GetMapping("/shareItemsInfo")
+    @GetMapping("/itemsInfo/{shareId}")
     public Response shareItemsInfo(@RequestParam(value = "login", required = false) String login,
-                                   @RequestParam("shareId") String shareId){
+                                   @PathVariable("shareId") String shareId){
         List<Item> items = shareService.findShareUserItems(shareId);
         if (items != null){
             return new Response(true, 0, shareConverter.convertToShareItemsResponse(items));
@@ -70,7 +70,7 @@ public class ShareController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/publish" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
                                       produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response publicShare( @RequestPart(value = "сreateShareDto")CreateShareDto createShareDto
+    public Response publishShare(@RequestPart(value = "сreateShareDto")CreateShareDto createShareDto
                                 ,@RequestPart(value = "productPhoto") MultipartFile productPhoto) {
 
         String shareId;

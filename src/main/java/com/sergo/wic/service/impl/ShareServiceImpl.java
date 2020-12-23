@@ -195,8 +195,7 @@ public class ShareServiceImpl implements ShareService {
     @Override
     public Share savePhotoForShareProduct( MultipartFile photo,  String shareId) {
         Share share = shareRepository.findByShareId(shareId)
-                                                .orElseThrow(() -> new IllegalStateException(
-                                                      "Share with id: " + shareId + " doesn't exist !"));
+                .orElseThrow(() -> new IllegalStateException("Share with id: " + shareId + " doesn't exist !"));
         try {
             final long imageId;
             if (Objects.isNull(share.getProductImageId())) {
@@ -218,7 +217,7 @@ public class ShareServiceImpl implements ShareService {
 
     private String getShareId(User user, Share share){
         return user.getLogin() + " "
-                + LocalDate.now().toString() + " #"
+                + LocalDate.now().toString() + " "
                 + user.getSharesCount(share) + " ,"
                 + RandomString.getAlphaNumericString(3);
     }
