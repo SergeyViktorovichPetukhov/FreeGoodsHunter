@@ -10,6 +10,7 @@ import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.entities.enums.ShareState;
 import com.sergo.wic.entities.User;
+import com.sergo.wic.exception.ImageNotUploadedException;
 import com.sergo.wic.facade.ShareFacade;
 //import com.sergo.wic.repository.AddressRepository;
 import com.sergo.wic.repository.ItemRepository;
@@ -41,28 +42,18 @@ public class ShareFacadeImpl implements ShareFacade {
     @Autowired
     private ShareConverter shareConverter;
 
-
     @Autowired
     private ItemRepository itemRepository;
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private CompanyService companyService;
-
-//    @Autowired
-//    private AddressRepository addressRepository;
-
-    @Autowired
-    private Environment env;
 
     @Override
-    public ShareDto saveShare(final CreateShareDto createShareDto) {
+    public ShareDto saveShare(CreateShareDto createShareDto) {
 
-        final Share share = shareConverter.convertToModel(createShareDto);
-        final User user = userService.findByLogin(createShareDto.getLogin()).get();
-
+        User user = userService.findByLogin(createShareDto.getLogin()).get();
         Company company = user.getCompany();
+        Share share = shareConverter.convertToModel(createShareDto,company);
         for(Share share1 : company.getShares()){
             System.out.println(share1.getDate() + " share get date");
         }
@@ -89,8 +80,9 @@ public class ShareFacadeImpl implements ShareFacade {
     }
 
     @Override
-    public ShareDto uploadPhotoForShareProduct(MultipartFile photo, String shareId) {
-        return shareConverter.convertToDto(shareService.savePhotoForShareProduct(photo, shareId));
+    public ShareDto uploadPhotoForShareProduct(MultipartFile photo, String shareId, String userLogin, String productName)
+                                                throws ImageNotUploadedException {
+        return shareConverter.convertToDto(shareService.savePhotoForShareProduct(photo, shareId,userLogin, productName));
     }
 
     public SharesResponse getShares(String login, String country, String region,String city) {

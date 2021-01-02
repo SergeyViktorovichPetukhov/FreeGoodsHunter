@@ -5,10 +5,9 @@ import com.sergo.wic.dto.Response.GetShareResponse;
 import com.sergo.wic.dto.Response.ShareInfoResponse;
 import com.sergo.wic.dto.Response.ShareUserItemsResponse;
 import com.sergo.wic.entities.*;
+import com.sergo.wic.utils.RandomString;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeMap;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -46,35 +45,26 @@ public class ShareConverter {
         return share;
     }
 
-    public Share convertToModel(CreateShareDto source) {
+    public Share convertToModel(CreateShareDto source, Company company) {
         Share share = new Share();
-        share.setItems(itemConverter.convertAllDtos(source.getItems()));
+        share.setLogin(company.getLogin());
+        share.setCompany(company);
+        share.setShareId(company.getLogin() + " " + RandomString.getAlphaNumericString(6));
+        share.setItems(itemConverter.convertAllDtos(source.getItems(), share));
+        share.setAllItemsCount(source.getItems().size());
         share.setDate(new Timestamp(System.currentTimeMillis()));
-//        modelMapper.typeMap(CreateShareDto.class, Share.class)
-//                .addMappings(mapper -> mapper.map(CreateShareDto::getItems,Share::setItems));
-//        modelMapper.map(source, share);
-//        modelMapper.validate();
-        share.setProductPrice(source.getProductPrice());
-        share.setColor(source.getColor());
-        share.setAfterShareDuration(source.getAfterShareDuration());
-        share.setAnnouncementDuration(source.getAnnouncementDuration());
-        share.setPlaceCity(source.getPlaceCity());
-        share.setPlaceCountry(source.getPlaceCountry());
-        share.setPlaceRegion(source.getPlaceRegion());
-        share.setShareDuration(source.getShareDuration());
-        share.setAnnouncementDuration(source.getAnnouncementDuration());
-        share.setLinkOnProduct(source.getLinkOnProductUrl());
-        share.setLogin(source.getLogin());
-        share.setProductDescription(source.getDescription());
+        modelMapper.typeMap(CreateShareDto.class, Share.class)
+                .addMappings(mapper -> mapper.map(CreateShareDto::getItems,Share::setItems));
+        modelMapper.map(source, share);
         return share;
     }
 
     public ShareDto convertToDto(Share source) {
         ShareDto shareDto = new ShareDto();
         modelMapper.map(source, shareDto);
-        shareDto.setPhotoProductUrl(Objects.nonNull(source.getProductImageId()) ?
-                env.getProperty(PRODUCT_PHOTO_PATH) + source.getProductImageId() :
-                null);
+        shareDto.setPhotoProductUrl(Objects.nonNull(
+                source.getProductPhotoUrl()) ? source.getProductPhotoUrl() : null
+        );
         return shareDto;
     }
 

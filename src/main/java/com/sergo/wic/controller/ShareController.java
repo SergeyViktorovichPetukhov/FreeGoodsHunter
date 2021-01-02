@@ -2,15 +2,16 @@ package com.sergo.wic.controller;
 
 import com.sergo.wic.converter.ShareConverter;
 import com.sergo.wic.dto.LoginAndShareDto;
-import com.sergo.wic.dto.Response.Response;
-import com.sergo.wic.dto.Response.ShareInfoResponse;
-import com.sergo.wic.dto.Response.ShareResponse;
+import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.dto.CreateShareDto;
 import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.Item;
 import com.sergo.wic.entities.Share;
+import com.sergo.wic.exception.ImageNotUploadedException;
 import com.sergo.wic.facade.ImageFacade;
 import com.sergo.wic.facade.ShareFacade;
+import com.sergo.wic.service.CompanyService;
+import com.sergo.wic.service.ImageService;
 import com.sergo.wic.service.ShareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,16 +36,20 @@ public class ShareController {
 
     private ShareService shareService;
 
-    private ImageFacade imageFacade;
+    private ImageService imageService;
+
+    private CompanyService companyService;
 
     public ShareController(@Autowired ShareFacade shareFacade,
                            @Autowired ShareConverter shareConverter,
                            @Autowired ShareService shareService,
-                           @Autowired ImageFacade imageFacade){
+                           @Autowired ImageService imageService,
+                           @Autowired CompanyService companyService){
         this.shareFacade = shareFacade;
         this.shareService = shareService;
         this.shareConverter = shareConverter;
-        this.imageFacade = imageFacade;
+        this.imageService = imageService;
+        this.companyService = companyService;
     }
 
     @GetMapping("/{shareId}")
@@ -70,19 +75,21 @@ public class ShareController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/publish" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
                                       produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response publishShare(@RequestPart(value = "сreateShareDto")CreateShareDto createShareDto
-                                ,@RequestPart(value = "productPhoto") MultipartFile productPhoto) {
-
-        String shareId;
-        try{
-           shareId = shareService.saveShare(
-                     shareConverter.convertToModel(createShareDto), productPhoto)
-                     .getShareId();
-        }catch (IOException | NullPointerException e){
-            e.printStackTrace();
-            return new Response(false, 1,e.getMessage());
+    public Response publishShare(@RequestPart CreateShareDto dto
+                                ,@RequestPart MultipartFile productPhoto) {
+        Optional<Company> company = companyService.findByLogin(dto.getLogin());
+        if (company.isPresent()){
+            String shareId;
+            try{
+                Share share = shareConverter.convertToModel(dto, company.get());
+                shareId = shareService.saveShare(share, productPhoto).getShareId();
+            }catch (IOException | NullPointerException e){
+                e.printStackTrace();
+                return new Response(false, 1,e.getMessage());
+            }
+            return new Response(true,0,"share published", new ShareResponse(shareId));
         }
-        return new Response(true,0,"share published", new ShareResponse(shareId));
+        return new Response(false,1,"no such company");
     }
 
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -94,11 +101,12 @@ public class ShareController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/productPhoto/{shareId}")
-    public Response setPhotoForShareProduct(@RequestParam(value = "photo") MultipartFile photo,
-                                            @PathVariable String shareId) {
-        shareFacade.uploadPhotoForShareProduct(photo, shareId);
-        return new Response(true,0,"photo uploaded");
+    @PostMapping(value = "/productPhoto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Response setPhotoForShareProduct(@RequestPart MultipartFile photo,
+                                            @RequestPart UploadImageDto dto) throws ImageNotUploadedException {
+        return new Response(true,0,"photo uploaded",
+                new ImageUrlResponse(imageService.saveProductPhoto(photo, dto.getProductName(), dto.getLogin()))
+        );
     }
 
 

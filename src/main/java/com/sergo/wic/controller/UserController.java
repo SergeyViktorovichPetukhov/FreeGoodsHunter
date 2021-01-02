@@ -25,25 +25,14 @@ import java.util.Optional;
 public class UserController {
 
     private UserService userService;
-//    private UserFacade userFacade;
-    private ItemConverter itemConverter;
     private ItemService itemService;
-    private CompanyService companyService;
-    private ShareService shareService;
+
+
 
     public UserController(@Autowired UserService userService,
-                      //    @Autowired UserFacade userFacade,
-                          @Autowired ItemConverter itemConverter,
-                          @Autowired ItemService itemService,
-                          @Autowired CompanyService companyService,
-                          @Autowired ShareService shareService
-                          ){
-        this.companyService = companyService;
+                          @Autowired ItemService itemService){
         this.itemService = itemService;
-  //      this.userFacade = userFacade;
         this.userService = userService;
-        this.itemConverter = itemConverter;
-        this.shareService = shareService;
     }
 
     @PostMapping(value = "/userInfo")

@@ -65,7 +65,7 @@ public class CompanyFacadeImpl implements CompanyFacade {
     @Override
     public Response addLabel(@NotNull String login, @NotNull byte[] byteArray) {
         // have to add check
-        Company company = companyRepository.findByLogin(login);
+        Company company = companyRepository.findByLogin(login).get();
     //    company.setLabel(byteArray);
         companyRepository.save(company);
         return new Response(true,0);

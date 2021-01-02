@@ -1,18 +1,23 @@
-package com.sergo.wic.controller;
+package com.sergo.wic.exception;
 
 
 import com.sergo.wic.dto.Response.Response;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+
+    @ExceptionHandler(ImageNotUploadedException.class)
+    public Response handleImageNotUploadedExceptions(ImageNotUploadedException ex) {
+        return new Response(false, 1, ex.getMessage());
+    }
+
+    @ExceptionHandler(NoSuchUserException.class)
+    public Response handleNoSuchUserExceptions(NoSuchUserException ex) {
+        return new Response(false, 1, ex.getMessage());
+    }
 
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)
 //    @ExceptionHandler(MethodArgumentNotValidException.class)

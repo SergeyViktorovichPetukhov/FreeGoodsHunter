@@ -7,9 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
-    Company findByLogin(String login);
+    Optional<Company> findByLogin(String login);
     Company findByContact(String contact);
   //  @Q(value = "SELECT EXISTS(SELECT 1 FROM users WHERE id = user.id)")
     @Query(value = "select exists(select 1 from users where id = ?)", nativeQuery = true)

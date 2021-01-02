@@ -34,4 +34,8 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.findById(id).orElseGet(null);
     }
 
+    @Override
+    public Optional<Company> findByLogin(String login) {
+        return companyRepository.findByLogin(login);
+    }
 }

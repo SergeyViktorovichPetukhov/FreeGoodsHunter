@@ -5,6 +5,8 @@ import com.sergo.wic.entities.Item;
 import com.sergo.wic.entities.enums.CreateShareState;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.entities.User;
+import com.sergo.wic.exception.ImageNotUploadedException;
+import com.sergo.wic.exception.NoSuchUserException;
 import com.sergo.wic.repository.ItemRepository;
 import com.sergo.wic.repository.PointsRepository;
 import com.sergo.wic.repository.ShareRepository;
@@ -39,24 +41,16 @@ public class ShareServiceImpl implements ShareService {
     public ShareServiceImpl(
             @Autowired ShareRepository shareRepository,
             @Autowired ImageService imageService,
-            @Autowired UserService userService ,
-            @Autowired ItemRepository itemRepository,
-            @Autowired JdbcTemplate jdbcTemplate){
+            @Autowired UserService userService ){
        this.imageService = imageService;
        this.shareRepository = shareRepository;
        this.userService = userService;
-       this.itemRepository = itemRepository;
-       this.jdbcTemplate = jdbcTemplate;
     }
 
     private ShareRepository shareRepository;
     private ImageService imageService;
     private UserService userService;
-    private ItemRepository itemRepository;
-    private PointsRepository pointsRepository;
-    private JdbcTemplate jdbcTemplate;
 
-    private static final String PRODUCT_PHOTO_PATH = "product.photo.path";
     private static final Logger LOG = LoggerFactory.getLogger(ShareServiceImpl.class);
 
 
@@ -72,39 +66,28 @@ public class ShareServiceImpl implements ShareService {
 
     @Override
     @Transactional
-    public Share saveShare(final Share share, final MultipartFile productPhoto) throws IOException {
+    public Share saveShare(Share share, MultipartFile productPhoto)
+            throws ImageNotUploadedException, NoSuchUserException {
 
         Optional<User> user = userService.findByLogin(share.getLogin());
-        if (!productPhoto.isEmpty() && user.isPresent()){
-           // File userPhotoPath = new File(SERVER_PHOTO_PATH + "/" + user.getLogin());
-            File userPhotoPath = new File(PHOTO_PATH + "/" + user.get().getLogin());
-            String photoUrl = userPhotoPath.toString() + " " + new UUID(10*100,26).toString();
-            String shareId = getShareId(user.get(),share);
+        if (user.isPresent()){
+            String shareId = user.get().getLogin() + " " + RandomString.getAlphaNumericString(6);
+            String photoUrl = imageService.saveProductPhoto(
+                    productPhoto,
+                    user.get().getLogin(),
+                    share.getProductName()
+            );
             share.setShareId(shareId);
-            for (Item item : share.getItems()) {
-                item.setShare(share);
-            }
-            byte[] bytes = productPhoto.getBytes();
-            FileOutputStream outputStream = null;
-            try {
-                outputStream = new FileOutputStream(photoUrl + productPhoto.getOriginalFilename().substring(productPhoto.getOriginalFilename().lastIndexOf(".")));
-                outputStream.write(bytes);
-            }catch (IOException e){
-                throw new IOException("could not upload image");
-            }finally {
-                outputStream.close();
-            }
-
             share.setProductPhotoUrl(photoUrl);
             share.setCompany(user.get().getCompany());
             share.setCreationStatus(CreateShareState.CREATED);
             shareRepository.save(share);
-            itemRepository.saveAll(share.getItems());
+        //    itemRepository.saveAll(share.getItems());
         //    companyService.save(user.get().getCompany());
             return share;
         }
         else{
-            throw new IOException("could not load photo, try again");
+            throw new NoSuchUserException("no such user");
         }
     }
 
@@ -193,23 +176,24 @@ public class ShareServiceImpl implements ShareService {
 
 
     @Override
-    public Share savePhotoForShareProduct( MultipartFile photo,  String shareId) {
+    public Share savePhotoForShareProduct(MultipartFile photo,  String shareId,
+                                          String productName, String userLogin) throws ImageNotUploadedException {
+
         Share share = shareRepository.findByShareId(shareId)
                 .orElseThrow(() -> new IllegalStateException("Share with id: " + shareId + " doesn't exist !"));
         try {
-            final long imageId;
-            if (Objects.isNull(share.getProductImageId())) {
-                imageId = imageService.saveFile(photo);
-                share.setProductImageId(imageId);
+            String productPhotoUrl;
+            if (Objects.isNull(share.getProductPhotoUrl())) {
+                productPhotoUrl = imageService.saveProductPhoto(photo, productName, userLogin);
+                share.setProductPhotoUrl(productPhotoUrl);
                 shareRepository.save(share);
             } else {
-
-                imageId = imageService.saveFile(photo, share.getProductImageId());
-
+                productPhotoUrl = imageService.saveProductPhoto(photo, productName, userLogin);
             }
-            LOG.info("Photo " + imageId + " successfully set to product of share:  " + shareId);
+            LOG.info("Photo " + productPhotoUrl + " successfully set to product of share:  " + shareId);
         } catch (IOException e) {
             LOG.error(e.getMessage(), e);
+            throw new ImageNotUploadedException(e.getMessage());
         }
 
         return share;
@@ -234,39 +218,3 @@ public class ShareServiceImpl implements ShareService {
     }
 
 }
-
-
-//    @Override
-//    public Share saveShare1(final Share share) throws IOException {
-//
-//        Optional<User> userOptional = userService.findByLogin(share.getLogin());
-//
-//        if (userOptional.isPresent()){
-//            User user = userOptional.get();
-//            String shareId = user.getLogin() + " "
-//                    + LocalDate.now().toString() + " #"
-//                    + user.getSharesCount(share);
-//            if (existsByShareId(shareId)) {
-//                throw new IOException("share already exists");
-//            }
-//            share.setShareId(shareId);
-//
-//        }
-//        return shareRepository.save(share);
-//    }
-
-//    @Override
-//    public ShareModel savePhotoForShareProduct(final MultipartFile photo, final Long shareId) {
-//        final String productPhotoDir = env.getProperty(PRODUCT_PHOTO_PATH) + shareId;
-//        final ShareModel share = shareRepository.findById(shareId)
-//                                          .orElseThrow(() -> new IllegalStateException(
-//                                                  "Share with id: " + shareId + " doesn't exist !"));
-//        final String productName = share.getProductName();
-//        Preconditions.checkNotNull(productName, "Product name can't be null!");
-//        final String pathToPhoto = imageService.saveFile(photo, productPhotoDir, productName);
-//        share.setProductImageId(pathToPhoto);
-//
-//        LOG.info("Photo " + pathToPhoto + " successfully set to product of share:  " + shareId);
-//
-//        return share;
-//    }

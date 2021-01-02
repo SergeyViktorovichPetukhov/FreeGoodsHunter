@@ -7,6 +7,7 @@ import com.sergo.wic.entities.enums.ShareState;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -15,6 +16,7 @@ import java.util.Objects;
 
 @AllArgsConstructor
 @Data
+@ToString
 @Entity
 @Table(name = "shares",
        indexes = {
@@ -29,9 +31,6 @@ public class Share {
         this.creationStatus = CreateShareState.CREATED;
     }
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "id")
     @Id
     @SequenceGenerator(name = "hibernateSeq", sequenceName = "HIBERNATE_SEQUENCE")
     @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "hibernateSeq")
@@ -49,7 +48,6 @@ public class Share {
     @Column(name = "login")
     private String login;
 
-  //  @JsonIgnore
     @Column(name = "product_photo_url")
     private String productPhotoUrl;
 
@@ -62,15 +60,11 @@ public class Share {
     @Column(name = "product_description")
     private String productDescription;
 
-    @Column(name = "link_on_product")
-    private String linkOnProduct;
+    @Column(name = "product_web_site")
+    private String productWebSite;
 
     @Column(name = "product_count")
     private Integer productCount;
-
-    @JsonIgnore
-    @Column(name = "product_image_id")
-    private Long productImageId;
 
     @Column(name = "product_price")
     private double productPrice;
@@ -154,4 +148,5 @@ public class Share {
                             afterShareDuration, pickedItemsCount, allItemsCount);
 
     }
+
 }

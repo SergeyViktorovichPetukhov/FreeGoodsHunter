@@ -15,7 +15,8 @@ public class ImageFacadeImpl implements ImageFacade {
 
     @Override
     public ImageDto getImageById(long imageId) {
-        final Image image = imageService.getImageById(imageId);
-        return new ImageDto(image.getId(), image.getFormat(), image.getImage());
+    //    final Image image = imageService.getImageById(imageId);
+        //
+        return new ImageDto();
     }
 }

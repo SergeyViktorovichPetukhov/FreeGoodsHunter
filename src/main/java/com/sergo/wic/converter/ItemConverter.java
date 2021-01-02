@@ -2,6 +2,7 @@ package com.sergo.wic.converter;
 
 import com.sergo.wic.dto.*;
 import com.sergo.wic.entities.Item;
+import com.sergo.wic.entities.Share;
 import com.sergo.wic.entities.enums.ItemState;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -40,11 +41,12 @@ public class ItemConverter {
         return pickedItemDto;
     }
 
-    public List<Item> convertAllDtos(List<ItemDto> dtos){
+    public List<Item> convertAllDtos(List<ItemDto> dtos, Share share){
         List<Item> result = new ArrayList<>();
         dtos.forEach( itemDto -> {
             Item item = new Item();
             item.setState(ItemState.FREE);
+            item.setShare(share);
 //            modelMapper.typeMap(ItemDto.class, Item.class)
 //                    .addMappings(mapper -> mapper.map(ItemDto::getItemId,Item::setItemId));
 //            modelMapper.map(itemDto,item);

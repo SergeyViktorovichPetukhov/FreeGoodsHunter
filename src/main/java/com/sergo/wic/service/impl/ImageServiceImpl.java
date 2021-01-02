@@ -1,9 +1,9 @@
 package com.sergo.wic.service.impl;
 
-import com.google.common.base.Preconditions;
-import com.sergo.wic.entities.Image;
+import com.sergo.wic.exception.ImageNotUploadedException;
 import com.sergo.wic.repository.ImageRepository;
 import com.sergo.wic.service.ImageService;
+import com.sergo.wic.utils.PhotoPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -40,35 +39,34 @@ public class ImageServiceImpl implements ImageService {
 //        return filePath.toString();
 //    }
 
-    @Override
-    public long saveFile(final MultipartFile image) throws IOException {
-        Preconditions.checkNotNull(image, "Image can't be null!");
-        Image imageModel = new Image();
-        imageModel.setImage(image.getBytes());
-        imageModel.setFormat(image.getContentType());
-        imageRepository.save(imageModel);
-        LOG.info("File with id " + imageModel.getId() + " successfully saved !");
 
-        return imageModel.getId();
+    @Override
+    public String saveUserPhoto(MultipartFile image, String userLogin) throws ImageNotUploadedException {
+        return imageRepository.saveUserPhoto(image,userLogin);
     }
 
     @Override
-    public long saveFile(final MultipartFile image, final long imageId) throws IOException {
-        Preconditions.checkNotNull(image, "Image can't be null!");
-        Image imageModel = imageRepository.findById(imageId).get();
-        if (Objects.isNull(imageModel)) {
-            return saveFile(image);
-        }
-        imageModel.setImage(image.getBytes());
-        imageModel.setFormat(image.getContentType());
-        imageRepository.save(imageModel);
-        LOG.info("File with id " + imageModel.getId() + " successfully saved !");
-
-        return imageModel.getId();
+    public String saveProductPhoto(MultipartFile image, String productName, String userLogin) throws ImageNotUploadedException {
+        return imageRepository.saveProductPhoto(image,productName,userLogin);
     }
 
     @Override
-    public Image getImageById(final long imageId) {
-        return imageRepository.findById(imageId).get();
+    public String saveCompanyLogo(MultipartFile image, String companyLogo, String userLogin) throws ImageNotUploadedException {
+        return imageRepository.saveCompanyLogo(image,companyLogo,userLogin);
+    }
+
+    @Override
+    public String getImageURL(String userLogin) {
+        return null;
+    }
+
+    @Override
+    public String getImageURL(String userLogin, String productName) {
+        return null;
+    }
+
+    @Override
+    public String getImageURL(String userLogin, String companyLogo, boolean isLogo) {
+        return null;
     }
 }
