@@ -43,15 +43,18 @@ public class User {
     private boolean isCompanyRegInProcess;
     @Column(name = "hasCompany")
     private boolean hasCompany;     // if user is a company manager
-
-    @OneToOne(cascade = CascadeType.ALL ,mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL , mappedBy = "user", fetch = FetchType.LAZY)
     private Company company;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notification> notifications;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Winning> winnings;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserItem> userItem;
+
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
     private UserProfile userProfile;
 

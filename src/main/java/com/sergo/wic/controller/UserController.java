@@ -2,18 +2,18 @@ package com.sergo.wic.controller;
 
 import com.sergo.wic.converter.ItemConverter;
 import com.sergo.wic.dto.LoginDto;
+import com.sergo.wic.dto.PendingWinningsDto;
 import com.sergo.wic.dto.Response.IsCompanyRegInProcessResponse;
 import com.sergo.wic.dto.Response.Response;
+import com.sergo.wic.dto.Response.ResponseContent;
 import com.sergo.wic.dto.Response.UserResponse;
 import com.sergo.wic.dto.PickedItemDto;
 import com.sergo.wic.entities.Item;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.entities.User;
+import com.sergo.wic.entities.Winning;
 import com.sergo.wic.entities.enums.ItemState;
-import com.sergo.wic.service.CompanyService;
-import com.sergo.wic.service.ItemService;
-import com.sergo.wic.service.ShareService;
-import com.sergo.wic.service.UserService;
+import com.sergo.wic.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -26,13 +26,15 @@ public class UserController {
 
     private UserService userService;
     private ItemService itemService;
-
+    private WinningService winningService;
 
 
     public UserController(@Autowired UserService userService,
-                          @Autowired ItemService itemService){
+                          @Autowired ItemService itemService,
+                          @Autowired WinningService winningService){
         this.itemService = itemService;
         this.userService = userService;
+        this.winningService = winningService;
     }
 
     @PostMapping(value = "/userInfo")
@@ -70,7 +72,6 @@ public class UserController {
     @PostMapping(value = "/pickItem" ,
                 produces = MediaType.APPLICATION_JSON_VALUE,
                 consumes = MediaType.APPLICATION_JSON_VALUE)
-
     public Response pickItem(@RequestBody PickedItemDto dto){
         Item item = itemService.findByItemId(dto.getItemId());
         if (item.getState() != ItemState.FREE)
@@ -85,6 +86,11 @@ public class UserController {
             return new Response(false,2,"no user with such login");
         }
         return new Response(false,1,"you are the owner of this share");
+    }
+
+    @PostMapping(value = "/pendingWinnings")
+    public Response getPendingWinnings(@RequestBody LoginDto dto){
+        return new Response(true,0,new PendingWinningsDto(userService.hasPendingWinnings(dto.getLogin())));
     }
 
 }

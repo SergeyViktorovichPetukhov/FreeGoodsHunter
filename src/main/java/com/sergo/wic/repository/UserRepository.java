@@ -2,6 +2,7 @@ package com.sergo.wic.repository;
 
 import com.sergo.wic.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -10,5 +11,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByLogin(String login);
     Optional<User> findByContact(String contact);
-
+//    @Query(value = "from User u left join u.winnings as w where w.isViewed = true")
+//    boolean hasPendingWinnings(String login);
 }

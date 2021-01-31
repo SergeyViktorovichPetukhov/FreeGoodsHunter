@@ -37,4 +37,5 @@
 -- INSERT INTO user_profiles (id,photo_url,range,user_name,win_count,user_id) VALUES (1,'http://localhost:5001/content/Sergey.jpg', 3, 'Sergey Petukhov',777,2);
 -- INSERT INTO contacts VALUES (1,'8-968-482-32-23','PHONE_NUMBER',1),(2,'+79684823223','TELEGRAM',1);
 
+-- INSERT INTO winnings VALUES(1,true,1), (2,false,1), (3,true,2);
 --  COMMIT;

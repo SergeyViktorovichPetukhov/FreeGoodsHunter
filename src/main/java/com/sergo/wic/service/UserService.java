@@ -16,4 +16,5 @@ public interface UserService {
     void refuseRegistration(User user, String reason);
     void deleteUserCompany(Long userId);
     void deleteUser(Long userId);
+    boolean hasPendingWinnings(String login);
 }
