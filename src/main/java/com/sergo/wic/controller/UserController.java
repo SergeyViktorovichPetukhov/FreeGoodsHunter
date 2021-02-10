@@ -1,23 +1,22 @@
 package com.sergo.wic.controller;
 
-import com.sergo.wic.converter.ItemConverter;
+import com.sergo.wic.converter.NotificationsConverter;
+import com.sergo.wic.converter.ShareConverter;
+import com.sergo.wic.converter.WinningsConverter;
 import com.sergo.wic.dto.LoginDto;
-import com.sergo.wic.dto.PendingWinningsDto;
-import com.sergo.wic.dto.Response.IsCompanyRegInProcessResponse;
-import com.sergo.wic.dto.Response.Response;
-import com.sergo.wic.dto.Response.ResponseContent;
-import com.sergo.wic.dto.Response.UserResponse;
+import com.sergo.wic.dto.Response.PendingWinningsResponse;
+import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.dto.PickedItemDto;
-import com.sergo.wic.entities.Item;
-import com.sergo.wic.entities.Share;
-import com.sergo.wic.entities.User;
-import com.sergo.wic.entities.Winning;
+import com.sergo.wic.dto.SharesRequestDto;
+import com.sergo.wic.entities.*;
 import com.sergo.wic.entities.enums.ItemState;
+import com.sergo.wic.entities.enums.ShareCellType;
 import com.sergo.wic.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -27,14 +26,25 @@ public class UserController {
     private UserService userService;
     private ItemService itemService;
     private WinningService winningService;
+    private ShareConverter shareConverter;
 
+    @Autowired
+    private ShareService shareService;
+
+    @Autowired
+    NotificationsConverter notificationsConverter;
+
+    @Autowired
+    WinningsConverter winningsConverter;
 
     public UserController(@Autowired UserService userService,
                           @Autowired ItemService itemService,
-                          @Autowired WinningService winningService){
+                          @Autowired WinningService winningService,
+                          @Autowired ShareConverter shareConverter){
         this.itemService = itemService;
         this.userService = userService;
         this.winningService = winningService;
+        this.shareConverter = shareConverter;
     }
 
     @PostMapping(value = "/userInfo")
@@ -90,7 +100,58 @@ public class UserController {
 
     @PostMapping(value = "/pendingWinnings")
     public Response getPendingWinnings(@RequestBody LoginDto dto){
-        return new Response(true,0,new PendingWinningsDto(userService.hasPendingWinnings(dto.getLogin())));
+        return new Response(true, 0, new PendingWinningsResponse(userService.hasPendingWinnings(dto.getLogin())));
     }
 
+    @PostMapping(value = "/unreadNotifications")
+    public Response getUnreadNotifications(@RequestBody LoginDto dto){
+        return new Response(true, 0, new UnreadNotificationsResponse(userService.hasUnreadNotifications(dto.getLogin())));
+    }
+
+    @PostMapping(value = "/winnings")
+    public Response getAllWinnings(@RequestBody LoginDto dto){
+        Optional<User> user = userService.findByLogin(dto.getLogin());
+        if (user.isPresent()){
+            Optional<List<Notification>> notifications = userService.getNotifications(user.get());
+            if (notifications.isPresent()){
+                return new Response(true,0, new NotificationResponse(notificationsConverter.convertAllNotifications(notifications.get())));
+            }else {
+                return new Response(false, 1, "there are no notifications");
+            }
+        }
+        return new Response(false, 2, "no such user");
+    }
+
+    @PostMapping(value = "/notifications")
+    public Response getAllNotifications(@RequestBody LoginDto dto){
+        Optional<User> user = userService.findByLogin(dto.getLogin());
+        if (user.isPresent()){
+            Optional<List<Winning>> winnings = userService.getWinnings(user.get());
+            if (winnings.isPresent()){
+                return new Response(true,0, new WinningsResponse(winningsConverter.convertAllWinnings(winnings.get())));
+            }else {
+                return new Response(false, 1, "there are no winnings");
+            }
+        }
+        return new Response(false, 2, "no such user");
+
+    }
+
+    @PostMapping(value = "/shares")
+    public Response getSharesByLocation(@RequestBody SharesRequestDto dto){
+
+        Optional<User> user = userService.findByLogin(dto.getLogin());
+
+        List<Share> shares = shareService.findAllByRegionCode(shareService.getRegionCode(
+                dto.getCountry(),dto.getRegion(),dto.getCity()));
+
+        if (user.isPresent() && shares != null){
+            Optional<List<ShareCellType>> shareCellTypes = userService.getShareCellTypes(user.get(),shares);
+            if (shareCellTypes.isPresent()) {
+                return new Response(true, 0, shareConverter.cellTypesResponse(shares, shareCellTypes.get()));
+            }
+        }
+        return new Response(false, 2, "no such user");
+
+    }
 }

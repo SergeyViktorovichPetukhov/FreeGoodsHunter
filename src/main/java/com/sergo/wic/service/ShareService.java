@@ -30,4 +30,6 @@ public interface ShareService {
     Share savePhotoForShareProduct(MultipartFile photo, String shareId,
                                    String productName, String userLogin) throws ImageNotUploadedException;
     List<Share> findAllByCompany(Company company);
+    List<Share> findAllByRegionCode(String regionCode);
+    String getRegionCode(String country, String region, String city);
 }

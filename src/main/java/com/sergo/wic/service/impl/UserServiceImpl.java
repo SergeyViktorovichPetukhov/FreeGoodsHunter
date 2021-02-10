@@ -1,10 +1,9 @@
 package com.sergo.wic.service.impl;
 
-import com.sergo.wic.entities.Company;
-import com.sergo.wic.entities.Registration;
-import com.sergo.wic.entities.Winning;
+import com.sergo.wic.entities.*;
 import com.sergo.wic.entities.enums.RegistrationState;
-import com.sergo.wic.entities.User;
+import com.sergo.wic.entities.enums.ShareCellType;
+import com.sergo.wic.entities.enums.ShareState;
 import com.sergo.wic.repository.UserRepository;
 import com.sergo.wic.service.CompanyService;
 import com.sergo.wic.service.RegistrationService;
@@ -33,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     CompanyService companyService;
+
 
     @Override
     public Optional<User> findById(long id) {
@@ -104,18 +104,72 @@ public class UserServiceImpl implements UserService {
         if (user.isPresent()){
             User u = user.get();
 
-            boolean hasPendingWinnings = u.getWinnings()
+            return u.getWinnings()
                     .stream()
                     .anyMatch(winning -> !winning.isViewed());
-
-            List<Winning> winnings = u.getWinnings()
-                    .stream()
-                    .peek(winning -> winning.setViewed(true))
-                    .collect(Collectors.toList());
-            u.setWinnings(winnings);
-
-            return hasPendingWinnings;
         }
         return false;
+    }
+
+    @Override
+    public boolean hasUnreadNotifications(String login) {
+        Optional<User> user = repository.findByLogin(login);
+        if (user.isPresent()){
+            User u = user.get();
+
+            return u.getNotifications()
+                    .stream()
+                    .anyMatch(notification -> !notification.getRead());
+        }
+        return false;
+    }
+
+    @Override
+    public Optional<List<Notification>> getNotifications(User user) {
+        List<Notification> notifications = user.getNotifications()
+                .stream()
+                .peek(notification -> notification.setRead(true))
+                .collect(Collectors.toList());
+        user.setNotifications(notifications);
+        return Optional.of(notifications);
+
+    }
+
+    @Override
+    public Optional<List<Winning>> getWinnings(User user) {
+        List<Winning> winnings = user.getWinnings().stream()
+                .peek(winning -> winning.setViewed(true))
+                .collect(Collectors.toList());
+        user.setWinnings(winnings);
+        return Optional.of(winnings);
+    }
+
+    @Transactional
+    @Override
+    public Optional<List<ShareCellType>> getShareCellTypes(User user, List<Share> allShares) {
+
+        List<Share> chosenShares = user.getChosenShares();
+        List<Share> startedShares = user.getStartedShares();
+
+        allShares.addAll(chosenShares);
+        allShares.addAll(startedShares);
+
+        List<ShareCellType> types = allShares.stream()
+                .map(share -> {
+                    if (startedShares.contains(share)){
+                        return ShareCellType.STARTED;
+                    } else if (chosenShares.contains(share)){
+                        return ShareCellType.CHOSEN;
+                    } else if (share.getStatus() == ShareState.ACTIVE){
+                        return ShareCellType.ACTIVE;
+                    } else if (share.getStatus() == ShareState.PREVIEW){
+                        return ShareCellType.PREVIEW;
+                    } else {
+                        return ShareCellType.FINISHED;
+                    }
+                })
+                .collect(Collectors.toList());
+
+        return Optional.of(types);
     }
 }

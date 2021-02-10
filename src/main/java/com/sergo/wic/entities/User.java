@@ -1,9 +1,11 @@
 package com.sergo.wic.entities;
 
+import com.sergo.wic.entities.enums.ShareCellType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -53,14 +55,36 @@ public class User {
     private List<Winning> winnings;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserItem> userItem;
+    private List<UserItem> userItems;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
     private UserProfile userProfile;
+
+    @OneToMany
+    private List<Share> chosenShares;
+
+    @OneToMany
+    private List<Share> startedShares;
+
+    @Transactional
+    public void chooseShare(Share share){
+        chosenShares.add(share);
+    }
+    @Transactional
+    public void removeShare(Share share){
+        chosenShares.remove(share);
+    }
+    @Transactional
+    public void startShare(Share share){
+        startedShares.add(share);
+    }
+    @Transactional
+    public void finishShare(Share share){
+        startedShares.remove(share);
+    }
 
     public long getSharesCount(final Share currentShare){
         for (Share share : this.company.getShares()){
-        System.out.println(share.getId());
         }
         return this.company.getShares().stream()
                  .filter(share ->

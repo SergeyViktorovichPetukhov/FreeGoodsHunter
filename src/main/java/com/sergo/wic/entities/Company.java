@@ -52,7 +52,8 @@ public class Company {
     private String name;
     @Column(name = "info")
     private String info;
-
+    @Column(name = "is_verificated")
+    private boolean isVerificated;
     @Column(name = "logo_url")
     private String logoUrl;
 
@@ -62,6 +63,14 @@ public class Company {
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Share> shares;
+
+    public boolean isVerificated() {
+        return isVerificated;
+    }
+
+    public void setVerificated(boolean verificated) {
+        isVerificated = verificated;
+    }
 
     public String getInfo() {
         return info;

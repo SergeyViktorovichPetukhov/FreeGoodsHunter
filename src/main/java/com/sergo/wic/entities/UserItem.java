@@ -38,7 +38,7 @@ public class UserItem {
 
     @NonNull
     @ManyToOne
-    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
 //    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

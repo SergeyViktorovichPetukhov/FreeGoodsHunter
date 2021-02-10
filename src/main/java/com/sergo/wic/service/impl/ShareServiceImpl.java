@@ -213,8 +213,16 @@ public class ShareServiceImpl implements ShareService {
             point.setGeometry(new Point(item.getLongitude(),item.getLatitude()));
             points.add(point);
         });
-
         return true;
     }
 
+    @Override
+    public List<Share> findAllByRegionCode(String regionCode) {
+        return shareRepository.findAllByRegionCode(regionCode).orElse(null);
+    }
+
+    @Override
+    public String getRegionCode(String country, String region, String city) {
+        return country.substring(0,3) + region.substring(0,3) + city;
+    }
 }

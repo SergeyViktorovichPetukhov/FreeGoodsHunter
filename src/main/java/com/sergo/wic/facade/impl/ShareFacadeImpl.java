@@ -14,13 +14,11 @@ import com.sergo.wic.exception.ImageNotUploadedException;
 import com.sergo.wic.facade.ShareFacade;
 //import com.sergo.wic.repository.AddressRepository;
 import com.sergo.wic.repository.ItemRepository;
-import com.sergo.wic.service.CompanyService;
 import com.sergo.wic.service.ShareService;
 import com.sergo.wic.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -102,7 +100,7 @@ public class ShareFacadeImpl implements ShareFacade {
             ShortShareInfoDto mcdonaldShare = new ShortShareInfoDto("/images/mcdonalds-logo.png", "Macdonalds", 55,
                     10, "#FF1493", ShareState.ACTIVE.ordinal());
             ShortShareInfoDto cocaColaShare = new ShortShareInfoDto("/images/cocacola-logo.png", "Cocacola", 23,
-                    0, "#FFA500", ShareState.SOON.ordinal());
+                    0, "#FFA500", ShareState.PREVIEW.ordinal());
             ShortShareInfoDto cocaColaShare2 = new ShortShareInfoDto("/images/cocacola-logo.png", "Cocacola", 44,
                     0, "#32CD32", ShareState.COMPLETED.ordinal());
             sharesResponse = new SharesResponse(Arrays.asList(mcdonaldShare, cocaColaShare, cocaColaShare2));

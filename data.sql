@@ -1,6 +1,6 @@
 --
 --  INSERT INTO share_statuses (id, name) VALUES (0, 'ACTIVE');
---  INSERT INTO share_statuses (id, name) VALUES (1, 'SOON');
+--  INSERT INTO share_statuses (id, name) VALUES (1, 'PREVIEW');
 --  INSERT INTO share_statuses (id, name) VALUES (2, 'COMPLETED');
 --
 --  INSERT INTO companies(id,login,name, placeNameOrUrl, contact, user_id) VALUES (1,'company owner','roga i kopita','placeNameOrUrl XXX',7777777,3);
@@ -38,4 +38,5 @@
 -- INSERT INTO contacts VALUES (1,'8-968-482-32-23','PHONE_NUMBER',1),(2,'+79684823223','TELEGRAM',1);
 
 -- INSERT INTO winnings VALUES(1,true,1), (2,false,1), (3,true,2);
+-- INSERT INTO notifications VALUES (1,'01.01.2021','test',1),(2,'02.02.2021','test2',1);
 --  COMMIT;

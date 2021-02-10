@@ -45,6 +45,9 @@ public class Share {
     @JoinColumn(name = "company_id", referencedColumnName = "id" )
     private Company company;
 
+    @Column(name = "is_verificated")
+    private boolean isVerificated;
+
     @Column(name = "login")
     private String login;
 
@@ -113,7 +116,7 @@ public class Share {
 
 //    @OneToMany
 //    @JoinColumn(name="user_item_id", referencedColumnName = "id")
-//    private UserItem userItem;
+//    private UserItem userItems;
 
     @Column(name = "place_country")
     private String placeCountry;
@@ -123,6 +126,9 @@ public class Share {
 
     @Column (name = "place_city")
     private String placeCity;
+
+    @Column(name = "region_code")
+    private String regionCode;
 
     public boolean addItem(Item item){
 

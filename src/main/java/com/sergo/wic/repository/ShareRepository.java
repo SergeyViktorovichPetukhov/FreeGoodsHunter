@@ -18,11 +18,12 @@ public interface ShareRepository extends JpaRepository<Share, Long> {
     boolean existsByShareId(String shareId);
     Optional<Share> findByLogin(String login);
     Optional<Share> findByShareId(String shareId);
+    Optional<List<Share>> findAllByRegionCode(String regionCode);
 //  s.productName, s.productPhotoUrl, s.productDescription, s.productPrice, s.productWebsite, c.name, c.contact, c.internetShop, c.logoUrl
 
     @Query(value = "SELECT s FROM Share s INNER JOIN s.company WHERE s.shareId = ?1")
     Optional<Share> findShareWithCompany(String shareId);
-// "INNER JOIN items.userItem.user.login, items.userItem.user.PickedItemsCount, items.userItem.user.userProfile.photoUrl " +
+// "INNER JOIN items.userItems.user.login, items.userItems.user.PickedItemsCount, items.userItems.user.userProfile.photoUrl " +
     @Query(value = "SELECT s.items FROM Share s WHERE s.shareId = ?1")
     List<Item> findShareUserItems(String shareId);
 

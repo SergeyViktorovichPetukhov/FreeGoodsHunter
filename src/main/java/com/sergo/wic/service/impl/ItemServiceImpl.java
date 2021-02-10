@@ -92,7 +92,7 @@ public class ItemServiceImpl implements ItemService {
         Optional<Share> share = shareService.findByShareId(shareId);
         Optional<UserItem> userItem;
         if (share.isPresent()){
-        //    userItem = user ItemService.findByUserAndShare(user, share.get());
+        //    userItems = user ItemService.findByUserAndShare(user, share.get());
             userItem = share.get().getItems().stream()
                     .filter(item1 ->
                             item1.getUserItem() != null &&

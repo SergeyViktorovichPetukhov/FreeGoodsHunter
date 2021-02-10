@@ -2,9 +2,11 @@ package com.sergo.wic.converter;
 
 import com.sergo.wic.dto.*;
 import com.sergo.wic.dto.Response.GetShareResponse;
+import com.sergo.wic.dto.Response.ShareCellTypesResponse;
 import com.sergo.wic.dto.Response.ShareInfoResponse;
 import com.sergo.wic.dto.Response.ShareUserItemsResponse;
 import com.sergo.wic.entities.*;
+import com.sergo.wic.entities.enums.ShareCellType;
 import com.sergo.wic.utils.RandomString;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 public class ShareConverter {
@@ -95,10 +98,12 @@ public class ShareConverter {
     }
 
     public ShareUserItemsResponse convertToShareItemsResponse(List<Item> shareItems){
+
         List<UserItem> userItems = shareItems.stream()
                 .filter(item -> item.getUserItem() != null)
                 .map(item -> new UserItem(item.getUserItem()))
                 .collect(Collectors.toList());
+
         List<UserDto> users = userItems.stream()
                 .map(userItem -> {
                     UserDto dto = new UserDto();
@@ -109,6 +114,26 @@ public class ShareConverter {
                     return dto;
                 })
                 .collect(Collectors.toList());
+
         return new ShareUserItemsResponse(users);
+    }
+
+    public ShareCellTypesResponse cellTypesResponse(List<Share> shares, List<ShareCellType> cellTypes){
+
+        final ShareCellType[] arr = (ShareCellType[]) cellTypes.toArray();
+
+        List<CellModelDto> cellModels = IntStream.range(0, shares.size())
+                .mapToObj( i -> {
+                    CellModelDto dto = new CellModelDto();
+                    dto.setCellType(arr[i]);
+
+//                    dto.setNumItemsToWin();
+//                    dto.setDistanceToNearestItem();
+                    modelMapper.map(shares.get(i), dto);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+            return new ShareCellTypesResponse(cellModels);
     }
 }

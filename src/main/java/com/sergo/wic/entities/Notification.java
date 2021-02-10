@@ -1,23 +1,26 @@
 package com.sergo.wic.entities;
 
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.aspectj.weaver.ast.Not;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+
 @Entity
 @Table(name = "notifications")
 public class Notification {
-
-    public Notification(){}
 
     public Notification(String message, User user){
         this.message = message;
         this.user = user;
         this.date = new Timestamp(System.currentTimeMillis());
     }
+
+    public Notification(){}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +36,9 @@ public class Notification {
 
     @Column(name = "date")
     private Timestamp date;
+
+    @Column(name = "is_read")
+    private Boolean isRead;
 
     public Long getId() {
         return id;
@@ -50,6 +56,14 @@ public class Notification {
         this.user = user;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public Timestamp getDate() {
         return date;
     }
@@ -58,12 +72,12 @@ public class Notification {
         this.date = date;
     }
 
-    public String getMessage() {
-        return message;
+    public Boolean getRead() {
+        return isRead;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setRead(Boolean read) {
+        isRead = read;
     }
 
     @Override public int hashCode() {
