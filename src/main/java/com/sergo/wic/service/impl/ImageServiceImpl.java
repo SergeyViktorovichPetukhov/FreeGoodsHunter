@@ -57,16 +57,16 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public String getImageURL(String userLogin) {
-        return null;
+        return PhotoPaths.USER + userLogin;
     }
 
     @Override
     public String getImageURL(String userLogin, String productName) {
-        return null;
+        return PhotoPaths.PRODUCT + userLogin +"\\" + productName;
     }
 
     @Override
     public String getImageURL(String userLogin, String companyLogo, boolean isLogo) {
-        return null;
+        return PhotoPaths.COMPANY_LOGO + userLogin + "\\" + companyLogo;
     }
 }

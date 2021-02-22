@@ -1,5 +1,6 @@
 package com.sergo.wic.converter;
 
+import com.sergo.wic.coordinate_referense_system.CRSResolver;
 import com.sergo.wic.dto.*;
 import com.sergo.wic.dto.Response.GetShareResponse;
 import com.sergo.wic.dto.Response.ShareCellTypesResponse;
@@ -7,11 +8,13 @@ import com.sergo.wic.dto.Response.ShareInfoResponse;
 import com.sergo.wic.dto.Response.ShareUserItemsResponse;
 import com.sergo.wic.entities.*;
 import com.sergo.wic.entities.enums.ShareCellType;
+import com.sergo.wic.utils.DistanceCalculator;
 import com.sergo.wic.utils.RandomString;
+import org.locationtech.jts.geom.Coordinate;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -24,13 +27,11 @@ public class ShareConverter {
 
     private static final String PRODUCT_PHOTO_PATH = "product.photo.path";
 
-    @Autowired
-    private Environment env;
-
     private ModelMapper modelMapper;
     private TypeMap<ItemDto, Item> typeMapItem;
     private TypeMap<ShareDto, Share> typeMapShare;
     private ItemConverter itemConverter;
+    private CoordinateReferenceSystem crs = CRSResolver.resolveFromCRS("EPSG:4326");
 
     public ShareConverter(@Autowired ModelMapper modelMapper,
                           @Autowired TypeMap<ItemDto, Item> typeMapItem,
@@ -118,22 +119,54 @@ public class ShareConverter {
         return new ShareUserItemsResponse(users);
     }
 
-    public ShareCellTypesResponse cellTypesResponse(List<Share> shares, List<ShareCellType> cellTypes){
+    public ShareCellTypesResponse cellTypesResponse(List<Share> shares, List<ShareCellType> cellTypes, CoordinatesDto userCoordinates){
 
-        final ShareCellType[] arr = (ShareCellType[]) cellTypes.toArray();
+        ShareCellType[] arr =  cellTypes.toArray(new ShareCellType[0]);
 
         List<CellModelDto> cellModels = IntStream.range(0, shares.size())
                 .mapToObj( i -> {
+                    Share share = shares.get(i);
                     CellModelDto dto = new CellModelDto();
                     dto.setCellType(arr[i]);
-
-//                    dto.setNumItemsToWin();
-//                    dto.setDistanceToNearestItem();
-                    modelMapper.map(shares.get(i), dto);
+                    dto.setNumItemsToWin(itemsToWin(share.getAllItemsCount(), share.getPickedItemsCount()));
+                    dto.setVerificated(share.getIsVerificated());
+                    Coordinate userPosition = new Coordinate(userCoordinates.getLatitude(), userCoordinates.getLongitude());
+                    if (share.getItems() != null) {
+                        List<Coordinate> shareItems = share.getItems().stream()
+                                .map(item -> new Coordinate(item.getLatitude(), item.getLongitude()))
+                                .collect(Collectors.toList());
+                        dto.setDistanceToNearestItem((int)DistanceCalculator.nearestDistance(crs, userPosition, shareItems));
+                    }
+                    modelMapper.map(share, dto);
                     return dto;
                 })
                 .collect(Collectors.toList());
 
-            return new ShareCellTypesResponse(cellModels);
+        Comparator<CellModelDto> comparator = (obj1, obj2) -> {
+            if (obj1.getCellType() == ShareCellType.STARTED) {
+                return 1;
+            } else if (obj1.getCellType() == ShareCellType.CHOSEN) {
+                return 1;
+            } else if (obj1.getCellType() == ShareCellType.ACTIVE & obj1.isVerificated()) {
+                return 1;
+            } else if (obj1.getCellType() == ShareCellType.ACTIVE & !obj1.isVerificated()) {
+                return 1;
+            } else if (obj1.getCellType() == ShareCellType.PREVIEW & obj1.isVerificated()) {
+                return 1;
+            } else if (obj1.getCellType() == ShareCellType.PREVIEW & !obj1.isVerificated()) {
+                return 1;
+            } else if (obj1.getCellType() == ShareCellType.FINISHED & obj1.isVerificated()) {
+                return 1;
+            }
+            return 0;
+        };
+
+        cellModels.sort(comparator);
+
+        return new ShareCellTypesResponse(cellModels);
+    }
+
+    private int itemsToWin(int allItemsCount, int pickedItemsCount){
+        return pickedItemsCount > allItemsCount / 2 ? (allItemsCount / 2) + 1 : allItemsCount - pickedItemsCount;
     }
 }

@@ -14,6 +14,16 @@ import org.springframework.stereotype.Component;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class CRSResolver {
 
+    public static CoordinateReferenceSystem resolveFromCRS(String coordinateReferenceSystem){
+        CoordinateReferenceSystem crs = null;
+        try {
+            crs = CRS.decode(coordinateReferenceSystem);
+        } catch (FactoryException e) {
+            e.printStackTrace();
+        }
+        return crs;
+    }
+
     public CoordinateReferenceSystem resolve(Point point){
         CoordinateReferenceSystem crs = null;
         try {

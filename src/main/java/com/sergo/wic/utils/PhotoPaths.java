@@ -4,7 +4,11 @@ public enum PhotoPaths {
 
     USER("D:\\\\photoFGH\\users\\"),
     PRODUCT ("D:\\\\photoFGH\\products\\"),
-    COMPANY_LOGO("D:\\\\photoFGH\\logo\\");
+    COMPANY_LOGO("D:\\\\photoFGH\\logo\\"),
+
+    SERVER_USER("photoFGH\\users\\"),
+    SERVER_PRODUCT ("photoFGH\\products\\"),
+    SERVER_COMPANY_LOGO("photoFGH\\logo\\");
 
     private String value;
 

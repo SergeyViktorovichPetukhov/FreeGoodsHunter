@@ -210,7 +210,7 @@ public class ShareServiceImpl implements ShareService {
         List<PGgeometry> points = new ArrayList<>();
         items.forEach(item -> {
             PGgeometry point = new PGgeometry();
-            point.setGeometry(new Point(item.getLongitude(),item.getLatitude()));
+            point.setGeometry(new Point(item.getLongitude(), item.getLatitude()));
             points.add(point);
         });
         return true;

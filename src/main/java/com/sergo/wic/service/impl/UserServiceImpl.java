@@ -124,6 +124,7 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    @Transactional
     @Override
     public Optional<List<Notification>> getNotifications(User user) {
         List<Notification> notifications = user.getNotifications()

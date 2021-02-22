@@ -28,8 +28,12 @@ public class Contact {
     private String contact;
 
     @ManyToOne
-    @JoinColumn(name = "user_profile_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_profile_id", referencedColumnName = "id")
     private UserProfile userProfile;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", referencedColumnName = "id" )
+    private Company company;
 
     public Contact(final TypeContact typeContact, final String contact) {
         this.typeContact = typeContact;

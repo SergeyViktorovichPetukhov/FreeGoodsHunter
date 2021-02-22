@@ -1,12 +1,18 @@
 package com.sergo.wic.entities;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode
 @Entity
 @Table(name = "companies")
 public class Company {
-    public Company(){}
 
     public Company(String login, User user) {
         this.login = login;
@@ -53,7 +59,7 @@ public class Company {
     @Column(name = "info")
     private String info;
     @Column(name = "is_verificated")
-    private boolean isVerificated;
+    private Boolean isVerificated;
     @Column(name = "logo_url")
     private String logoUrl;
 
@@ -64,107 +70,10 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Share> shares;
 
-    public boolean isVerificated() {
-        return isVerificated;
-    }
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    private List<Address> addresses;
 
-    public void setVerificated(boolean verificated) {
-        isVerificated = verificated;
-    }
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    private List<Contact> contacts;
 
-    public String getInfo() {
-        return info;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<Share> getShares() {
-        return shares;
-    }
-
-    public void setShares(List<Share> shares) {
-        this.shares = shares;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    public String getInternetShop() {
-        return internetShop;
-    }
-
-    public void setInternetShop(String internetShop) {
-        this.internetShop = internetShop;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getLogoUrl() {
-        return logoUrl;
-    }
-
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    //    public byte[] getLabel() {
-//        return label;
-//    }
-//
-//    public void setLabel(byte[] label) {
-//        this.label = label;
-//    }
 }

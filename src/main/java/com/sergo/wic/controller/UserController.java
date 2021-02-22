@@ -100,21 +100,23 @@ public class UserController {
 
     @PostMapping(value = "/pendingWinnings")
     public Response getPendingWinnings(@RequestBody LoginDto dto){
-        return new Response(true, 0, new PendingWinningsResponse(userService.hasPendingWinnings(dto.getLogin())));
+    //    return new Response(true, 0, new PendingWinningsResponse(userService.hasPendingWinnings(dto.getLogin())));
+        return new Response(true, 0, new PendingWinningsResponse(true));
     }
 
     @PostMapping(value = "/unreadNotifications")
     public Response getUnreadNotifications(@RequestBody LoginDto dto){
-        return new Response(true, 0, new UnreadNotificationsResponse(userService.hasUnreadNotifications(dto.getLogin())));
+    //    return new Response(true, 0, new UnreadNotificationsResponse(userService.hasUnreadNotifications(dto.getLogin())));
+        return new Response(true, 0, new UnreadNotificationsResponse(true));
     }
 
     @PostMapping(value = "/winnings")
     public Response getAllWinnings(@RequestBody LoginDto dto){
         Optional<User> user = userService.findByLogin(dto.getLogin());
         if (user.isPresent()){
-            Optional<List<Notification>> notifications = userService.getNotifications(user.get());
-            if (notifications.isPresent()){
-                return new Response(true,0, new NotificationResponse(notificationsConverter.convertAllNotifications(notifications.get())));
+            Optional<List<Winning>> winnings = userService.getWinnings(user.get());
+            if (winnings.isPresent()){
+                return new Response(true,0, new WinningsResponse(winningsConverter.convertAllWinnings(winnings.get())));
             }else {
                 return new Response(false, 1, "there are no notifications");
             }
@@ -126,9 +128,9 @@ public class UserController {
     public Response getAllNotifications(@RequestBody LoginDto dto){
         Optional<User> user = userService.findByLogin(dto.getLogin());
         if (user.isPresent()){
-            Optional<List<Winning>> winnings = userService.getWinnings(user.get());
-            if (winnings.isPresent()){
-                return new Response(true,0, new WinningsResponse(winningsConverter.convertAllWinnings(winnings.get())));
+            Optional<List<Notification>> notifications = userService.getNotifications(user.get());
+            if (notifications.isPresent()){
+                return new Response(true,0, new NotificationResponse(notificationsConverter.convertAllNotifications(notifications.get())));
             }else {
                 return new Response(false, 1, "there are no winnings");
             }
@@ -143,12 +145,12 @@ public class UserController {
         Optional<User> user = userService.findByLogin(dto.getLogin());
 
         List<Share> shares = shareService.findAllByRegionCode(shareService.getRegionCode(
-                dto.getCountry(),dto.getRegion(),dto.getCity()));
+                dto.getCountry(), dto.getRegion(), dto.getCity()));
 
         if (user.isPresent() && shares != null){
-            Optional<List<ShareCellType>> shareCellTypes = userService.getShareCellTypes(user.get(),shares);
+            Optional<List<ShareCellType>> shareCellTypes = userService.getShareCellTypes(user.get(), shares);
             if (shareCellTypes.isPresent()) {
-                return new Response(true, 0, shareConverter.cellTypesResponse(shares, shareCellTypes.get()));
+                return new Response(true, 0, shareConverter.cellTypesResponse(shares, shareCellTypes.get(), dto.getCoordinates()));
             }
         }
         return new Response(false, 2, "no such user");

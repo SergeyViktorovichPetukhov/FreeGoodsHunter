@@ -11,6 +11,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,7 +47,7 @@ public class Share {
     private Company company;
 
     @Column(name = "is_verificated")
-    private boolean isVerificated;
+    private Boolean isVerificated;
 
     @Column(name = "login")
     private String login;
@@ -73,13 +74,13 @@ public class Share {
     private double productPrice;
 
     @Column(name = "announcement_duration")
-    private Integer announcementDuration;
+    private Date announcementDuration;
 
     @Column(name = "share_duration")
-    private Integer shareDuration;
+    private Date shareDuration;
 
     @Column(name = "after_share_duration")
-    private Integer afterShareDuration;
+    private Date afterShareDuration;
 
     @Column(name = "color")
     private String color;

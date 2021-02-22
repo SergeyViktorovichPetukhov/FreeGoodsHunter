@@ -34,17 +34,17 @@ public class ImageRepositoryImpl implements ImageRepository {
 
     @Override
     public String getImageURL(String userLogin) {
-        return null;
+        return PhotoPaths.SERVER_USER + userLogin  + "\\";
     }
 
     @Override
     public String getImageURL(String userLogin, String productName) {
-        return null;
+        return PhotoPaths.SERVER_PRODUCT + userLogin + "\\" + productName + "\\";
     }
 
     @Override
     public String getImageURL(String userLogin, String companyLogo, boolean isLogo) {
-        return null;
+        return PhotoPaths.SERVER_COMPANY_LOGO + userLogin + "\\" + companyLogo + "\\";
     }
 
     private String saveImage(PhotoPaths path, MultipartFile file, String imageName, String userLogin)

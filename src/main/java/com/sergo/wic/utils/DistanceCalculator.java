@@ -20,21 +20,22 @@ public class DistanceCalculator {
             gc.setDestinationPosition(JTS.toDirectPosition(end, crs));
         } catch (TransformException e) {
             e.printStackTrace();
-
         }
+        double orthodromicDist = gc.getOrthodromicDistance();
 
-        return gc.getOrthodromicDistance();
+        return orthodromicDist < 2200.00 ? orthodromicDist / 1.5 : orthodromicDist;
     }
 
-    public static double nearestDistance(CoordinateReferenceSystem crs, Coordinate point, List<Coordinate> items) throws Exception {
+    public static double nearestDistance(CoordinateReferenceSystem crs, Coordinate point, List<Coordinate> items) {
 
        Coordinate nearestItem = items.stream()
                 .reduce((coordinate1, coordinate2) ->  {
-            if (calculateDistance(crs,point, coordinate1) > calculateDistance(crs,point,coordinate2)) {
+            if (calculateDistance(crs, point, coordinate1) > calculateDistance(crs, point, coordinate2)) {
                 return coordinate2;
             }
             return coordinate1;
         }).get();
-       return calculateDistance(crs,point,nearestItem);
+
+       return calculateDistance(crs, point, nearestItem);
     }
 }
