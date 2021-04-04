@@ -21,9 +21,9 @@ public class ImageRepositoryImpl implements ImageRepository {
     }
 
     @Override
-    public String saveProductPhoto(MultipartFile image, String productName, String userLogin)
+    public String saveProductPhoto(MultipartFile image, String productName, String companyName)
             throws ImageNotUploadedException {
-        return saveImage(PhotoPaths.PRODUCT, image, productName, userLogin);
+        return saveImage(PhotoPaths.PRODUCT, image, productName, companyName);
     }
 
     @Override

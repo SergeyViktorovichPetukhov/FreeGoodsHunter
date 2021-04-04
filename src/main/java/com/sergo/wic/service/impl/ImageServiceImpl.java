@@ -46,8 +46,8 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public String saveProductPhoto(MultipartFile image, String productName, String userLogin) throws ImageNotUploadedException {
-        return imageRepository.saveProductPhoto(image,productName,userLogin);
+    public String saveProductPhoto(MultipartFile image, String productName, String companyName) throws ImageNotUploadedException {
+        return imageRepository.saveProductPhoto(image,productName,companyName);
     }
 
     @Override

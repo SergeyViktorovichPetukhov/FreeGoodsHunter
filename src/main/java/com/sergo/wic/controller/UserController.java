@@ -11,11 +11,13 @@ import com.sergo.wic.dto.SharesRequestDto;
 import com.sergo.wic.entities.*;
 import com.sergo.wic.entities.enums.ItemState;
 import com.sergo.wic.entities.enums.ShareCellType;
+import com.sergo.wic.entities.enums.TypeContact;
 import com.sergo.wic.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,6 +58,22 @@ public class UserController {
         User newUser = new User(login.getLogin());
         userService.save(newUser);
         return new Response(false,0,"new user created", new UserResponse(false, true));
+    }
+
+    @Transactional
+    @PostMapping(value = "/userInfo2")
+    public Response userInfo2(@RequestBody LoginDto login) {
+        Optional<User> user = userService.findByLogin(login.getLogin());
+        if (user.isPresent()){
+            UserProfile up = user.get().getUserProfile();
+            if (up == null) {
+                return new Response(false, 2, "user has not profile, please send data");
+            }
+            String photoUrl = up.getPhotoUrl().replaceAll("\\\\","\\");
+            return new Response(true,0,
+                    new UserResponse(up.getUserName(), photoUrl, up.getContact(TypeContact.PHONE_NUMBER).getContact()));
+        }
+        return new Response(false,1, "no such user");
     }
 
     @PostMapping(value = "/registerNewUser")
@@ -144,13 +162,13 @@ public class UserController {
 
         Optional<User> user = userService.findByLogin(dto.getLogin());
 
-        List<Share> shares = shareService.findAllByRegionCode(shareService.getRegionCode(
+        List<Share> regionShares = shareService.findAllByRegionCode(shareService.getRegionCode(
                 dto.getCountry(), dto.getRegion(), dto.getCity()));
 
-        if (user.isPresent() && shares != null){
-            Optional<List<ShareCellType>> shareCellTypes = userService.getShareCellTypes(user.get(), shares);
+        if (user.isPresent() && regionShares != null){
+            Optional<List<ShareCellType>> shareCellTypes = userService.getShareCellTypes(user.get(), regionShares);
             if (shareCellTypes.isPresent()) {
-                return new Response(true, 0, shareConverter.cellTypesResponse(shares, shareCellTypes.get(), dto.getCoordinates()));
+                return new Response(true, 0, shareConverter.cellTypesResponse(regionShares, shareCellTypes.get(), dto.getCoordinates()));
             }
         }
         return new Response(false, 2, "no such user");

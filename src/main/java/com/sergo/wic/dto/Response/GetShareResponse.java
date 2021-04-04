@@ -2,9 +2,15 @@ package com.sergo.wic.dto.Response;
 
 import com.sergo.wic.dto.UserDto;
 import com.sergo.wic.dto.PickedItemDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class GetShareResponse extends ResponseContent {
 
     private String productName;
@@ -18,98 +24,7 @@ public class GetShareResponse extends ResponseContent {
     private String region;
     private String city;
 
-    private int color;
+    private String color;
     private List<PickedItemDto> points;
 
-    public GetShareResponse(){
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getProductDescription() {
-        return productDescription;
-    }
-
-    public void setProductDescription(String productDescription) {
-        this.productDescription = productDescription;
-    }
-
-    public String getLinkOnProduct() {
-        return linkOnProduct;
-    }
-
-
-    public void setLinkOnProduct(String linkOnProduct) {
-        this.linkOnProduct = linkOnProduct;
-    }
-
-    public Double getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(Double productPrice) {
-        this.productPrice = productPrice;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public List<UserDto> getUsersWithShareItems() {
-        return usersWithShareItems;
-    }
-
-    public void setUsersWithShareItems(List<UserDto> usersWithShareItems) {
-        this.usersWithShareItems = usersWithShareItems;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
-    }
-
-    public List<PickedItemDto> getPoints() {
-        return points;
-    }
-
-    public void setPoints(List<PickedItemDto> points) {
-        this.points = points;
-    }
 }

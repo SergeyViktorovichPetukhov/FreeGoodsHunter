@@ -92,6 +92,11 @@ public class ShareServiceImpl implements ShareService {
     }
 
     @Override
+    public Share saveShare(Share share) {
+        return shareRepository.save(share);
+    }
+
+    @Override
     public Optional<Share> findByShareId(String shareId) {
         return shareRepository.findByShareId(shareId);
     }

@@ -1,6 +1,7 @@
 package com.sergo.wic.controller;
 
 import com.sergo.wic.converter.ShareConverter;
+import com.sergo.wic.dto.AddItemsDto;
 import com.sergo.wic.dto.LoginAndShareDto;
 import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.dto.CreateShareDto;
@@ -12,6 +13,7 @@ import com.sergo.wic.facade.ImageFacade;
 import com.sergo.wic.facade.ShareFacade;
 import com.sergo.wic.service.CompanyService;
 import com.sergo.wic.service.ImageService;
+import com.sergo.wic.service.ItemService;
 import com.sergo.wic.service.ShareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,16 +42,20 @@ public class ShareController {
 
     private CompanyService companyService;
 
+    private ItemService itemService;
+
     public ShareController(@Autowired ShareFacade shareFacade,
                            @Autowired ShareConverter shareConverter,
                            @Autowired ShareService shareService,
                            @Autowired ImageService imageService,
-                           @Autowired CompanyService companyService){
+                           @Autowired CompanyService companyService,
+                           @Autowired ItemService itemService){
         this.shareFacade = shareFacade;
         this.shareService = shareService;
         this.shareConverter = shareConverter;
         this.imageService = imageService;
         this.companyService = companyService;
+        this.itemService = itemService;
     }
 
     @GetMapping("/{shareId}")
@@ -105,10 +111,16 @@ public class ShareController {
     public Response setPhotoForShareProduct(@RequestPart MultipartFile photo,
                                             @RequestPart UploadImageDto dto) throws ImageNotUploadedException {
         return new Response(true,0,"photo uploaded",
-                new ImageUrlResponse(imageService.saveProductPhoto(photo, dto.getProductName(), dto.getLogin()))
+                new ImageUrlResponse(imageService.saveProductPhoto(photo, dto.getProductName(), dto.getCompanyName()))
         );
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(value = "/addItems")
+    public Response addItems(@RequestBody AddItemsDto dto) {
+        itemService.addNewShareItems(dto.getItems(), dto.getShareId());
+        return new Response(true,0,"items added tos share");
+    }
 
 }
 

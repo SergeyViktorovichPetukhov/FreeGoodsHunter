@@ -147,7 +147,7 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public FriendListResponce getFriends(final String login) {
+    public FriendListResponse getFriends(final String login) {
         return getFriendListResponceTestData(isLoginValid(login));
     }
 
@@ -193,17 +193,17 @@ public class UserFacadeImpl implements UserFacade {
 //        return userProfileResponse;
 //    }
 
-    private FriendListResponce getFriendListResponceTestData(final Boolean valid) {
-        FriendListResponce friendListResponce = new FriendListResponce();
+    private FriendListResponse getFriendListResponceTestData(final Boolean valid) {
+        FriendListResponse friendListResponse = new FriendListResponse();
         if (valid) {
-            friendListResponce.setFriends(users);
-            friendListResponce.setSuccess(true);
-            friendListResponce.setErrorCode(0);
+            friendListResponse.setFriends(users);
+            friendListResponse.setSuccess(true);
+            friendListResponse.setErrorCode(0);
         } else {
-            friendListResponce.setSuccess(false);
-            friendListResponce.setErrorCode(1);
+            friendListResponse.setSuccess(false);
+            friendListResponse.setErrorCode(1);
         }
-        return friendListResponce;
+        return friendListResponse;
     }
 
     private AllItemsResponse getAllItemsResponceTestData(final Boolean valid) {

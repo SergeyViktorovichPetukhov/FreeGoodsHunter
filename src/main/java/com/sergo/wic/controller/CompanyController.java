@@ -62,7 +62,7 @@ public class CompanyController {
     public Response uploadLogo(@RequestPart MultipartFile image,
                                @RequestPart UploadImageDto dto) throws ImageNotUploadedException {
         return new Response(true, 0,
-                new ImageUrlResponse(imageService.saveCompanyLogo(image, dto.getCompanyLogo(), dto.getLogin()))
+                new ImageUrlResponse(imageService.saveCompanyLogo(image, dto.getCompanyLogo(), dto.getCompanyName()))
         );
     }
 }

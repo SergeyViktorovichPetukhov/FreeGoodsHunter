@@ -18,11 +18,11 @@ public class DistanceCalculator {
         try {
             gc.setStartingPosition(JTS.toDirectPosition(start, crs));
             gc.setDestinationPosition(JTS.toDirectPosition(end, crs));
-        } catch (TransformException e) {
-            e.printStackTrace();
+        } catch (TransformException | NullPointerException e) {
+            return 0.0;
         }
         double orthodromicDist = gc.getOrthodromicDistance();
-
+        System.out.println(orthodromicDist);
         return orthodromicDist < 2200.00 ? orthodromicDist / 1.5 : orthodromicDist;
     }
 
@@ -34,8 +34,7 @@ public class DistanceCalculator {
                 return coordinate2;
             }
             return coordinate1;
-        }).get();
-
+        }).orElse(null);
        return calculateDistance(crs, point, nearestItem);
     }
 }

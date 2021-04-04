@@ -102,7 +102,7 @@ public class ShareFacadeImpl implements ShareFacade {
             ShortShareInfoDto cocaColaShare = new ShortShareInfoDto("/images/cocacola-logo.png", "Cocacola", 23,
                     0, "#FFA500", ShareState.PREVIEW.ordinal());
             ShortShareInfoDto cocaColaShare2 = new ShortShareInfoDto("/images/cocacola-logo.png", "Cocacola", 44,
-                    0, "#32CD32", ShareState.COMPLETED.ordinal());
+                    0, "#32CD32", ShareState.FINISHED.ordinal());
             sharesResponse = new SharesResponse(Arrays.asList(mcdonaldShare, cocaColaShare, cocaColaShare2));
             sharesResponse.setSuccess(true);
             sharesResponse.setErrorCode(0);

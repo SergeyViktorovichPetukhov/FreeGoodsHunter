@@ -1,7 +1,7 @@
 --
 --  INSERT INTO share_statuses (id, name) VALUES (0, 'ACTIVE');
 --  INSERT INTO share_statuses (id, name) VALUES (1, 'PREVIEW');
---  INSERT INTO share_statuses (id, name) VALUES (2, 'COMPLETED');
+--  INSERT INTO share_statuses (id, name) VALUES (2, 'FINISHED');
 --
 --  INSERT INTO companies(id,login,name, placeNameOrUrl, contact, user_id) VALUES (1,'company owner','roga i kopita','placeNameOrUrl XXX',7777777,3);
 -- --

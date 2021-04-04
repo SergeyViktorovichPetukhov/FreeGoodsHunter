@@ -34,13 +34,16 @@ public class CompanyFacadeImpl implements CompanyFacade {
         return getUserProfileTestData(userFacade.isLoginValid(login));
     }
 
+
+
+
     private CompanyResponse getUserProfileTestData(final Boolean valid) {
         CompanyResponse userProfileResponse = new CompanyResponse();
         if (valid) {
             ShareForCompanyDto cocaColaShare = new ShareForCompanyDto("cocacola_0_1", new Date(),"/images/cocacola-logo.png",  23,
                     0, ShareState.ACTIVE.ordinal());
             ShareForCompanyDto cocaColaShare2 = new ShareForCompanyDto("cocacola_0_2", new Date(),"/images/cocacola-logo.png",  44,
-                    0, ShareState.COMPLETED.ordinal());
+                    0, ShareState.FINISHED.ordinal());
 
             AddressDto address1 = new AddressDto("Ukraine", "Kiev reg", "Kiev", "Shevchenka 20");
             AddressDto address2 = new AddressDto("Ukraine", "Kiev reg", "Kiev", "Lenina 3/5, room 5");

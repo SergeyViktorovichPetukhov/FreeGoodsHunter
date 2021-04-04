@@ -8,7 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UploadImageDto {
-    private String login;
+    private String companyName;
     private String productName;
     private String companyLogo;
 }

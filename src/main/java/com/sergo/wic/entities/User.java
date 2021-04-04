@@ -83,9 +83,7 @@ public class User {
         startedShares.remove(share);
     }
 
-    public long getSharesCount(final Share currentShare){
-        for (Share share : this.company.getShares()){
-        }
+    public long getSharesCount(Share currentShare){
         return this.company.getShares().stream()
                  .filter(share ->
                          (LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)

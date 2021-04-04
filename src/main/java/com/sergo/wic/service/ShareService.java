@@ -23,6 +23,7 @@ public interface ShareService {
     List<Share> findAll();
     List<Share> findNewShares(Long maxOldId,Long companyId);
     Share saveShare(Share share, MultipartFile productPhoto) throws IOException, NoSuchUserException;
+    Share saveShare(Share share);
     boolean deleteShare(String shareId);
     void deleteById(Long id);
     boolean confirmShare(Long id, String reason);

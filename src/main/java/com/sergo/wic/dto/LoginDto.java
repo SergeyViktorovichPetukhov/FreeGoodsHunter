@@ -7,7 +7,7 @@ public class LoginDto {
     public LoginDto(){}
     private String login;
     private String firstNameAndLastName;
-    boolean isRequestedFromMenu;
+    private boolean isRequestedFromMenu;
 
     public LoginDto(String login) {
         this.login = login;

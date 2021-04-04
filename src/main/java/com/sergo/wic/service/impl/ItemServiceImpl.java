@@ -193,8 +193,15 @@ public class ItemServiceImpl implements ItemService {
         return result;
     }
 
+    @Transactional
     @Override
-    public List<Item> addNewShareItems(List<ItemDto> items) {
+    public List<Item> addNewShareItems(List<ItemDto> items, String shareId) {
+        Optional<Share> shareOptional = shareService.findByShareId(shareId);
+        if (shareOptional.isPresent()) {
+            Share share = shareOptional.get();
+            List<Item> shareItems = itemConverter.convertAllDtos(items, share);
+            share.setItems(shareItems);
+        }
         return null;
     }
 

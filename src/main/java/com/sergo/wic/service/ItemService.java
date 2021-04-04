@@ -15,7 +15,7 @@ public interface ItemService {
     boolean existsByCoordinates(double lon, double lat);
     Item findById(Long id);
     List<Item> findAll();
-    List<Item> addNewShareItems(List<ItemDto> items);
+    List<Item> addNewShareItems(List<ItemDto> items, String shareId);
     Item findByItemId(String itemId);
     List<ItemDto> convertAllItems(List<Item> list);
     List<ItemDto> getShareItems(Share share);

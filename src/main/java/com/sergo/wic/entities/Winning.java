@@ -1,9 +1,11 @@
 package com.sergo.wic.entities;
 
+import com.sergo.wic.entities.enums.WinningState;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -19,4 +21,9 @@ public class Winning {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+    @Column(name = "date")
+    private Date date;
+    @Column(name = "state")
+    @Enumerated(EnumType.STRING)
+    private WinningState state;
 }

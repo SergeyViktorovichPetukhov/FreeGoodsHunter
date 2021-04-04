@@ -128,7 +128,7 @@ public class MockController {
     }
 
     @GetMapping("/friends")
-    public FriendListResponce getFriends(@RequestParam(value = "login", required = false) String login) {
+    public FriendListResponse getFriends(@RequestParam(value = "login", required = false) String login) {
         return userFacade.getFriends(login);
     }
 

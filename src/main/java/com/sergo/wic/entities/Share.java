@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -26,10 +27,30 @@ import java.util.Objects;
           }
 )
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
-public class Share {
+public class Share implements Serializable {
 
-    public Share(){
-        this.creationStatus = CreateShareState.CREATED;
+
+
+    public Share(){ this.creationStatus = CreateShareState.CREATED; }
+
+    public Share(String shareId, Boolean isVerificated, String login, String productPhotoUrl, String productWebsite, String productName,
+                 String productDescription, double productPrice, Date announcementDuration, Date shareDuration, String color,
+                 Integer pickedItemsCount, Integer allItemsCount, Timestamp date, List<Item> items) {
+        this.shareId = shareId;
+        this.isVerificated = isVerificated;
+        this.login = login;
+        this.productPhotoUrl = productPhotoUrl;
+        this.productWebsite = productWebsite;
+        this.productName = productName;
+        this.productDescription = productDescription;
+        this.productPrice = productPrice;
+        this.announcementDuration = announcementDuration;
+        this.shareDuration = shareDuration;
+        this.color = color;
+        this.pickedItemsCount = pickedItemsCount;
+        this.allItemsCount = allItemsCount;
+        this.date = date;
+        this.items = items;
     }
 
     @Id
@@ -63,9 +84,6 @@ public class Share {
 
     @Column(name = "product_description")
     private String productDescription;
-
-    @Column(name = "product_web_site")
-    private String productWebSite;
 
     @Column(name = "product_count")
     private Integer productCount;
