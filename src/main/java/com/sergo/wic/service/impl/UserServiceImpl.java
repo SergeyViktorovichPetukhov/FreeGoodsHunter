@@ -5,6 +5,7 @@ import com.sergo.wic.entities.enums.RegistrationState;
 import com.sergo.wic.entities.enums.ShareCellType;
 import com.sergo.wic.entities.enums.ShareState;
 import com.sergo.wic.repository.UserRepository;
+import com.sergo.wic.repository.WinningRepository;
 import com.sergo.wic.service.CompanyService;
 import com.sergo.wic.service.RegistrationService;
 import com.sergo.wic.service.UserService;
@@ -22,7 +23,10 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    UserRepository repository;
+    UserRepository userRepository;
+
+    @Autowired
+    WinningRepository winningRepository;
 
     @Autowired
     EmailService emailService;
@@ -36,40 +40,40 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findById(long id) {
-        return repository.findById(id);
+        return userRepository.findById(id);
     }
 
     @Override
     public Optional<User> findByLogin(String login){
-        return repository.findByLogin(login);
+        return userRepository.findByLogin(login);
     }
 
     @Override
     public User findByContact(String contact){
-        return repository.findByContact(contact)
+        return userRepository.findByContact(contact)
                 .orElseThrow(() -> new RuntimeException("no such user"));
     }
 
     @Override
     public void save(User user){
-        repository.save(user);
+        userRepository.save(user);
     }
 
     @Override
     public List<User> findAll() {
-        return repository.findAll();
+        return userRepository.findAll();
     }
 
     @Override
     public User getOne(Long id) {
-        return repository.getOne(id);
+        return userRepository.getOne(id);
     }
 
     @Override
     public void confirmRegistration(@NotNull User user, String regID) {
         user.setHasCompany(true);
         user.setCompanyRegInProcess(false);
-        repository.save(user);
+        userRepository.save(user);
         Registration registration = registrationService.findByRegId(regID).get();
         registration.setState(RegistrationState.CONFIRMED);
         emailService.sendSimpleMessage(user.getLogin(),"registration is confirmed","your application is approved! Your verification code: " + registration.getCode());
@@ -84,36 +88,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserCompany(Long userId){
-        User user = repository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("no such user"));
         user.setHasCompany(false);
-        repository.save(user);
+        userRepository.save(user);
 
     }
 
     @Override
     public void deleteUser(Long userId){
-        User user = repository.findById(userId).get();
-        repository.delete(user);
+        User user = userRepository.findById(userId).get();
+        userRepository.delete(user);
     }
 
     @Transactional
     @Override
     public boolean hasPendingWinnings(String login) {
-        Optional<User> user = repository.findByLogin(login);
+        Optional<User> user = userRepository.findByLogin(login);
         if (user.isPresent()){
             User u = user.get();
 
             return u.getWinnings()
                     .stream()
-                    .anyMatch(winning -> !winning.isViewed());
+                    .anyMatch(winning -> !winning.getIsReviewed());
         }
         return false;
     }
 
     @Override
     public boolean hasUnreadNotifications(String login) {
-        Optional<User> user = repository.findByLogin(login);
+        Optional<User> user = userRepository.findByLogin(login);
         if (user.isPresent()){
             User u = user.get();
 
@@ -139,10 +143,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<List<Winning>> getWinnings(User user) {
         List<Winning> winnings = user.getWinnings().stream()
-                .peek(winning -> winning.setViewed(true))
+                .peek(winning -> winning.setIsReviewed(true))
                 .collect(Collectors.toList());
         user.setWinnings(winnings);
         return Optional.of(winnings);
+    }
+
+    @Override
+    public List<Winning> getAllWinnings( ) {
+        return winningRepository.findAll();
     }
 
     @Transactional

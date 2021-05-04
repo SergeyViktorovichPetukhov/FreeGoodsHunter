@@ -1,14 +1,18 @@
 package com.sergo.wic.controller;
 
+import com.sergo.wic.converter.CompanyConverter;
 import com.sergo.wic.converter.ItemConverter;
 import com.sergo.wic.converter.ShareConverter;
+import com.sergo.wic.dto.CompanyDto;
 import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.dto.RequestGetShareDto;
 import com.sergo.wic.dto.LoginDto;
+import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.Share;
 import com.sergo.wic.exception.ImageNotUploadedException;
 import com.sergo.wic.facade.CompanyFacade;
 import com.sergo.wic.facade.UserFacade;
+import com.sergo.wic.service.CompanyService;
 import com.sergo.wic.service.ImageService;
 import com.sergo.wic.service.ShareService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,12 @@ public class CompanyController {
 
     @Autowired
     private CompanyFacade companyFacade;
+
+    @Autowired
+    private CompanyService companyService;
+
+    @Autowired
+    private CompanyConverter companyConverter;
 
     @Autowired
     private UserFacade userFacade;
@@ -65,4 +75,15 @@ public class CompanyController {
                 new ImageUrlResponse(imageService.saveCompanyLogo(image, dto.getCompanyLogo(), dto.getCompanyName()))
         );
     }
+
+    @PostMapping(value = "/getData")
+    public Response getData(@RequestBody CompanyDto dto) {
+        Optional<Company> company = companyService.findByLogin(dto.getCompanyId());
+        if (company.isPresent()) {
+            return new Response(true, 0, companyConverter.companyResponse(company.get()));
+        }
+        return new Response(false, 1, "no such company");
+    }
+
+
 }

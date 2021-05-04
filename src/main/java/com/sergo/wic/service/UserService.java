@@ -24,5 +24,6 @@ public interface UserService {
     boolean hasUnreadNotifications(String login);
     Optional<List<Notification>> getNotifications(User user);
     Optional<List<Winning>> getWinnings(User user);
+    List<Winning> getAllWinnings();
     Optional<List<ShareCellType>> getShareCellTypes(User user, List<Share> allShares);
 }

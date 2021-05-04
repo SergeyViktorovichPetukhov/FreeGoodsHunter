@@ -17,9 +17,11 @@ public class WinningsConverter {
     public List<WinningsDto> convertAllWinnings(List<Winning> winnings){
         List<WinningsDto> result = new ArrayList<>(winnings.size());
         for(int i = 0; i < winnings.size(); i ++){
-            WinningsDto winningsDto = new WinningsDto(true);
+            WinningsDto winningsDto = new WinningsDto();
+            modelMapper.map(winnings.get(i), winningsDto);
+            winningsDto.setCompanyId(winnings.get(i).getShare().getCompany().getLogin());
+            winningsDto.setShareId(winnings.get(i).getShare().getShareId());
             result.add(winningsDto);
-            modelMapper.map(winnings.get(i), result.get(i));
         }
         return result;
     }

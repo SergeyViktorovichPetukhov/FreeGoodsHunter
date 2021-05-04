@@ -132,9 +132,10 @@ public class UserController {
     public Response getAllWinnings(@RequestBody LoginDto dto){
         Optional<User> user = userService.findByLogin(dto.getLogin());
         if (user.isPresent()){
-            Optional<List<Winning>> winnings = userService.getWinnings(user.get());
-            if (winnings.isPresent()){
-                return new Response(true,0, new WinningsResponse(winningsConverter.convertAllWinnings(winnings.get())));
+            //Optional<List<Winning>> winnings = userService.getWinnings(user.get());
+            List<Winning> winnings = userService.getAllWinnings();
+            if (winnings != null){
+                return new Response(true,0, new WinningsResponse(winningsConverter.convertAllWinnings(winnings)));
             }else {
                 return new Response(false, 1, "there are no notifications");
             }

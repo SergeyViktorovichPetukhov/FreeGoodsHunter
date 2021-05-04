@@ -7,19 +7,18 @@ import com.sergo.wic.entities.*;
 import com.sergo.wic.entities.enums.ShareCellType;
 import com.sergo.wic.utils.DistanceCalculator;
 import com.sergo.wic.utils.RandomString;
-import org.apache.logging.log4j.util.PropertySource;
 import org.locationtech.jts.geom.Coordinate;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @Component
 public class ShareConverter {
@@ -27,12 +26,8 @@ public class ShareConverter {
     private static final String PRODUCT_PHOTO_PATH = "product.photo.path";
 
     private ModelMapper modelMapper;
-    private TypeMap<ItemDto, Item> typeMapItem;
-    private TypeMap<ShareDto, Share> typeMapShare;
     private ItemConverter itemConverter;
     private CoordinateReferenceSystem crs = CRSResolver.resolveFromCRS("EPSG:4326");
-
-    private Comparator<CellModelDto> comparatorByType = (o1, o2) -> o1.getCellType().getValue() > o2.getCellType().getValue() ? 1 : 0;
 
     private Comparator<CellModelDto> comparatorByVerificated = (o1, o2) -> {
         if ((o1.isVerificated() & !o2.isVerificated())) {
@@ -44,14 +39,8 @@ public class ShareConverter {
         else return 0;
     };
 
-    private Comparator<CellModelDto> comparatorByPrice = (o1, o2) -> o1.getProductPrice() > o2.getProductPrice() ? 1 : 0;
-
     public ShareConverter(@Autowired ModelMapper modelMapper,
-                          @Autowired TypeMap<ItemDto, Item> typeMapItem,
-                          @Autowired TypeMap<ShareDto, Share> typeMapShare,
                           @Autowired ItemConverter itemConverter){
-        this.typeMapItem = typeMapItem;
-        this.typeMapShare = typeMapShare;
         this.modelMapper = modelMapper;
         this.itemConverter = itemConverter;
     }
@@ -117,10 +106,14 @@ public class ShareConverter {
         CompanyDto companyDto = new CompanyDto();
         ProductDto productDto = new ProductDto();
         modelMapper.map(company,companyDto);
+        List<ContactDto> contacts = company.getContacts().stream()
+                .map(contact -> new ContactDto(contact.getTypeContact(), contact.getContact()))
+                .collect(Collectors.toList());
+        companyDto.setContacts(contacts);
         companyDto.setLogin(null);
-        productDto.setProductName(share.getProductName());
+        productDto.setName(share.getProductName());
         productDto.setDescription(share.getProductDescription());
-        productDto.setLogo(share.getProductPhotoUrl());
+        productDto.setLabelUrl(share.getProductPhotoUrl());
         productDto.setPrice(share.getProductPrice());
         productDto.setWebSite(share.getProductWebsite());
         return new ShareInfoResponse(companyDto,productDto);
@@ -172,40 +165,47 @@ public class ShareConverter {
                 .mapToObj( i -> {
                     Share share = shares.get(i);
                     CellModelDto dto = new CellModelDto();
-                    dto.setCellType(cellTypes.get(i));
+                    dto.setCellType(cellTypes.get(i).getValue());
                     dto.setNumItemsToWin(itemsToWin(share.getAllItemsCount(), share.getPickedItemsCount()));
                     dto.setVerificated(share.getIsVerificated());
+                    dto.setCompanyId(share.getLogin());
                     Coordinate userPosition = new Coordinate(userCoordinates.getLatitude(), userCoordinates.getLongitude());
                     if (share.getItems() != null) {
                         List<Coordinate> shareItems = share.getItems().stream()
                                 .map(item -> new Coordinate(item.getLatitude(), item.getLongitude()))
                                 .collect(Collectors.toList());
-                        dto.setDistanceToNearestItem((int)DistanceCalculator.nearestDistance(crs, userPosition, shareItems));
+                        dto.setDistanceToNearestItem(DistanceCalculator.nearestDistance(crs, userPosition, shareItems));
                     }
                     modelMapper.map(share, dto);
+                    dto.setProductPrice(share.getProductPrice() + " ₽");
+                    Date date = new Date();
+                    date.setYear(share.getDate().getYear());
+                    date.setMonth(share.getDate().getMonth());
+                    date.setDate(share.getDate().getDate());
+                    dto.setDate(new SimpleDateFormat("yyyy-MM-dd").format(date));
                     return dto;
                 })
                 .collect(Collectors.toList());
-        System.out.println("\n\n\n cellModels.size()                       " + cellModels.size() + "\n\n\n");
+
         cellModels.forEach( cellModel -> {
             switch (cellModel.getCellType()) {
-                case STARTED: {
+                case 0: {
                     started.add(cellModel);
                     break;
                 }
-                case CHOSEN: {
+                case 1: {
                     chosen.add(cellModel);
                     break;
                 }
-                case ACTIVE: {
+                case 2: {
                     boolean verified = cellModel.isVerificated() ? (activeVerified.add(cellModel)) : (activeNotVerified.add(cellModel));
                     break;
                 }
-                case PREVIEW: {
+                case 3: {
                     boolean verified = cellModel.isVerificated() ? (previewVerified.add(cellModel)) : (previewNotVerified.add(cellModel));
                     break;
                 }
-                case FINISHED: {
+                case 4: {
                     boolean verified = cellModel.isVerificated() ? (finishedVerified.add(cellModel)) : (finishedNotVerified.add(cellModel));
                     break;
                 }
@@ -218,6 +218,40 @@ public class ShareConverter {
             list.forEach(result::add);
         });
         return new ShareCellTypesResponse(result);
+    }
+
+    public ShareItemsResponse shareItemsResponse(List<Share> shares) {
+        List<ShareItemsDto> shareItemsDtos = new ArrayList<>();
+        IntStream.range(0, shares.size())
+                .forEach( i -> {
+                    ShareItemsDto shareItemsDto = new ShareItemsDto();
+                    shareItemsDto.setColor(shares.get(i).getColor());
+                    shareItemsDto.setShareId(shares.get(i).getShareId());
+                    shares.get(i).getItems().forEach(item -> {
+                        ItemDto itemDto = new ItemDto();
+                        CoordinatesDto coordinates = new CoordinatesDto();
+                        coordinates.setLatitude(item.getLatitude());
+                        coordinates.setLongitude(item.getLongitude());
+                        itemDto.setCoordinates(coordinates);
+                        itemDto.setItemId(item.getItemId());
+                        shareItemsDto.getItems().add(itemDto);
+                    });
+                    shareItemsDtos.add(shareItemsDto);
+                });
+        return new ShareItemsResponse(shareItemsDtos);
+    }
+
+    public ShareItemsCountResponse shareItemsCountResponse(Share share) {
+
+        List<ItemDto> items = share.getItems().stream()
+                .map(item -> {
+                    CoordinatesDto coordinates = new CoordinatesDto();
+                    coordinates.setLatitude(item.getLatitude());
+                    coordinates.setLongitude(item.getLongitude());
+                    return new ItemDto(coordinates, item.getItemId());
+                })
+                .collect(Collectors.toList());
+        return new ShareItemsCountResponse(share.getPickedItemsCount(), share.getAllItemsCount(), items);
     }
 
     private int itemsToWin(int allItemsCount, int pickedItemsCount){

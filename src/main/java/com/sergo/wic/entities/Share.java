@@ -63,7 +63,7 @@ public class Share implements Serializable {
     private String shareId;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id", referencedColumnName = "id" )
     private Company company;
 
@@ -132,6 +132,10 @@ public class Share implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "share", cascade = {CascadeType.ALL})
     private List<Item> items;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "share", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Winning> winnings;
 
 //    @OneToMany
 //    @JoinColumn(name="user_item_id", referencedColumnName = "id")

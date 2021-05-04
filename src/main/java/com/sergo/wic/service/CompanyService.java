@@ -13,4 +13,6 @@ public interface CompanyService {
     Optional<Company> findByLogin(String login);
 
     Company findById(long id);
+
+    Optional<Company> findByCompanyId(String companyId);
 }

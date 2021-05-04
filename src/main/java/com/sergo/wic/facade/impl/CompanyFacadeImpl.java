@@ -48,7 +48,7 @@ public class CompanyFacadeImpl implements CompanyFacade {
             AddressDto address1 = new AddressDto("Ukraine", "Kiev reg", "Kiev", "Shevchenka 20");
             AddressDto address2 = new AddressDto("Ukraine", "Kiev reg", "Kiev", "Lenina 3/5, room 5");
 
-            userProfileResponse.setShares(Arrays.asList(cocaColaShare, cocaColaShare2));
+            //userProfileResponse.setShares(Arrays.asList(cocaColaShare, cocaColaShare2));
             userProfileResponse.setContacts(userFacade.getUserContacts().get("user@gmail.com"));
             userProfileResponse.setLabel("/photoFGH/company owner 00000000-0000-03e8-0000-00000000001a.jpg");
             userProfileResponse.setNameCompany("Macdonalds");

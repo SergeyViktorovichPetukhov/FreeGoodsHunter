@@ -1,8 +1,8 @@
 package com.sergo.wic.dto;
 
 public class ProductDto {
-    private String productName;
-    private String logo;
+    private String name;
+    private String labelUrl;
     private String description;
     private double price;
     private String webSite;
@@ -10,28 +10,28 @@ public class ProductDto {
     public ProductDto() {
     }
 
-    public ProductDto(String productName, String logo, String description, double price, String webSite) {
-        this.productName = productName;
-        this.logo = logo;
+    public ProductDto(String name, String labelUrl, String description, double price, String webSite) {
+        this.name = name;
+        this.labelUrl = labelUrl;
         this.description = description;
         this.price = price;
         this.webSite = webSite;
     }
 
-    public String getProductName() {
-        return productName;
+    public String getName() {
+        return name;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getLogo() {
-        return logo;
+    public String getLabelUrl() {
+        return labelUrl;
     }
 
-    public void setLogo(String logo) {
-        this.logo = logo;
+    public void setLabelUrl(String labelUrl) {
+        this.labelUrl = labelUrl;
     }
 
     public String getDescription() {

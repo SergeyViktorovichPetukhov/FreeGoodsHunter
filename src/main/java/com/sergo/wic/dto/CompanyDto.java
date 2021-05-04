@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Objects;
 
 @Data
@@ -14,13 +15,17 @@ import java.util.Objects;
 public class CompanyDto {
     private String login;
     private String address;
+    private String companyId;
     private String phone;
-    private String internetShop;
+    private String webPage;
     private Integer code;
     private String name;
-    private String info;
+    private String description;
     private String contact;
     private Boolean isVerificated;
+    private String labelUrl;
+    private List<ContactDto> contacts;
+    private List<AddressDto> shops;
 
     public CompanyDto(String login, String address, String phone, Integer code) {
         this.login = login;
@@ -28,11 +33,11 @@ public class CompanyDto {
         this.phone = phone;
         this.code = code;
     }
-    public CompanyDto(String login, String address, String phone, Integer code,String internetShop) {
+    public CompanyDto(String login, String address, String phone, Integer code,String webPage) {
         this.login = login;
         this.address = address;
         this.phone = phone;
-        this.internetShop = internetShop;
+        this.webPage = webPage;
         this.code = code;
     }
 

@@ -5,6 +5,7 @@ import com.sergo.wic.dto.AddItemsDto;
 import com.sergo.wic.dto.LoginAndShareDto;
 import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.dto.CreateShareDto;
+import com.sergo.wic.dto.SharesRequestDto;
 import com.sergo.wic.entities.Company;
 import com.sergo.wic.entities.Item;
 import com.sergo.wic.entities.Share;
@@ -120,6 +121,24 @@ public class ShareController {
     public Response addItems(@RequestBody AddItemsDto dto) {
         itemService.addNewShareItems(dto.getItems(), dto.getShareId());
         return new Response(true,0,"items added tos share");
+    }
+
+    @PostMapping(value = "/allItems")
+    public Response allItems(@RequestBody SharesRequestDto dto) {
+        return new Response(true, 0 ,
+                shareConverter.shareItemsResponse(shareService.findAllByRegionCode(
+                        shareService.getRegionCode(dto.getCountry(), dto.getRegion(), dto.getCity()))));
+
+    }
+
+    @GetMapping(value = "/items")
+    public Response items(@RequestParam("login") String login, @RequestParam("shareId") String shareId) {
+        Optional<Share> share = shareService.findByShareId(shareId);
+        if (share.isPresent()) {
+        return new Response(true, 0 ,
+                shareConverter.shareItemsCountResponse(share.get()));
+        }
+        return new Response(false, 1, "no such share");
     }
 
 }

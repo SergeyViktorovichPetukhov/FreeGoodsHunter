@@ -41,15 +41,18 @@ public class ShareServiceImpl implements ShareService {
     public ShareServiceImpl(
             @Autowired ShareRepository shareRepository,
             @Autowired ImageService imageService,
-            @Autowired UserService userService ){
+            @Autowired UserService userService,
+            @Autowired CompanyService companyService){
        this.imageService = imageService;
        this.shareRepository = shareRepository;
        this.userService = userService;
+       this.companyService = companyService;
     }
 
     private ShareRepository shareRepository;
     private ImageService imageService;
     private UserService userService;
+    private CompanyService companyService;
 
     private static final Logger LOG = LoggerFactory.getLogger(ShareServiceImpl.class);
 
@@ -221,9 +224,19 @@ public class ShareServiceImpl implements ShareService {
         return true;
     }
 
+    @Transactional
     @Override
     public List<Share> findAllByRegionCode(String regionCode) {
-        return shareRepository.findAllByRegionCode(regionCode).orElse(null);
+        List<Share> shares =  shareRepository.findAllByRegionCode(regionCode).orElse(null);
+        if (shares != null){
+            shares.forEach(share -> {
+                Company company = share.getCompany();
+                String companyLogin = company.getLogin();
+                share.setLogin(companyLogin);
+            });
+            return shares;
+        }
+        return null;
     }
 
     @Override

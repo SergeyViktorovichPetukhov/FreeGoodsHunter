@@ -7,6 +7,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class DistanceCalculator {
@@ -22,11 +23,10 @@ public class DistanceCalculator {
             return 0.0;
         }
         double orthodromicDist = gc.getOrthodromicDistance();
-        System.out.println(orthodromicDist);
         return orthodromicDist < 2200.00 ? orthodromicDist / 1.5 : orthodromicDist;
     }
 
-    public static double nearestDistance(CoordinateReferenceSystem crs, Coordinate point, List<Coordinate> items) {
+    public static String nearestDistance(CoordinateReferenceSystem crs, Coordinate point, List<Coordinate> items) {
 
        Coordinate nearestItem = items.stream()
                 .reduce((coordinate1, coordinate2) ->  {
@@ -35,6 +35,15 @@ public class DistanceCalculator {
             }
             return coordinate1;
         }).orElse(null);
-       return calculateDistance(crs, point, nearestItem);
+       return convertDistanceToString(calculateDistance(crs, point, nearestItem));
+    }
+
+    private static String convertDistanceToString(double distance) {
+        if (distance < 1000) {
+            return (int)distance + " m";
+        }
+        String km = String.valueOf(((int)(distance / 1000)));
+        String m = String.valueOf((int)distance % 1000);
+        return km + " km, " + m + " m";
     }
 }

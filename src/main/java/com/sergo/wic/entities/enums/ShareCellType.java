@@ -2,11 +2,11 @@ package com.sergo.wic.entities.enums;
 
 public enum ShareCellType {
 
-    STARTED("STARTED", 1),
-    CHOSEN("CHOSEN" , 2),
-    ACTIVE("ACTIVE", 3),
-    PREVIEW("PREVIEW", 4),
-    FINISHED("FINISHED", 5);
+    STARTED("STARTED", 0),
+    CHOSEN("CHOSEN" , 1),
+    ACTIVE("ACTIVE", 2),
+    PREVIEW("PREVIEW", 3),
+    FINISHED("FINISHED", 4);
 
 
     private String cell;
