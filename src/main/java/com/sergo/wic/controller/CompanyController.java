@@ -84,6 +84,4 @@ public class CompanyController {
         }
         return new Response(false, 1, "no such company");
     }
-
-
 }

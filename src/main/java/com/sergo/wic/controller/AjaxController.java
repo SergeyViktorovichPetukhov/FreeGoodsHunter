@@ -24,7 +24,6 @@ public class AjaxController {
             @RequestParam(value = "max_share_id") String maxShareId,
             @RequestParam("company_id") String companyId
             ){
-        System.out.println("maxShareId : " + maxShareId);
         return shareService.findNewShares(Long.valueOf(maxShareId),Long.valueOf(companyId));
     }
 }

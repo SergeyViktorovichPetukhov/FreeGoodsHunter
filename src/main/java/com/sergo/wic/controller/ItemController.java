@@ -98,7 +98,6 @@ public class ItemController {
 
     }
 
-    // temporary
     @RequestMapping(value = "/addItemForDatabase", method = RequestMethod.POST)
     public Response addItem(@RequestBody AddItemDto dto) throws IOException {
             Item item = new Item();
@@ -134,20 +133,21 @@ public class ItemController {
 
     @PostMapping("/getMaxCountItems")
     public Response getMaxCountItems(@RequestBody MaxCountItemsDto dto){
-    //    System.out.println(dto.getLogin() + " " + dto.getGeoLocationData().getRegion() + " " + dto.getGeoLocationData().getCountry() + " " + dto.getGeoLocationData().getSettlement());
         Optional<Settlement> settlement;
         if (dto.getGeoLocationData().getRegion() == null) {
             settlement = settlementService.findByNameAndCountry(
                     dto.getGeoLocationData().getSettlement(),
                     dto.getGeoLocationData().getCountry());
-        }else
+        } else {
             settlement = settlementService.findByNameAndRegionAndCountry(
                     dto.getGeoLocationData().getSettlement(),
                     dto.getGeoLocationData().getRegion(),
                     dto.getGeoLocationData().getCountry());
+        }
 
-        if (settlement.isPresent())
+        if (settlement.isPresent()) {
             return new Response(true,0, new MaxCountItemsResponse(settlement.get().getMaxCountItems()));
+        }
         else return new Response(false,1,"no such settlement in db");
     }
 

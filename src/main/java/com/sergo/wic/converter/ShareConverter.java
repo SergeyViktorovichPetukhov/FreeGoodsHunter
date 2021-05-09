@@ -161,6 +161,8 @@ public class ShareConverter {
         cellModelsList.add(finishedVerified);
         cellModelsList.add(finishedNotVerified);
 
+        List<Double> distances = new ArrayList<>();
+
         List<CellModelDto> cellModels = IntStream.range(0, shares.size())
                 .mapToObj( i -> {
                     Share share = shares.get(i);
@@ -174,9 +176,12 @@ public class ShareConverter {
                         List<Coordinate> shareItems = share.getItems().stream()
                                 .map(item -> new Coordinate(item.getLatitude(), item.getLongitude()))
                                 .collect(Collectors.toList());
-                        dto.setDistanceToNearestItem(DistanceCalculator.nearestDistance(crs, userPosition, shareItems));
+                        double distance = DistanceCalculator.nearestDistance(crs, userPosition, shareItems);
+                        dto.setDistanceToNearestItem(DistanceCalculator.convertDistanceToString(distance));
+                        distances.add(distance);
                     }
                     modelMapper.map(share, dto);
+                    dto.setPromoColor(share.getColor());
                     dto.setProductPrice(share.getProductPrice() + " ₽");
                     Date date = new Date();
                     date.setYear(share.getDate().getYear());
@@ -186,6 +191,11 @@ public class ShareConverter {
                     return dto;
                 })
                 .collect(Collectors.toList());
+
+        double nearestItem = distances.stream()
+                .filter(d -> d > 0.0)
+                .min(Double::compare).orElse(0.0);
+        String nearestItemString = DistanceCalculator.convertDistanceToString(nearestItem);
 
         cellModels.forEach( cellModel -> {
             switch (cellModel.getCellType()) {
@@ -217,7 +227,7 @@ public class ShareConverter {
             list.sort(Comparator.comparing(CellModelDto::getProductPrice));
             list.forEach(result::add);
         });
-        return new ShareCellTypesResponse(result);
+        return new ShareCellTypesResponse(nearestItemString, result);
     }
 
     public ShareItemsResponse shareItemsResponse(List<Share> shares) {

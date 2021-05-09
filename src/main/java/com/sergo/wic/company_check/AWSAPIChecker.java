@@ -38,15 +38,6 @@ public class AWSAPIChecker {
 
 
             JSONObject object = getApiResponse(getHistoryTrafficUri(domainName));
-//            BufferedReader br = new BufferedReader(new FileReader("src/batch response.txt"));
-//            JSONObject object = new JSONObject(br.lines().collect(Collectors.joining("\n")));
-//            JSONObject obj2 = object.getJSONObject("Awis")
-//                    .getJSONObject("Results")
-//                    .getJSONObject("Result")
-//                    .getJSONObject("Alexa")
-//                    .getJSONObject("TrafficHistory")
-//                    .getJSONObject("HistoricalData");
-//            JSONArray array = obj2.getJSONArray("Data");
 
             JSONArray result = object.getJSONObject("Awis")
                       .getJSONObject("Results")
@@ -72,7 +63,6 @@ public class AWSAPIChecker {
                     }
                 }
                 if (data == null){
-                    System.out.println("data == null");
                     continue;
                 }
 
@@ -89,17 +79,6 @@ public class AWSAPIChecker {
                             .get("PerUser"));
                 }
                 viewsPerUser /= data.length();
-                System.out.println(viewsPerMillion + " views per million at one month");
-                System.out.println(viewsPerUser + " views per user at one month");
-                if (viewsPerMillion < MIN_VIEWS_PER_MILLION)
-                    countPermMillion ++;
-                if (viewsPerUser < MIN_VIEWS_PER_USER)
-                    countPerUser ++;
-                System.out.println("count = " + countPermMillion);
-                if (countPermMillion > 1)
-                    System.out.println("count per million > 1");
-                if (countPerUser > 1)
-                    System.out.println("count per user > 1");
             }
     }
 
@@ -121,7 +100,6 @@ public class AWSAPIChecker {
         String[] categories = new String[category.length()];
         for (int i = 0; i < categories.length; i++) {
             categories[i] = (String) category.getJSONObject(i).get("Title");
-            System.out.println(categories[i]);
         }
 
     }
@@ -134,7 +112,6 @@ public class AWSAPIChecker {
                     .getJSONObject("Alexa")
                     .getJSONObject("ContentData")
                     .get("LinksInCount");
-        System.out.println(linksInCount);
 
     }
     public String getAlexaRank(String url){
@@ -167,8 +144,6 @@ public class AWSAPIChecker {
                 .block()
                 .bodyToMono(String.class)
                 .block();
-//        System.out.println(response);
-//        System.out.println("response");
         return new JSONObject(response);
 
     }
@@ -184,7 +159,6 @@ public class AWSAPIChecker {
         for (int i = 5 , j = 1; i > 0 ; i--, j++) {
             sb.append(String.format(TRAFFIC_HISTORY_MIDDLE,j,getPeriodStartDate(i)));
         }
-        System.out.println(sb.append(TRAFFIC_HISTORY_END).append(uri).toString());
         return sb.append(TRAFFIC_HISTORY_END).append(uri).toString();
     }
 }

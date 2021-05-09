@@ -37,7 +37,6 @@ public class WebSiteChecker {
         String url = "https://" + URL;
         baseUrl = new StringBuffer(url);
         Document doc = connect(url);
-        System.out.println("1");
         if (doc == null)
             return false;
         Elements links = doc.select("a");
@@ -49,14 +48,10 @@ public class WebSiteChecker {
             String href = links.select("a[href*=\"/contacts\"]").attr("href");
 
             if (!href.isEmpty() & !href.startsWith("http")) {
-                System.out.println("2");
-                System.out.println(href + " href");
                 doc = connect(href);
             }else
                 doc = connect(url + href);
-            System.out.println("3 " + url + href);
             if (href.isEmpty()) {
-                // https://labsintez.com/kontakty/
                 String href2 = links.select("a[href*=/kontakt]").attr("href");
                 if (!href2.isEmpty()) {
                     doc = connect(url + href2);
@@ -78,7 +73,6 @@ public class WebSiteChecker {
 
     private Document connect(String url){
         try {
-            System.out.println(url + " current url ");
             String newUrl;
             if (!url.startsWith("https")){
                 newUrl = baseUrl.toString() + url;
@@ -98,20 +92,17 @@ public class WebSiteChecker {
             Elements links = doc.select("a");
             List<String> text = links.eachText();
             if (text.stream().filter(str -> str.matches(Constants.PHONE_REGEX)).anyMatch((str) -> str.equals(formattedPhone))) {
-                System.out.println(1);
                 return doc;
             }
 
             String href = links.select("a[href*=\"/contacts/\"]").attr("href");
             if (href != null) {
-                System.out.println(2);
                 doc = connect(url + href);
             }
             String href2 = null;
             if (href == null) {
                 href2 = links.select("a[href*=/kontakt]").attr("href");
                 if (href2 != null) {
-                    System.out.println(3);
                     doc = connect(url + href2);
                 }
             }
@@ -119,7 +110,6 @@ public class WebSiteChecker {
             if (href2 == null) {
                 href3 = links.select("a[href*=/Контакты]").attr("href");
                 if (href3 != null) {
-                    System.out.println(4);
                     doc = connect(url + href3);
                 }
             }

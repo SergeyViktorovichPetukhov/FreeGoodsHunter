@@ -17,8 +17,6 @@ public class ItemConverter {
 
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private TypeMap<ItemDto,Item> typeMap;
 
 
 //    public Item convertToModel(final PickedItemDto source) {
@@ -47,10 +45,6 @@ public class ItemConverter {
             Item item = new Item();
             item.setState(ItemState.FREE);
             item.setShare(share);
-//            modelMapper.typeMap(ItemDto.class, Item.class)
-//                    .addMappings(mapper -> mapper.map(ItemDto::getItemId,Item::setItemId));
-//            modelMapper.map(itemDto,item);
-//            modelMapper.validate();
             item.setItemId(itemDto.getItemId());
             item.setLongitude(itemDto.getCoordinates().getLongitude());
             item.setLatitude(itemDto.getCoordinates().getLatitude());
@@ -71,7 +65,4 @@ public class ItemConverter {
         }
         return result;
     }
-//    public Response convertToItemResponse(final Item source){
-//
-//    }
 }

@@ -26,7 +26,7 @@ public class DistanceCalculator {
         return orthodromicDist < 2200.00 ? orthodromicDist / 1.5 : orthodromicDist;
     }
 
-    public static String nearestDistance(CoordinateReferenceSystem crs, Coordinate point, List<Coordinate> items) {
+    public static double nearestDistance(CoordinateReferenceSystem crs, Coordinate point, List<Coordinate> items) {
 
        Coordinate nearestItem = items.stream()
                 .reduce((coordinate1, coordinate2) ->  {
@@ -35,10 +35,10 @@ public class DistanceCalculator {
             }
             return coordinate1;
         }).orElse(null);
-       return convertDistanceToString(calculateDistance(crs, point, nearestItem));
+       return calculateDistance(crs, point, nearestItem);
     }
 
-    private static String convertDistanceToString(double distance) {
+    public static String convertDistanceToString(double distance) {
         if (distance < 1000) {
             return (int)distance + " m";
         }

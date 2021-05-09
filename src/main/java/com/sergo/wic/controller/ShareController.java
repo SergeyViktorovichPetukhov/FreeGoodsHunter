@@ -81,7 +81,7 @@ public class ShareController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/publish" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-                                      produces = MediaType.APPLICATION_JSON_VALUE)
+                                         produces = MediaType.APPLICATION_JSON_VALUE)
     public Response publishShare(@RequestPart CreateShareDto dto
                                 ,@RequestPart MultipartFile productPhoto) {
         Optional<Company> company = companyService.findByLogin(dto.getLogin());

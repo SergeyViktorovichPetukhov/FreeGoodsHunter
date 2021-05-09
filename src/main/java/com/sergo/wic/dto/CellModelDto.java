@@ -19,6 +19,7 @@ public class CellModelDto {
     private String date;
     private String distanceToNearestItem;
     private String productPrice;
+    private String promoColor;
     private int pickedItemsCount;
     private int numItemsToWin;
     private boolean isVerificated;

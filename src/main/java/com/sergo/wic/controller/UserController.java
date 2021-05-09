@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -165,6 +166,10 @@ public class UserController {
 
         List<Share> regionShares = shareService.findAllByRegionCode(shareService.getRegionCode(
                 dto.getCountry(), dto.getRegion(), dto.getCity()));
+
+        if(regionShares == null || regionShares.size() == 0) {
+            return new Response(true, 0, new ShareCellTypesResponse("0 km, 0 m",new ArrayList<>()));
+        }
 
         if (user.isPresent() && regionShares != null){
             Optional<List<ShareCellType>> shareCellTypes = userService.getShareCellTypes(user.get(), regionShares);

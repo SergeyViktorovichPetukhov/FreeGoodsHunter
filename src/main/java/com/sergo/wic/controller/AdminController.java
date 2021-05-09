@@ -127,8 +127,6 @@ public class AdminController {
     public String refuseRegistration(@RequestParam("userId") String userId,
                                      @RequestParam("regId") String regId
                                    , @RequestParam("reason") String reason){
-        System.out.println(userId + " userId");
-        System.out.println(regId + " id");
         User user = userService.findById(Long.valueOf(userId)).get();
         user.setCompanyRegInProcess(false);
         userService.save(user);
@@ -141,6 +139,4 @@ public class AdminController {
         userService.deleteUser(Long.valueOf(id));
         return "redirect:/admin/";
     }
-
-
 }
