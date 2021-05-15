@@ -26,6 +26,7 @@ public class CompanyDto {
     private String labelUrl;
     private List<ContactDto> contacts;
     private List<AddressDto> shops;
+    private CoordinatesDto coordinates;
 
     public CompanyDto(String login, String address, String phone, Integer code) {
         this.login = login;

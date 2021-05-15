@@ -38,7 +38,7 @@ public class ShareDto {
 
     private String linkOnProductUrl;
 
-    private Double productPrice;
+    private String productPrice;
 
     @Positive
     private Integer announcementDuration;
@@ -50,7 +50,7 @@ public class ShareDto {
     private Integer afterShareDuration;
 
     @NotBlank
-    private String color;
+    private String promoColor;
 
     @Positive
     private Integer pickedItemsCount;
@@ -58,15 +58,18 @@ public class ShareDto {
     @Positive
     private Integer allItemsCount;
 
+    private Integer numItemsToWin;
+
+    private String distanceToNearestItem;
+
     @NotBlank
     private String codeForWinner;
 
-    @FutureOrPresent
-    private Timestamp date;
+    private String date;
 
-    private ShareState cellType;
+    private Integer cellType;
 
-    private Integer companyId;
+    private String companyId;
 
     private AddressDto placeAddress;
 

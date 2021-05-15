@@ -50,7 +50,7 @@ public class CompanyController {
 
     @PostMapping(value = "/response", produces = MediaType.APPLICATION_JSON_VALUE)
     public Response companyResponse(@RequestBody LoginDto dto){
-        if (userFacade.hasUserCompany(dto.getLogin())) {
+        if (userFacade.hasUserCompany(dto.getLogin()) ) {
             CompanyResponse companyResponse = companyFacade.getShares(dto.getLogin());
             return new Response(true,0,companyResponse);
         }
@@ -80,7 +80,7 @@ public class CompanyController {
     public Response getData(@RequestBody CompanyDto dto) {
         Optional<Company> company = companyService.findByLogin(dto.getCompanyId());
         if (company.isPresent()) {
-            return new Response(true, 0, companyConverter.companyResponse(company.get()));
+            return new Response(true, 0, companyConverter.companyResponse(company.get(), dto.getCoordinates()));
         }
         return new Response(false, 1, "no such company");
     }

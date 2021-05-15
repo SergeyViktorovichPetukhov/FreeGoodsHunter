@@ -5,6 +5,7 @@ import com.sergo.wic.dto.*;
 import com.sergo.wic.dto.Response.*;
 import com.sergo.wic.entities.*;
 import com.sergo.wic.entities.enums.ShareCellType;
+import com.sergo.wic.utils.DateUtils;
 import com.sergo.wic.utils.DistanceCalculator;
 import com.sergo.wic.utils.RandomString;
 import org.locationtech.jts.geom.Coordinate;
@@ -183,11 +184,7 @@ public class ShareConverter {
                     modelMapper.map(share, dto);
                     dto.setPromoColor(share.getColor());
                     dto.setProductPrice(share.getProductPrice() + " ₽");
-                    Date date = new Date();
-                    date.setYear(share.getDate().getYear());
-                    date.setMonth(share.getDate().getMonth());
-                    date.setDate(share.getDate().getDate());
-                    dto.setDate(new SimpleDateFormat("yyyy-MM-dd").format(date));
+                    dto.setDate(DateUtils.convertTimestampToStringDate("yyyy-MM-dd", share.getDate()));
                     return dto;
                 })
                 .collect(Collectors.toList());

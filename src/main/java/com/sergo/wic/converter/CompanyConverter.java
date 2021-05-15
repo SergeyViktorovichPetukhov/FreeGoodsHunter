@@ -1,14 +1,24 @@
 package com.sergo.wic.converter;
 
+import com.sergo.wic.coordinate_referense_system.CRSResolver;
 import com.sergo.wic.dto.AddressDto;
 import com.sergo.wic.dto.ContactDto;
+import com.sergo.wic.dto.CoordinatesDto;
 import com.sergo.wic.dto.Response.CompanyResponse;
 import com.sergo.wic.dto.ShareDto;
 import com.sergo.wic.entities.Company;
+import com.sergo.wic.entities.enums.ShareCellType;
+import com.sergo.wic.entities.enums.ShareState;
+import com.sergo.wic.utils.DateUtils;
+import com.sergo.wic.utils.DistanceCalculator;
+import org.locationtech.jts.geom.Coordinate;
 import org.modelmapper.ModelMapper;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +28,9 @@ public class CompanyConverter {
     @Autowired
     ModelMapper modelMapper;
 
-    public CompanyResponse companyResponse(Company company) {
+    private CoordinateReferenceSystem crs = CRSResolver.resolveFromCRS("EPSG:4326");
+
+    public CompanyResponse companyResponse(Company company, CoordinatesDto coordinates) {
         List<ContactDto> contacts = company.getContacts().stream()
                 .map(contact -> {
                    return new ContactDto(contact.getTypeContact(), contact.getContact());
@@ -34,12 +46,28 @@ public class CompanyConverter {
                     ShareDto shareDto = new ShareDto();
                     shareDto.setShareId(share.getShareId());
                     shareDto.setPhotoProductUrl(share.getProductPhotoUrl());
-                    shareDto.setCellType(share.getStatus());
+
+                    Integer cellType =
+                             share.getStatus() == ShareState.ACTIVE ? (ShareCellType.ACTIVE.getValue()) :
+                            (share.getStatus() == ShareState.PREVIEW ? ShareCellType.PREVIEW.getValue() :
+                            (share.getStatus() == ShareState.CREATED ? ShareCellType.PREVIEW.getValue() :
+                                    ShareCellType.FINISHED.getValue()));
+
+                    shareDto.setCellType(cellType);
+                    shareDto.setCompanyId(company.getLogin());
+                    shareDto.setPromoColor(share.getColor());
+                    shareDto.setNumItemsToWin(share.getAllItemsCount());
                     shareDto.setProductName(share.getProductName());
-                    shareDto.setDate(share.getDate());
-                    shareDto.setProductPrice(share.getProductPrice());
+                    shareDto.setDate(DateUtils.convertTimestampToStringDate("yyyy-MM-dd", share.getDate()));
+                    shareDto.setProductPrice(share.getProductPrice() + " ₽");
                     shareDto.setPickedItemsCount(share.getPickedItemsCount());
                     shareDto.setAllItemsCount(share.getAllItemsCount());
+                    Coordinate userPoint = new Coordinate(coordinates.getLatitude(), coordinates.getLongitude());
+                    List<Coordinate> items = share.getItems().stream()
+                            .map(item -> new Coordinate(item.getLatitude(), item.getLongitude()))
+                            .collect(Collectors.toList());
+                    String distanceToNearestItem = DistanceCalculator.convertDistanceToString(DistanceCalculator.nearestDistance(crs, userPoint, items));
+                    shareDto.setDistanceToNearestItem(distanceToNearestItem);
                     return shareDto;
 
                 }).collect(Collectors.toList());

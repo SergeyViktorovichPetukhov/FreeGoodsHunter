@@ -173,8 +173,8 @@ public class SpringConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
-                .addResourceHandler("/image/**")
-                .addResourceLocations("/photoFGH/");
+                .addResourceHandler("/photoFGH/**")
+                .addResourceLocations("file:/photoFGH/");
     }
 
 //    @Override
