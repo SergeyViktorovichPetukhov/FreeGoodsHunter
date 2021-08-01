@@ -139,4 +139,7 @@ public class Item {
     public int hashCode() {
         return Objects.hash(longitude, latitude);
     }
+
+    @Override
+    public String toString(){return "";}
 }

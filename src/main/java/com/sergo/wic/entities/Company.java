@@ -76,4 +76,7 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Contact> contacts;
 
+    @Override
+    public String toString(){return "";}
+
 }

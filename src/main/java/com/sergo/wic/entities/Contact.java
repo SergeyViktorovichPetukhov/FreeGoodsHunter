@@ -56,4 +56,7 @@ public class Contact {
     public int hashCode() {
         return Objects.hash(getId(), getTypeContact(), getContact(), getUserProfile());
     }
+
+    @Override
+    public String toString(){return "";}
 }

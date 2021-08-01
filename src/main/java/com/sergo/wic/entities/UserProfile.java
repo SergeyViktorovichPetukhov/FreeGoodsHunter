@@ -1,10 +1,7 @@
 package com.sergo.wic.entities;
 
 import com.sergo.wic.entities.enums.TypeContact;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -46,4 +43,7 @@ public class UserProfile {
                 .findFirst()
                 .orElse(null);
     }
+
+    @Override
+    public String toString(){return "";}
 }

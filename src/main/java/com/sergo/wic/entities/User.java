@@ -3,6 +3,7 @@ package com.sergo.wic.entities;
 import com.sergo.wic.entities.enums.ShareCellType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
@@ -43,7 +44,7 @@ public class User {
     private String name;
     @Column(name = "is_company_reg_in_process")
     private boolean isCompanyRegInProcess;
-    @Column(name = "hasCompany")
+    @Column(name = "has_company")
     private boolean hasCompany;     // if user is a company manager
     @OneToOne(cascade = CascadeType.ALL , mappedBy = "user", fetch = FetchType.LAZY)
     private Company company;
@@ -104,4 +105,7 @@ public class User {
     @Override public int hashCode() {
         return Objects.hash(id, login, name);
     }
+
+    @Override
+    public String toString(){return "";}
 }

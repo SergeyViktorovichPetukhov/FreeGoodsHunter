@@ -18,7 +18,6 @@ import java.util.Objects;
 
 @AllArgsConstructor
 @Data
-@ToString
 @Entity
 @Table(name = "shares",
        indexes = {
@@ -177,5 +176,8 @@ public class Share implements Serializable {
                             afterShareDuration, pickedItemsCount, allItemsCount);
 
     }
+
+    @Override
+    public String toString(){return "";}
 
 }

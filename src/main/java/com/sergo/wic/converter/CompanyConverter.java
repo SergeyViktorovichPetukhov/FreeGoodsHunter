@@ -17,8 +17,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,16 +29,21 @@ public class CompanyConverter {
     private CoordinateReferenceSystem crs = CRSResolver.resolveFromCRS("EPSG:4326");
 
     public CompanyResponse companyResponse(Company company, CoordinatesDto coordinates) {
+
         List<ContactDto> contacts = company.getContacts().stream()
-                .map(contact -> {
-                   return new ContactDto(contact.getTypeContact(), contact.getContact());
-                })
+                .map(contact -> new ContactDto(contact.getTypeContact(), contact.getContact()))
                 .collect(Collectors.toList());
+
         List<AddressDto> addresses = company.getAddresses().stream()
-                .map(address -> {
-                    return new AddressDto(address.getCountry() ,address.getRegion(), address.getCity(), address.getAddressLine());
-                })
+                .map(address -> new AddressDto(
+                        address.getCountry() ,
+                        address.getRegion(),
+                        address.getCity(),
+                        address.getAddressLine(),
+                        new CoordinatesDto(address.getLatitude(), address.getLongitude()),
+                        address.getShopId()))
                 .collect(Collectors.toList());
+
         List<ShareDto> shares = company.getShares().stream()
                 .map(share -> {
                     ShareDto shareDto = new ShareDto();
@@ -63,14 +66,17 @@ public class CompanyConverter {
                     shareDto.setPickedItemsCount(share.getPickedItemsCount());
                     shareDto.setAllItemsCount(share.getAllItemsCount());
                     Coordinate userPoint = new Coordinate(coordinates.getLatitude(), coordinates.getLongitude());
+
                     List<Coordinate> items = share.getItems().stream()
                             .map(item -> new Coordinate(item.getLatitude(), item.getLongitude()))
                             .collect(Collectors.toList());
                     String distanceToNearestItem = DistanceCalculator.convertDistanceToString(DistanceCalculator.nearestDistance(crs, userPoint, items));
                     shareDto.setDistanceToNearestItem(distanceToNearestItem);
+
                     return shareDto;
 
                 }).collect(Collectors.toList());
+
         CompanyResponse companyResponse = new CompanyResponse();
         companyResponse.setLabel(company.getLogoUrl());
         companyResponse.setNameCompany(company.getName());

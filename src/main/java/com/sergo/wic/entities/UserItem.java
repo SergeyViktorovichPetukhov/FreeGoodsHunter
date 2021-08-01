@@ -48,4 +48,7 @@ public class UserItem {
  //   @JoinColumn(name = "item_id",referencedColumnName = "id")
     private List<Item> items;
 
+    @Override
+    public String toString(){return "";}
+
 }

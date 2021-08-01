@@ -34,6 +34,15 @@ public class Address {
     @Column(name = "address_line")
     private String addressLine;
 
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
+    @Column(name = "shop_id")
+    private String shopId;
+
 
     @Override
     public boolean equals(Object o) {
@@ -51,4 +60,7 @@ public class Address {
     public int hashCode() {
         return Objects.hash(id, country, region, city, addressLine);
     }
+
+    @Override
+    public String toString(){return "";}
 }

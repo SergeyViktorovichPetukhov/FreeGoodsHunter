@@ -39,7 +39,7 @@ import java.util.Locale;
 @Configuration
 //@EnableWebSecurity
 //public class SpringConfig extends WebSecurityConfigurerAdapter {
-public class SpringConfig implements WebMvcConfigurer {
+public class FghConfig implements WebMvcConfigurer {
 
     @Bean
     public MultipartConfigElement multipartConfigElement() {
@@ -92,7 +92,7 @@ public class SpringConfig implements WebMvcConfigurer {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
         return modelMapper;
     }
 

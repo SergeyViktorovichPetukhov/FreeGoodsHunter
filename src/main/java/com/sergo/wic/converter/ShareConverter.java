@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -111,7 +109,20 @@ public class ShareConverter {
                 .map(contact -> new ContactDto(contact.getTypeContact(), contact.getContact()))
                 .collect(Collectors.toList());
         companyDto.setContacts(contacts);
-        companyDto.setLogin(null);
+        companyDto.setCompanyId(companyDto.getCompanyId());
+        companyDto.setName(company.getName());
+        companyDto.setDescription(company.getInfo());
+        companyDto.setLabelUrl(company.getLogoUrl());
+        List<AddressDto> shops = company.getAddresses().stream()
+                .map(address -> new AddressDto(
+                        address.getCountry(),
+                        address.getRegion(),
+                        address.getCity(),
+                        address.getAddressLine(),
+                        new CoordinatesDto(address.getLatitude(), address.getLongitude()),
+                        address.getShopId()))
+                .collect(Collectors.toList());
+        companyDto.setShops(shops);
         productDto.setName(share.getProductName());
         productDto.setDescription(share.getProductDescription());
         productDto.setLabelUrl(share.getProductPhotoUrl());

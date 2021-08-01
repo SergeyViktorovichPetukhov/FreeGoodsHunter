@@ -4,6 +4,7 @@ import com.sergo.wic.entities.enums.PrizeType;
 import com.sergo.wic.entities.enums.WinningState;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -41,5 +42,10 @@ public class Winning {
     @Column(name = "prize_type")
     @Enumerated(EnumType.STRING)
     private PrizeType prizeType;
+
+    @Override
+    public String toString(){
+        return "";
+    }
 
 }

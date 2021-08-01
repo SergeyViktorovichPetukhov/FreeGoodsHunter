@@ -15,9 +15,11 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -149,9 +151,18 @@ public class UserServiceImpl implements UserService {
         return Optional.of(winnings);
     }
 
+    //TODO wrong relationships in DB
     @Override
     public List<Winning> getAllWinnings( ) {
         return winningRepository.findAll();
+//        List<User> users = userRepository.findAll();
+//        return users.stream()
+//                .map(User::getWinnings)
+//                .reduce((list1, list2) -> {
+//                    list1.addAll(list2);
+//                    return list1;
+//                })
+//                .orElse(null);
     }
 
     @Transactional
