@@ -13,4 +13,8 @@ public class DateUtils {
         date.setDate(timestamp.getDate());
         return new SimpleDateFormat(format).format(date);
     }
+
+    public static String convertDateToStringDate(String format, Date date) {
+        return new SimpleDateFormat(format).format(date);
+    }
 }
