@@ -179,6 +179,7 @@ public class ShareConverter {
                 .mapToObj( i -> {
                     Share share = shares.get(i);
                     CellModelDto dto = new CellModelDto();
+                    modelMapper.map(share, dto);
                     dto.setCellType(cellTypes.get(i).getValue());
                     dto.setNumItemsToWin(itemsToWin(share.getAllItemsCount(), share.getPickedItemsCount()));
                     dto.setVerificated(share.getIsVerificated());
@@ -192,7 +193,6 @@ public class ShareConverter {
                         dto.setDistanceToNearestItem(DistanceCalculator.convertDistanceToString(distance));
                         distances.add(distance);
                     }
-                    modelMapper.map(share, dto);
                     dto.setPromoColor(share.getColor());
                     dto.setProductPrice(share.getProductPrice() + " ₽");
                     dto.setDate(DateUtils.convertTimestampToStringDate("yyyy-MM-dd", share.getDate()));
